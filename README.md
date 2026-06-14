@@ -54,21 +54,25 @@ Every loop narrates itself and closes with a scannable audit ledger:
 
 ## Install (Claude Code)
 
+Run these **inside Claude Code** (they're slash commands, not shell commands):
+
 ```
 /plugin marketplace add skyhook-io/skyhook-skills
 /plugin install skyhook-skills@skyhook-skills
 ```
 
-Auto-updates at startup (it's a public marketplace — no token needed).
+The commands then appear **namespaced under the plugin** — `/skyhook-skills:autodev`, `/skyhook-skills:review-loop`, `/skyhook-skills:product-review`, etc. (`/plugin` to browse them). Auto-updates at startup — it's a public marketplace, no token needed.
 
 ## Install (Codex companions, optional)
 
-Claude's marketplace only manages the Claude plugin. The Codex-side skills install manually:
+Claude's marketplace only manages the Claude plugin; the Codex-side skills install manually. In a terminal:
 
-```
+```bash
 git clone https://github.com/skyhook-io/skyhook-skills
-skyhook-skills/scripts/install-codex.sh   # copies skills -> ~/.codex/skills, then restart Codex
+bash skyhook-skills/scripts/install-codex.sh   # installs to ~/.codex/skills
 ```
+
+Then **restart Codex** to pick them up. (The companions call the `claude` CLI for cross-model review — see Prerequisites.)
 
 ## The `/qa` seam — bring your own verification
 
