@@ -23,6 +23,35 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 
 Cross-cutting: **never auto-accept a reviewer** (your own, the cross-model pass, or PR bots) — every finding is triaged with evidence; cross-review only when nontrivial; every loop caps and reports; review at altitude (a clean implementation of the wrong thing is still wrong).
 
+## Concepts
+
+A few principles run through every command:
+
+- **Review at altitude, intent before details.** Before judging whether code is *correct*, judge whether it's the *right thing to build* and the *right design* — approach, architecture, UX, user journey. A clean implementation of the wrong thing is still wrong. `/product-review` is the dedicated pass for this.
+- **Never auto-accept a reviewer.** Every finding — your own, the cross-model pass, or a PR bot — is triaged against the real code, with evidence cited on every skip. Cross-model reviewers are often right about blind spots and often wrong about things already handled; you decide.
+- **Compose, don't rebuild.** The loops are thin conductors over small, single-purpose commands. Edit one (e.g. `/triage-findings`) and every loop that uses it inherits the change.
+- **Scale ceremony to the task.** Trivial changes skip the loop; nontrivial work gets cross-review + product critique. Steps are judgment calls, and you can steer them inline (`/review-loop consult codex`, `/autodev no PR`, `quick`, `focus on auth`).
+- **Bring-your-own verification (`/qa`).** The loops call `/qa`, but each repo defines what verification means there — type-check, tests, and optionally a `/visual-test`. The workflow stays repo-agnostic.
+
+### Example run-summary
+
+Every loop narrates itself and closes with a scannable audit ledger:
+
+```
+📋 review-loop · feature/bulk-actions
+ 🔗 PR [#910](https://github.com/your-org/your-repo/pull/910) · OPEN · checks 4 ✓ · 2 pending (Backend, Bugbot)
+ round 1
+   🔎 self-review     6 findings
+   🔵 codex review    8m · 13 findings
+   ⚖️ triage          5 fix · 7 skip · 1 discuss
+   🔧 fix             5 applied
+   ✅ qa              tsc ✓ · test ✓ · visual-test skipped (no UI delta)
+   📤 PR              pushed + body
+ result: converged locally · 1 round · 5 fixed · 7 skipped · 1 open · CI pending
+ open for you:
+   • [discuss] <the one question that needs your call>
+```
+
 ## Install (Claude Code)
 
 ```
