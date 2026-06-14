@@ -1,0 +1,22 @@
+{
+  "name": "skyhook-skills",
+  "owner": {
+    "name": "Skyhook",
+    "url": "https://github.com/skyhook-io"
+  },
+  "metadata": {
+    "description": "Autonomous dev-loop, cross-model review, and product/UX critique skills for Claude Code (with Codex companions).",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "skyhook-skills",
+      "source": "./plugins/skyhook-skills",
+      "description": "Plan -> implement -> review -> PR -> converge autopilot, cross-model (Claude<->Codex) review, and a product/design/UX critique pass. Composable slash commands that scale ceremony to the task and never auto-accept a reviewer.",
+      "version": "0.1.0",
+      "author": { "name": "Skyhook" },
+      "license": "MIT",
+      "category": "workflow"
+    }
+  ]
+}
