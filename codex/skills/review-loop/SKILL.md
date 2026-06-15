@@ -20,8 +20,9 @@ translations:**
   — and over-engineering / dead weight (options no caller sets, one-impl
   interfaces, tests that assert the implementation). Don't ping-pong with prior
   reviewers.
-- **Cross-model review** ("/codex-review") → the **claude-review** skill (Claude
-  reviews your work). Nontrivial changes only — don't ceremony-ize a typo.
+- **Cross-model review** ("/cross-review") → the **claude-review** skill — from
+  Codex the secondary reviewer stays Claude (it reviews your work). Nontrivial
+  changes only — don't ceremony-ize a typo.
 - **Triage** ("/triage-findings") → inline: read the real code at each
   `file:line`, **never auto-accept**, cite evidence on every skip.
 - **Fix** ("/fix-findings") → apply the confirmed Fix verdicts.

@@ -16,7 +16,7 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 - **`/review`**, **`/simple`** (anti-over-engineering), **`/triage-findings`**, **`/fix-findings`**.
 
 **Cross-model review**
-- **`/codex-review`** — runs a [Codex](https://github.com/openai/codex-plugin-cc) review of your branch, prints it verbatim, then triages it skeptically (never auto-accepts).
+- **`/cross-review`** — runs a review by the configured secondary model — **Codex or Cursor** — prints it verbatim, then triages it skeptically (never auto-accepts). Pick the reviewer via `~/.claude/skyhook-skills.json` (`{"reviewer":"codex|cursor","model":"…"}`), the `SKYHOOK_REVIEWER` env var, or a `consult cursor` / `consult codex` directive. `/codex-review` forces Codex.
 
 **PR**
 - **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged).
@@ -90,7 +90,9 @@ No `/qa`? The loops fall back to plain build/test detection.
 
 ## Prerequisites & optional integrations
 
-- **`/codex-review`** needs the official [`codex` plugin](https://github.com/openai/codex-plugin-cc) installed (`/plugin marketplace add openai/codex-plugin-cc`).
+- **`/cross-review` reviewers** (pick via `~/.claude/skyhook-skills.json`, `SKYHOOK_REVIEWER`, or a `consult <x>` directive):
+  - **codex** — needs the official [`codex` plugin](https://github.com/openai/codex-plugin-cc) (`/plugin marketplace add openai/codex-plugin-cc`).
+  - **cursor** — needs the [Cursor CLI](https://cursor.com) (`cursor-agent`) logged in, or `CURSOR_API_KEY` set; defaults to the `gpt-5.5-high` model. For a genuine second opinion when driving from Claude, keep it on a non-Claude model.
 - **Codex → Claude** (the `claude-review` Codex skill) needs the `claude` CLI. On macOS, run it un-sandboxed so it can read Keychain auth, and (if Codex's guardian blocks the export) add a narrow `[auto_review]` allowance in `~/.codex/config.toml`.
 - **`/review --deep`** uses the [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official) plugin if installed (optional).
 

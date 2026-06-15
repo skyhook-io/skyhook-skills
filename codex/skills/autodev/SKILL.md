@@ -18,7 +18,7 @@ translations** wherever it names a Claude command:
 |---|---|
 | `/plan-loop` | the **plan-loop** skill |
 | `/review-loop` | the **review-loop** skill |
-| `/codex-review` (cross-model) | the **claude-review** skill (Claude reviews your work) |
+| `/cross-review` (cross-model) | the **claude-review** skill — from Codex the secondary reviewer stays Claude (it reviews your work) |
 | `/qa` | read the repo's `.claude/commands/qa.md` and follow it (Codex reads it as a file) |
 | `/pr` (verify + open/update PR) | inline via `git` + `gh`: run `/qa`, then create/update the PR (stage relevant files only, `--force-with-lease`). **Write the body per `~/.codex/skills/skyhook-skills-commands/pr.md`** — depth proportional to the change, lead with motivation + design, **no review-fix trivia, re-derive don't append**. (Codex especially tends to dump 4 terse bullets — don't.) |
 | `/fix-pr-loop` (converge) | inline the reactive loop: wait for CI + bots (`gh pr checks`, `gh pr view --json comments,reviews`), triage each finding skeptically, fix the real ones, push, repeat until settled or capped. **Don't block on CodeQL >5 min** — if it's the only laggard, proceed and note `CodeQL pending` |

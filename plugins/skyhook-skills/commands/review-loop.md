@@ -15,7 +15,7 @@ This command **composes** existing procedures — it does not re-implement them:
 - `/review` — self correctness review
 - `/simple` — over-engineering / dead-weight audit (honor its "don't ping-pong
   with the reviewer" rule)
-- `/codex-review` — cross-model review (wraps the Codex plugin; nontrivial only)
+- `/cross-review` — cross-model review by the configured secondary reviewer (codex or cursor; nontrivial only)
 - `/triage-findings` — validate every finding against the real code
 - `/fix-findings` — apply confirmed fixes
 - `/pr` — stage only relevant files, commit/amend, push `--force-with-lease`,
@@ -38,8 +38,9 @@ step just because it's listed.
 
 **Honor free-text steering in the invocation as an override** — the caller's
 intent beats the heuristic. Examples (generalize beyond them):
-- `consult codex` / `cross-review this` / `second opinion` → run the cross-model
-  pass even if the change looks trivial. `self-review only` / `skip codex` → skip it.
+- `consult codex` / `consult cursor` / `second opinion` → run the cross-model pass
+  (and pick that reviewer for this run) even if the change looks trivial.
+  `self-review only` / `skip cross-review` → skip it.
 - `no PR` / `local only` → review + fix but don't create/update a PR.
 - `review only` / `don't fix` → report findings, skip the fix step.
 - `thorough` / `deep` → raise ceremony (deep review, cross-review, more rounds);
@@ -80,9 +81,10 @@ Each round:
      (journeys, comprehension, UX shape, AI-slop).
    - **Then line-level:** run `/review` (`--deep` ⇒ `/pr-review-toolkit:review-pr
      all`) and `/simple` for correctness, bugs, and dead weight.
-   - **Cross-model pass** (nontrivial only): run `/codex-review`, and use its
-     **adversarial** mode to *challenge the approach/design/assumptions*, not just
-     hunt defects. Trivial diffs skip it — don't ceremony-ize a typo.
+   - **Cross-model pass** (nontrivial only): run `/cross-review` — the configured
+     secondary reviewer (codex or cursor; set in `~/.claude/skyhook-skills.json` or
+     `consult <x>`). Have it *challenge the approach/design*, not just hunt defects
+     (codex: use its adversarial mode). Trivial diffs skip it — don't ceremony-ize a typo.
 3. **Triage skeptically** — pool every finding (self, `/simple`, Codex) and apply
    `/triage-findings`: read the real code at each `file:line`, **never
    auto-accept**, cite evidence on every Skip. Surface reviewer-requested items

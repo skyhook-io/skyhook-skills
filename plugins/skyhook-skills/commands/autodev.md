@@ -38,8 +38,8 @@ to implement directly? Cross-review, or self-review enough? PR now, or more work
 first? Skip what doesn't fit.
 
 **Honor free-text steering in the invocation as an override** — caller intent wins:
-- `consult codex` / `cross-review` → force the cross-model pass; `no codex` /
-  `self-review only` → skip it.
+- `consult codex` / `consult cursor` / `cross-review` → force the cross-model pass
+  (and pick that reviewer); `no cross-review` / `self-review only` → skip it.
 - `plan only` → stop after the plan gate; `skip planning` / `just build it` → go
   straight to implement (small tasks).
 - `no PR` / `local only` → stop before opening a PR; `don't converge` → skip the
