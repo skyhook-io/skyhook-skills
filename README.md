@@ -65,14 +65,13 @@ The commands then appear **namespaced under the plugin** — `/skyhook-skills:au
 
 ## Install (Codex companions, optional)
 
-Claude's marketplace only manages the Claude plugin; the Codex-side skills install manually. In a terminal:
+Claude's marketplace only manages the Claude plugin; the Codex-side skills install with one line:
 
 ```bash
-git clone https://github.com/skyhook-io/skyhook-skills
-bash skyhook-skills/scripts/install-codex.sh   # installs to ~/.codex/skills
+curl -fsSL https://raw.githubusercontent.com/skyhook-io/skyhook-skills/main/scripts/install-codex.sh | bash
 ```
 
-Then **restart Codex** to pick them up. (The companions call the `claude` CLI for cross-model review — see Prerequisites.)
+Then **restart Codex**. (Rather not pipe curl to bash? `git clone https://github.com/skyhook-io/skyhook-skills && bash skyhook-skills/scripts/install-codex.sh` does the same.) The companions call the `claude` CLI for cross-model review — see Prerequisites.
 
 ## The `/qa` seam — bring your own verification
 
