@@ -22,6 +22,13 @@ planning the build. Don't produce a polished plan for the wrong thing. **For
 product / UI-facing work, run `/product-review` here** (premise + top user journeys
 + scope decision) — the cheapest place to catch "wrong thing" or "wrong UX."
 
+**Consider external research when it'd materially improve the approach** — how
+comparable tools/competitors solve this, established best practices, relevant
+docs/standards/prior art. Worth it for novel, ambiguous, or convention-heavy
+problems (a new surface, an unfamiliar domain, "is there a standard way to do
+this?"); skip for well-understood, mechanical, or internal-pattern work. Don't
+research by reflex — but don't skip it just because the user didn't ask.
+
 Then read the relevant code first; anchor every claim in evidence. Follow your
 plan conventions:
 - **Cite `file:line`** for every factual claim about how things work today.

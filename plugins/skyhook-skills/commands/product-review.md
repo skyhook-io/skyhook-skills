@@ -62,6 +62,12 @@ shape **before** evaluating execution. Work these passes:
 - Does it align with the project's established patterns + design tokens (its design doc, e.g. **DESIGN.md**), or
   invent inconsistent ones?
 
+### 7. Look outward — prior art (when it helps)
+- For a novel or important surface, consider how the category leaders / comparable
+  products handle the same journey — borrow proven patterns rather than inventing,
+  and note where deviating is deliberate. Judgment-gated: a quick web/competitor
+  look when the surface is new or unfamiliar; skip for small or well-trodden changes.
+
 ## Output
 Per dimension, a **0–10 score + one line on "what a 10 looks like"** — quantify the
 gap, don't wave at it. Then findings triaged by severity:
