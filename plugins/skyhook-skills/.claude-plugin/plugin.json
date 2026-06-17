@@ -1,7 +1,7 @@
 {
   "name": "skyhook-skills",
   "description": "Autonomous dev-loop (plan -> implement -> review -> PR -> converge), cross-model review, and product/UX critique as composable slash commands.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "Skyhook", "url": "https://skyhook.io" },
   "homepage": "https://github.com/skyhook-io/skyhook-skills",
   "license": "MIT",
