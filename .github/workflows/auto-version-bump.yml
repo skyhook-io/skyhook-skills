@@ -1,0 +1,55 @@
+name: auto-version-bump
+
+# Plugins set an explicit version, so Claude Code only ships updates to installed
+# users when it is bumped. Instead of relying on remembering, this auto-bumps the
+# patch version (and keeps the three version fields in sync) whenever a command
+# change lands on main — so every command change is released. main is unprotected,
+# so the bot commits the bump directly; the bump touches only the manifests, not
+# commands/, so it does not re-trigger this workflow.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/skyhook-skills/commands/**'
+
+permissions:
+  contents: write
+
+concurrency: auto-version-bump
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Auto-bump patch version + sync the three version fields
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          pj="plugins/skyhook-skills/.claude-plugin/plugin.json"
+          mk="./.claude-plugin/marketplace.json"
+
+          cur=$(jq -r .version "$pj")
+          # If a human already bumped in this push, don't double-bump.
+          prev=$(git show "$BEFORE:$pj" 2>/dev/null | jq -r .version || echo "")
+          if [ -n "$prev" ] && [ "$cur" != "$prev" ]; then
+            echo "Version already bumped $prev -> $cur in this push; nothing to do."
+            exit 0
+          fi
+
+          IFS=. read -r MA MI PA <<< "$cur"
+          target="${MA}.${MI}.$((PA + 1))"
+          echo "Releasing $cur -> $target"
+
+          tmp=$(mktemp); jq --arg v "$target" '.version = $v' "$pj" > "$tmp" && mv "$tmp" "$pj"
+          tmp=$(mktemp); jq --arg v "$target" '.metadata.version = $v | .plugins[0].version = $v' "$mk" > "$tmp" && mv "$tmp" "$mk"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: release $target (auto-bump)"
+          git push
