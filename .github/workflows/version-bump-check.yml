@@ -1,0 +1,50 @@
+name: version-bump-check
+
+# Plugins set an explicit `version`, so Claude Code only delivers updates to
+# installed users when that version is bumped. This gate fails a PR that changes
+# shipped command content without releasing it, and keeps the three version
+# fields in lockstep — so a change can't merge "but never reach anyone" again.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require a version bump when shipped commands change + verify fields are in sync
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          base="origin/${BASE_REF}"
+
+          plugin_json="plugins/skyhook-skills/.claude-plugin/plugin.json"
+          marketplace="./.claude-plugin/marketplace.json"
+
+          # 1) If any shipped command content changed, the plugin version must be bumped.
+          if git diff --quiet "$base"...HEAD -- plugins/skyhook-skills/commands; then
+            echo "No command changes — version bump not required."
+          else
+            cur=$(jq -r .version "$plugin_json")
+            prev=$(git show "$base:$plugin_json" | jq -r .version)
+            if [ "$cur" = "$prev" ]; then
+              echo "::error::commands/ changed but $plugin_json version is still $cur. Bump the version (and marketplace.json) to release — otherwise installed users never receive the change."
+              exit 1
+            fi
+            echo "Version bumped $prev -> $cur"
+          fi
+
+          # 2) The three version fields must always agree.
+          v_plugin=$(jq -r .version "$plugin_json")
+          v_meta=$(jq -r .metadata.version "$marketplace")
+          v_entry=$(jq -r '.plugins[0].version' "$marketplace")
+          if [ "$v_plugin" != "$v_meta" ] || [ "$v_plugin" != "$v_entry" ]; then
+            echo "::error::version fields out of sync — plugin.json=$v_plugin marketplace.metadata=$v_meta marketplace.plugins[0]=$v_entry"
+            exit 1
+          fi
+          echo "Version fields in sync at $v_plugin"
