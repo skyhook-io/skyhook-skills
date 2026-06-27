@@ -50,6 +50,28 @@ git diff
 
 ### 4. Create/Update PR
 - **Title**: clear, conveys the real scope (don't undersell a feature as "fix X").
+
+> ## 🚫 THE BODY DESCRIBES THE FINAL END-STATE — NOT HOW IT WAS BUILT OR REVIEWED
+>
+> This is the #1 rule and the most common mistake. The PR body is a description of
+> **what the change is and does, as it stands right now** — written as if the
+> design was always this way. It is **NOT** a story of the build/review process.
+>
+> **NEVER put any of these in a PR body** (instant rewrite if present):
+> - "Cross-review / Codex / Cursor / Bugbot caught N issues" · "review found X"
+> - "Scenarios reviewed" · "what was already OK" · "what got fixed by this PR"
+> - "Round 1 / round 2" · "initially did X, then changed to Y" · "I reconsidered"
+> - "tightened X", "now requires Y evidence", "suppressed empty Z rows",
+>   "switched to component W" — review-fix minutiae of any kind
+> - any framing where the *subject* is the process (a reviewer, a round, a catch)
+>   rather than the *feature*
+>
+> If a review fix changed real behavior, fold **only that behavioral outcome** into
+> "What changed" as if it was the design from the start — no mention that a review
+> surfaced it. The reader wants the destination, never the route. When in doubt,
+> ask: "does this sentence describe the shipped behavior, or the journey to it?"
+> Journey → cut.
+
 - **Description — depth proportional to the change; substance, not brevity.** A
   1500-line feature is not 4 bullets; a typo fix is not 4 paragraphs. Structure:
   - **Summary (lead with why + impact):** 1–3 sentences on what this does for the
@@ -62,13 +84,6 @@ git diff
   - **Testing:** commands run + visual-test status (ran ⇒ what was covered;
     skipped ⇒ why). Screenshots for UI (uploaded/linked — never local paths).
   - **Notes / tradeoffs / follow-ups:** brief, only if real.
-- **Do NOT pad the body with the review journey.** It describes the PR's **end
-  state and its value** — not how it got there. Review follow-ups ("tightened X",
-  "now requires Y evidence", "suppressed empty Z rows", "switched to component W")
-  are commit-level minutiae, **not the PR's story** — omit them, or fold only the
-  *behavioral outcome* into the substance if it changed what the feature does.
-  ("Skip implementation minutiae" cuts incidental code detail AND review-fix
-  trivia — but never the motivation or design.)
 
 #### If a PR already exists for this branch
 Don't just push the new commit and stop. Re-evaluate the PR title + body against the **full branch diff vs main**, not just the latest commit or this session's work. PRs accumulate scope across sessions and the description goes stale silently.
