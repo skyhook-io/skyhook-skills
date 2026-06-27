@@ -93,6 +93,11 @@ For each finding, cite `file:line`, name the smell, show the detector evidence, 
 **Detector:** Docstrings/comments that restate the function name or describe **what** the code does instead of **why**. Or comments that reference tickets, PR numbers, "previously", "used to", etc.
 **Action:** Delete the comment, or rewrite to capture a non-obvious *why* (a constraint, an invariant, a workaround for a specific cause).
 
+### 11. Duplicate left after extraction
+**Detector:** A PR extracts logic into a new function/component/hook but the original inline copy is still there — now two definitions of the same thing (the extraction was added, the original never deleted). Greppable: the extracted name AND a near-identical inline block both present; callers still hitting the old copy.
+**Action:** Replace the original with a call to the extraction; delete the inline copy. An extraction that doesn't remove what it replaced is incomplete, not additive — the duplicate will silently diverge.
+**Don't flag** if: the two copies are deliberately distinct (different behavior) and only superficially similar.
+
 ## Diagnostic questions (apply to every new symbol)
 
 1. **Who is the second caller?** If "nobody yet," it's suspect.
