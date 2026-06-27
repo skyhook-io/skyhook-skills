@@ -44,4 +44,6 @@ Verdicts:
 
 Immediately proceed to fix all issues marked as "Fix" in the triage summary. Do not ask for confirmation - just make the changes.
 
+**Bugs of-a-kind cluster — fix the pattern, not just the reported site.** When a finding is a *kind* of bug (a wrong call shape, a missing guard, an unsafe unwrap), grep the codebase for the same pattern before calling it fixed. Patching only the flagged line leaves the same bug at the sibling sites — the next reviewer just re-flags them. Fix every instance; if you deliberately leave one, say why.
+
 After fixing, verify the changes compile and tests pass using whatever build/test commands are appropriate for the project.

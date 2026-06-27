@@ -125,8 +125,9 @@ For all `Fix` items:
 
 1. Make the smallest coherent code change.
 2. Keep changes scoped to the issue.
-3. Add or adjust tests only when they protect behavior that can regress.
-4. Run focused validation first, then broader validation if risk warrants it.
+3. **Bugs of-a-kind cluster — fix the pattern, not just the reported site.** When a finding is a *kind* of bug (a wrong call shape, a missing guard, an unsafe unwrap), grep the codebase for the same pattern before calling it fixed. Patching only the flagged line ships the same bug at the sibling sites — and the next reviewer/bot just re-flags them. Fix every instance; if you deliberately leave one, say why.
+4. Add or adjust tests only when they protect behavior that can regress.
+5. Run focused validation first, then broader validation if risk warrants it.
 
 Use the repo’s existing commands and local guidance. If unsure, inspect `Makefile`, package scripts, and nearby tests.
 
