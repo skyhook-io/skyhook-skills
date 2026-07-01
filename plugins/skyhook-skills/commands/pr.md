@@ -82,8 +82,11 @@ git diff
     nontrivial PR this is where the depth goes: the architecture, the notable
     decisions, and **what a reviewer should focus on** or that's non-obvious.
   - **Testing:** commands run + visual-test status (ran ⇒ what was covered;
-    skipped ⇒ why). Screenshots for UI (uploaded/linked — never local paths).
-  - **Notes / tradeoffs / follow-ups:** brief, only if real.
+    skipped ⇒ why). When risk is material, say what the tests/live checks
+    mitigate. Screenshots for UI (uploaded/linked — never local paths).
+  - **Notes / tradeoffs / follow-ups:** brief, only if real. Include practical
+    risk/blast radius and residual risk here when it would help the reviewer; do
+    not add a boilerplate risk section for trivial or obviously low-risk changes.
 
 #### If a PR already exists for this branch
 Don't just push the new commit and stop. Re-evaluate the PR title + body against the **full branch diff vs main**, not just the latest commit or this session's work. PRs accumulate scope across sessions and the description goes stale silently.

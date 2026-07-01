@@ -23,6 +23,16 @@ translations:**
 - **Cross-model review** ("/cross-review") → the **claude-review** skill — from
   Codex the secondary reviewer stays Claude (it reviews your work). Nontrivial
   changes only — don't ceremony-ize a typo.
+- **Scenario-sensitive work** (copy, diagnostics/remediation, detector precision,
+  error classification, security/permissions, UI states) → build a scenario
+  ledger before calling the review complete: scenario, expected final behavior or
+  copy, source-of-truth evidence, self-review verdict, Claude status, tests/live
+  proof, open decision. Claude status is either the verdict or `skipped:
+  <reason>` when cross-review was intentionally skipped. "Review loop ran" is not
+  a completion claim.
+- **Risk / blast radius** → for nontrivial changes, include a practical risk note:
+  affected surface, likely failure mode, mitigation/test proof, and residual
+  risk. Keep it proportional; don't add boilerplate for harmless edits.
 - **Triage** ("/triage-findings") → inline: read the real code at each
   `file:line`, **never auto-accept**, cite evidence on every skip.
 - **Fix** ("/fix-findings") → apply the confirmed Fix verdicts.
