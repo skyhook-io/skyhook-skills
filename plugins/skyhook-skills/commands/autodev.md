@@ -60,6 +60,13 @@ Generalize — read the directive and adjust which phases run and how.
    genuine decisions (default) or decide-and-log within the ceiling (`--auto`).
 4. **Review** — run `/review-loop` (pass `--auto`): self + cross-model review →
    skeptic-triage → fix, looping until clean. Never auto-accepts a reviewer.
+   For scenario-sensitive changes — user-facing copy, diagnostics/remediation,
+   detector precision, error classification, permissions/security posture, or UI
+   states — require the review-loop scenario ledger before treating the PR as
+   reviewed: scenario, expected final behavior/copy, source-of-truth evidence,
+   self-review verdict, cross-review status, test/live proof, and open decision.
+   Cross-review status can be `skipped: <reason>` when the cross-model pass was
+   intentionally skipped. "Review loop ran" is not enough.
    For a **UI / product-facing feature** (new rendered surfaces), **lean toward
    running `/visual-test` + `/product-review` here, before opening the PR** — that's
    where "does it render, read, and serve the user" gets caught. Recommended, not
@@ -75,7 +82,11 @@ Generalize — read the directive and adjust which phases run and how.
    until settled or capped.
 7. **Hand back.** Summarize: what was built, decisions made, **assumptions taken
    (`--auto`, from `NOTES.md`)**, reviewer verdicts (Fix/Skip with evidence),
-   anything still **open**, and the PR link.
+   scenario ledgers for scenario-sensitive work, practical risk/blast radius plus
+   mitigation/test proof for nontrivial changes, anything still **open**, and the
+   PR link. Do not call an item complete if the final head has not been reviewed
+   and verified at the level implied by the task; say exactly which proof is
+   missing and keep moving to other independent items when appropriate.
 
 ## Cross-cutting rules (inherited, restated)
 - **Triage every reviewer — self, Codex, bots — skeptically. Never auto-accept;
@@ -85,6 +96,10 @@ Generalize — read the directive and adjust which phases run and how.
   architecture, UI layout, user journey) — not just whether the code is correct.
   A clean implementation of the wrong thing is still wrong: surface intent/design
   problems to the user instead of optimizing within a design that shouldn't ship.
+- **Assess risk / blast radius proportionally.** For nontrivial changes, identify
+  affected surfaces, likely failure modes, mitigation/test proof, and residual
+  risk. A low-risk copy/test-only change can be one sentence; behavior, UI,
+  auth/security, data, or diagnosis/remediation changes need explicit coverage.
 - **Cross-review only when nontrivial.** Agents are smart about tools — be smart
   about when to spend a reviewer.
 - **Every loop caps and reports at the cap.** Never loop silently; never proceed

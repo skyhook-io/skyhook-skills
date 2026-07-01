@@ -79,12 +79,25 @@ Each round:
      user — don't polish details inside a design that shouldn't ship. **For UI /
      product-facing changes, run `/product-review`** as this altitude pass
      (journeys, comprehension, UX shape, AI-slop).
+   - **Risk / blast radius:** for nontrivial changes, briefly assess what can
+     break, who or what is affected, and whether the tests, live checks,
+     guardrails, or rollback path actually cover that risk. Keep it proportional:
+     one line is enough for low-risk copy/test-only changes.
    - **Then line-level:** run `/review` (`--deep` ⇒ `/pr-review-toolkit:review-pr
      all`) and `/simple` for correctness, bugs, and dead weight.
    - **Cross-model pass** (nontrivial only): run `/cross-review` — the configured
      secondary reviewer (codex or cursor; set in `~/.claude/skyhook-skills.json` or
      `consult <x>`). Have it *challenge the approach/design*, not just hunt defects
      (codex: use its adversarial mode). Trivial diffs skip it — don't ceremony-ize a typo.
+   - **Scenario ledger for scenario-sensitive work:** if the change affects
+     user-facing copy, diagnostics, remediation guidance, detector precision,
+     error classification, permissions/security posture, or UI states, first
+     derive the scenario list from the ticket + code paths + tests. The review is
+     not complete until each scenario has a row with scenario, expected final
+     behavior/copy, evidence source, self-review verdict, cross-review status,
+     tests/proof, and open decision. Cross-review status is either the verdict or
+     `skipped: <reason>` when the cross-model pass was intentionally skipped. A
+     blanket "review loop ran" is invalid for these PRs.
 3. **Triage skeptically** — pool every finding (self, `/simple`, Codex) and apply
    `/triage-findings`: read the real code at each `file:line`, **never
    auto-accept**, cite evidence on every Skip. Surface reviewer-requested items
@@ -93,10 +106,14 @@ Each round:
 5. **Update the PR** if one exists — `/pr` (relevant files only,
    `--force-with-lease`, accurate title/body). No PR yet ⇒ leave commits local
    and say so; do not open one here (that's `/autodev`'s job).
-6. **Repeat** until a round yields **no new valid Fix verdicts**.
+6. **Repeat** until a round yields **no new valid Fix verdicts** and all
+   required review artifacts for this scope are complete (for example, the
+   scenario ledger for scenario-sensitive work and the risk/blast-radius note for
+   nontrivial changes).
 
 ## Stop / caps
-- **Converged:** a clean round (only Skips) → stop, summarize.
+- **Converged:** a clean round (only Skips) **and required review artifacts
+  complete** → stop, summarize.
 - **Cap:** default **3 rounds**; report and stop rather than looping silently.
 - **Stuck:** the same finding survives **2 fix attempts** → stop and surface the
   blocker.
@@ -142,6 +159,8 @@ later — one line per step, headline metric inline, grouped by round:
    ⚖️ triage          5 fix · 7 skip · 1 discuss
    🔧 fix             5 applied · history.go, meaningfulchanges.go (+2)
    ✅ qa              tsc ✓ · test ✓ · visual-test skipped (no UI delta)
+   risk              low · copy-only UI labels · mitigated by renderer tests
+   scenarios         4/4 covered · table posted in Linear
    📤 PR              pushed b083fbd9 + body
  round 2             clean — no new valid findings
  result: converged locally · 2 rounds · 8 fixed · 7 skipped · 1 open · CI pending
@@ -154,6 +173,20 @@ auto-accept), files/PR touched, the **result line**
 (`converged|capped|blocked · rounds · fixed/skipped/open`), and open items. In
 `--auto`, add an `assumptions:` block. Show durations only where they matter
 (cross-review, CI waits).
+
+For nontrivial changes, include a compact risk/blast-radius note: affected
+surface, likely failure mode, mitigation/test proof, and any residual risk. Do
+not overbuild this for harmless mechanical edits, but do not leave it implicit
+for behavior, UI, auth/security, data, or diagnosis/remediation changes.
+
+For scenario-sensitive work, include the scenario ledger in the summary or link
+to where it was posted. Minimum columns: scenario, expected final behavior/copy,
+evidence source (`file:line`, fixture, screenshot, live cluster/API proof),
+self-review verdict, cross-review status, tests/proof, and open decision.
+Cross-review status is either the verdict or `skipped: <reason>` when the
+cross-model pass was intentionally skipped. If the cross-review happened before
+fixes, explicitly say whether the final post-fix head was re-reviewed; don't let
+"Claude reviewed it" imply a later commit was covered when it was not.
 
 **The `✅ qa` line must state visual-test explicitly** — never ambiguous. If it
 ran, include the screenshot directory as an **absolute path** (or `file://` URL —

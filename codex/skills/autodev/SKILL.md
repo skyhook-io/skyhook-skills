@@ -31,6 +31,16 @@ translations** wherever it names a Claude command:
   security/auth/secrets · breaking-public-API/destructive-file-ops.
 - **Triage every reviewer skeptically; never auto-accept.** Cross-review only
   when nontrivial.
+- **Scenario-sensitive work needs a ledger before "done."** For user-facing copy,
+  diagnostics/remediation, detector precision, error classification,
+  security/permissions, or UI states, list each scenario with expected final
+  behavior/copy, source-of-truth evidence, self-review verdict, Claude status,
+  tests/live proof, and open decision. Claude status is either the verdict or
+  `skipped: <reason>` when cross-review was intentionally skipped. If review
+  happened before later fixes, state whether the final head was re-reviewed.
+- **Risk / blast radius belongs in the hand-back.** For nontrivial changes, state
+  affected surface, likely failure mode, mitigation/test proof, and residual risk.
+  Keep it proportional; low-risk copy/test-only work can be one sentence.
 - **Every loop caps and reports** — never loop or proceed-past-a-blocker
   silently.
 - **Never** merge, deploy, push to `main`, hard-`--force`, or stage unrelated

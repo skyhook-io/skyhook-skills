@@ -16,8 +16,11 @@ The point is an adversarial second opinion: Claude is the reviewer, you are the
 skeptic. Do **not** assume Claude is right, and do **not** assume it is wrong.
 Verify against the actual code.
 
-If the user passed a scope argument with the invocation, use it (Step 1).
-Otherwise default to reviewing this branch vs `main`.
+If the user passed a scope or focus argument with the invocation, use it (Step
+1). Otherwise default to reviewing this branch vs `main`. For scenario-sensitive
+work such as copy, diagnostics, remediation guidance, detector precision, error
+classification, permissions/security posture, or UI states, include the scenario
+list in Claude's prompt and ask Claude to validate each scenario explicitly.
 
 ---
 
@@ -26,6 +29,7 @@ Otherwise default to reviewing this branch vs `main`.
 ```bash
 git status --short
 git log --oneline main..HEAD 2>/dev/null | head -20
+git rev-parse HEAD
 ```
 
 - no argument → review the branch diff against `main` (fall back to `master`,
@@ -34,17 +38,23 @@ git log --oneline main..HEAD 2>/dev/null | head -20
 - a hex sha → review just that commit
 - anything else → treat it as the base branch name
 
-State the resolved scope before invoking Claude.
+State the resolved scope and exact reviewed ref/SHA before invoking Claude:
+branch reviews use `HEAD`, commit-scope reviews use the requested commit SHA,
+and uncommitted/WIP reviews use `HEAD` plus the dirty worktree. Claude's verdict
+applies only to that reviewed ref plus any uncommitted changes included in scope.
+If you later amend, commit, or push fixes, do not say Claude reviewed the final
+head unless you reran Claude on that new head.
 
 ## Step 2 — Run Claude's review (headless)
 
 Invoke Claude Code in print mode with a read-only review prompt. Whitelist only
 read/search/git tools so the review can't mutate the tree. Build the
 `<SCOPE>` clause from Step 1 (e.g. "this branch vs main", "the uncommitted
-changes", "commit <sha>").
+changes", "commit <sha>"). Preserve any user-specified focus or scenario matrix
+in the prompt; do not collapse it into generic "review this PR" wording.
 
 ```bash
-claude -p "You are doing a READ-ONLY code review. Do NOT modify files, do NOT run builds or tests, do NOT commit. Use git to inspect <SCOPE> (e.g. 'git diff main...HEAD'), read the changed files, and report findings. FIRST judge the whole change at altitude: is this the right thing to build and is the design/approach sound (architecture, abstractions, and for UI the layout + user journey) — a clean implementation of the wrong thing is still wrong, so raise design/intent problems first and loudest. THEN find correctness bugs, security issues, silent failures, race conditions, logic errors, and breaking API changes in the changed code. For each finding give: severity, file:line, what actually breaks, and a concrete fix. Skip pure style nits. Output a concise numbered findings list." \
+claude -p "You are doing a READ-ONLY code review. Do NOT modify files, do NOT run builds or tests, do NOT commit. Use git to inspect <SCOPE> (e.g. 'git diff main...HEAD'), read the changed files, and report findings. FIRST judge the whole change at altitude: is this the right thing to build, is the design/approach sound (architecture, abstractions, and for UI the layout + user journey), and is the practical risk/blast radius understood and mitigated by tests or guardrails — a clean implementation of the wrong thing is still wrong, so raise design/intent/risk problems first and loudest. THEN find correctness bugs, security issues, silent failures, race conditions, logic errors, and breaking API changes in the changed code. For each finding give: severity, file:line, what actually breaks, and a concrete fix. Skip pure style nits. Output a concise numbered findings list." \
   --model opus \
   --permission-mode default \
   --allowedTools Read Grep Glob Bash
