@@ -69,10 +69,16 @@ Notes:
   real reviews can look hung while Claude is reading, thinking, or running
   tools. With `stream-json`, treat streamed `tool_use`, `thinking_tokens`, and
   `ping` events as progress. Do not interrupt solely because no final prose has
-  appeared.
+  appeared. A healthy review can spend several minutes reading files and thinking
+  before the final `result`; debug only if the process exits/errors or the stream
+  produces no events for several minutes.
 - **Allow several minutes** — a cross-model review is slow and consumes a full
   Claude turn. This runs in your sandbox; the network/process call may need
   escalation. If your shell enforces a short command timeout, raise it (5–10 min).
+- **If you suspect auth/tooling, test the smallest case first:**
+  `claude -p "Return exactly OK." --model opus --no-session-persistence`. If
+  that works, a long review with no final prose is probably just buffering or an
+  in-progress review, not a login failure.
 - **Model:** pinned to `--model opus` so the reviewer is always Claude's strong
   model regardless of the user's day-to-day default. `opus` is an alias that
   tracks the latest Opus. Swap it only if the user asks for a specific model.
@@ -98,6 +104,16 @@ From the streamed JSON, extract the final `result` value and reproduce that text
 **verbatim** in a fenced block — do not summarize, reword, re-rank, or drop
 anything. Do not paste the JSON event stream, signed thinking metadata, or tool
 event noise as the review. The user wants the raw second opinion first.
+
+If you captured the stream to a JSONL file, extract the review with:
+
+```bash
+jq -r 'select(.type == "result") | .result' /tmp/claude-review.jsonl
+```
+
+If you did not capture it to a file, use the command runner's final `result`
+object. Do not treat streamed `assistant` partial text, tool outputs, or
+truncated event logs as the authoritative review.
 
 ```
 ## 🟣 Claude's review (verbatim)
