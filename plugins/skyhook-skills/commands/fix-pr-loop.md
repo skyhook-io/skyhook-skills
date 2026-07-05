@@ -66,10 +66,13 @@ At the start of each round, wait until automated feedback has settled.
 Use:
 
 ```bash
-gh pr checks <pr-number> --watch
+gh pr checks <pr-number> --watch=false
 gh pr view <pr-number> --json comments,reviews,latestReviews,headRefOid
 gh api repos/:owner/:repo/pulls/<pr-number>/comments
 ```
+
+Prefer polling over one long `gh pr checks --watch`: wait for ordinary CI and AI
+reviewers to settle, then poll known-slow scanners separately.
 
 Treat these as feedback sources:
 - Failing CI checks.
@@ -78,13 +81,19 @@ Treat these as feedback sources:
 - CodeRabbit, Claude, Copilot, github-actions, CodeQL, or other bot review comments.
 - Human review comments.
 
-**Slow-check cap (CodeQL etc.):** CodeQL and similar security scans can run far
-longer than the rest of CI. **Don't block the loop on CodeQL for more than ~5
-minutes.** Don't `gh pr checks --watch` indefinitely on it — poll instead, and if
-CodeQL (or another known-slow scanner) is the *only* thing still pending past ~5
-min, proceed with the round rather than waiting; its results, if actionable, get
-picked up next round. Note it as `CodeQL pending` in the status/summary so the gap
-is visible.
+**Slow-check cap (CodeQL/static analysis):** CodeQL and similar security scans can
+run far longer than the rest of CI. **Don't block the loop on CodeQL for more than
+~5 minutes.** Treat CodeQL workflow children as slow scanners even when the visible
+check name is only `Analyze (go)` or `Analyze (javascript-typescript)`; identify
+them via the check-run workflow/name/path (`CodeQL`, `.github/workflows/codeql.yml`)
+or details URL. If a CodeQL/static-analysis job is the *only* thing still pending
+past ~5 min, proceed with the round rather than waiting; its results, if actionable,
+get picked up next round. Note it as `CodeQL pending` or `Analyze (go) pending
+(CodeQL)` in the status/summary so the gap is visible.
+
+This cap does **not** apply to AI reviewers or normal build/test CI. Wait for
+Cursor Bugbot, CodeRabbit, Claude/Copilot review comments, and failing build/test
+jobs, or triage their output before declaring the round settled.
 
 If checks are still pending after the wait timeout, continue only if there are
 already actionable findings — **or if the only laggard is a slow scanner like
