@@ -59,6 +59,10 @@ plain `review` only hunts defects. For substantive changes prefer it (or run bot
 implementation of the wrong design is still wrong, and the cross-model voice is
 most valuable challenging direction, not just nitpicking lines.
 
+- **Model:** the companion runs on your codex config model (`~/.codex/config.toml`).
+  For review depth, **`gpt-5.6-sol` at `high`+ reasoning effort** is recommended;
+  set it in config rather than forcing `--model` on the native `review` (that path
+  uses Codex's purpose-built reviewer).
 - **Use a 10-minute Bash timeout (`timeout: 600000`)** — the default 2 min will
   kill the review mid-run.
 - This is foreground-only by design, because Step 4 triages the output now. If

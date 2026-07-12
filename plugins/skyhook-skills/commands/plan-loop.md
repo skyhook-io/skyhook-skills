@@ -58,6 +58,10 @@ codex exec "Critique this implementation plan as a skeptical senior engineer. FI
 
 (Prompt-only, no plan file? Still redirect: `codex exec "…" < /dev/null`.)
 
+`codex exec` runs on your codex config model. Plan critique is deep reasoning —
+**`gpt-5.6-sol` at `high`+ effort** is recommended (set in `~/.codex/config.toml`,
+or pin per-call with `codex exec -m gpt-5.6-sol …`).
+
 (Trivial plans skip this. This is Claude→Codex, which has no export gate.)
 
 ## Step 3 — Triage the critique skeptically

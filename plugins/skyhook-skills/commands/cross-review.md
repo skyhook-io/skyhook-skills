@@ -13,13 +13,13 @@ setting, not by editing commands.
 ## Step 1 — Resolve the reviewer + model
 Pick in this order (first wins):
 1. **Directive in `$ARGUMENTS`** — `codex` / `cursor` (and `use <model>` / a bare
-   model id like `gpt-5.5-high`).
+   model id like `gpt-5.6-high`).
 2. **Env** — `SKYHOOK_REVIEWER` (`codex|cursor`), `SKYHOOK_REVIEW_MODEL`.
 3. **Config file** — `~/.claude/skyhook-skills.json`, fields `reviewer` + `model`
    (read it: `cat ~/.claude/skyhook-skills.json 2>/dev/null`).
 4. **Default** — `codex`.
 
-Announce what you resolved, e.g. `### 🔁 CROSS-REVIEW · cursor (gpt-5.5-high)`.
+Announce what you resolved, e.g. `### 🔁 CROSS-REVIEW · cursor (gpt-5.6-high)`.
 
 ## Step 2 — Resolve scope
 Default: branch vs `main` (`git diff main...HEAD` + uncommitted). `--base <ref>` /
@@ -33,13 +33,17 @@ Default: branch vs `main` (`git diff main...HEAD` + uncommitted). `--base <ref>`
 SCRIPT="$(ls -t ~/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | head -1)"
 node "$SCRIPT" review --base <ref>                      # or: adversarial-review --base <ref> "focus…"
 ```
+- The companion runs on your **codex config model** (`~/.codex/config.toml`).
+  For review depth, **`gpt-5.6-sol` at `high`+ reasoning effort** is recommended
+  (`gpt-5.6-terra` is the lighter everyday tier). Plain `review` maps to Codex's
+  purpose-built reviewer — don't force `--model` onto it; tune the config default.
 
 **cursor** — via the Cursor CLI, pinned to the resolved model:
 ```bash
 cursor-agent -p "You are doing a READ-ONLY code review. Inspect <SCOPE> (e.g. run 'git diff main...HEAD'), read the changed files, and report findings. FIRST judge whether this is the right thing to build and the design/approach is sound (a clean implementation of the wrong thing is still wrong); THEN correctness bugs, security, silent failures, races, logic errors, breaking API. For each: severity, file:line, what breaks, concrete fix. Do NOT modify files, do NOT commit. Concise numbered list." \
   --output-format text --model "<model>" --force
 ```
-- Cursor default model: **`gpt-5.5-high`**. For a genuine second opinion when
+- Cursor default model: **`gpt-5.6-high`**. For a genuine second opinion when
   driving from Claude, keep it on a non-Claude model.
 - Needs Cursor auth (`cursor-agent` logged in or `CURSOR_API_KEY`). `--force` lets
   it read files + run `git` headless; the prompt keeps it read-only.
