@@ -71,8 +71,14 @@ gh pr view <pr-number> --json comments,reviews,latestReviews,headRefOid
 gh api repos/:owner/:repo/pulls/<pr-number>/comments
 ```
 
-Prefer polling over one long `gh pr checks --watch`: wait for ordinary CI and AI
-reviewers to settle, then poll known-slow scanners separately.
+**The automated reviewers are the primary signal** — the whole point of a round is
+their findings (Cursor Bugbot, CodeRabbit, Claude/Copilot review comments) plus any
+failing build/test CI. Those are what you wait for and triage. Security scanners like
+CodeQL are secondary: useful when they flag something, but not worth stalling a round
+on when they're slow (see the cap below).
+
+Prefer polling over one long `gh pr checks --watch`: wait for the AI reviewers and
+ordinary build/test CI to settle, then poll known-slow scanners separately.
 
 Treat these as feedback sources:
 - Failing CI checks.
@@ -83,12 +89,13 @@ Treat these as feedback sources:
 
 **Slow-check cap (CodeQL/static analysis):** CodeQL and similar security scans can
 run far longer than the rest of CI. **Don't block the loop on CodeQL for more than
-~5 minutes.** Treat CodeQL workflow children as slow scanners even when the visible
-check name is only `Analyze (go)` or `Analyze (javascript-typescript)`; identify
-them via the check-run workflow/name/path (`CodeQL`, `.github/workflows/codeql.yml`)
-or details URL. If a CodeQL/static-analysis job is the *only* thing still pending
-past ~5 min, proceed with the round rather than waiting; its results, if actionable,
-get picked up next round. Note it as `CodeQL pending` or `Analyze (go) pending
+~2 minutes** — the reviewers are the point of the round, not the scanner. Treat
+CodeQL workflow children as slow scanners even when the visible check name is only
+`Analyze (go)` or `Analyze (javascript-typescript)`; identify them via the check-run
+workflow/name/path (`CodeQL`, `.github/workflows/codeql.yml`) or details URL. If a
+CodeQL/static-analysis job is the *only* thing still pending past ~2 min, proceed
+with the round rather than waiting; its results, if actionable, get picked up next
+round. Note it as `CodeQL pending` or `Analyze (go) pending
 (CodeQL)` in the status/summary so the gap is visible.
 
 This cap does **not** apply to AI reviewers or normal build/test CI. Wait for

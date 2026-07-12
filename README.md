@@ -92,7 +92,7 @@ No `/qa`? The loops fall back to plain build/test detection.
 
 - **`/cross-review` reviewers** (pick via `~/.claude/skyhook-skills.json`, `SKYHOOK_REVIEWER`, or a `consult <x>` directive):
   - **codex** — needs the official [`codex` plugin](https://github.com/openai/codex-plugin-cc) (`/plugin marketplace add openai/codex-plugin-cc`).
-  - **cursor** — needs the [Cursor CLI](https://cursor.com) (`cursor-agent`) logged in, or `CURSOR_API_KEY` set; defaults to the `gpt-5.5-high` model. For a genuine second opinion when driving from Claude, keep it on a non-Claude model.
+  - **cursor** — needs the [Cursor CLI](https://cursor.com) (`cursor-agent`) logged in, or `CURSOR_API_KEY` set; defaults to the `gpt-5.6-high` model. For a genuine second opinion when driving from Claude, keep it on a non-Claude model.
 - **Codex → Claude** (the `claude-review` Codex skill) needs the `claude` CLI. On macOS, run it un-sandboxed so it can read Keychain auth, and (if Codex's guardian blocks the export) add a narrow `[auto_review]` allowance in `~/.codex/config.toml`. Long reviews should use streamed JSON and the final `result` field; plain `claude -p` can look idle while it is still reading/thinking.
 - **`/review --deep`** uses the [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official) plugin if installed (optional).
 
