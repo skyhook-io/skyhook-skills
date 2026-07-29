@@ -20,8 +20,8 @@ Inventory disk usage, stale developer tools, caches, old services/processes, Hom
    - large dot-directories, e.g.: `.config`, `.cache`, `.local`, `.gradle`, `.nvm`, `.vscode`, `.cursor`, `.codex`, `.claude`, `.gemini`, `.ollama`
 
 3. Scan repos for per-project regenerable artifact dirs (these often dominate disk):
-   - Recurse each workspace root for these reserved directory names, using `-prune` so nested matches don't double-count:
-     `find <root> -type d -name node_modules -prune`
+   - Recurse each workspace root once, matching all names in a single `find` with a shared `-prune` so a matched dir is never descended into. One combined pass (not one per name) is what prevents double-counting — both same-name nesting (`node_modules` in `node_modules`) and cross-name nesting (`__pycache__` in `.venv`):
+     `find <root> -type d \( -name node_modules -o -name .next -o -name .venv -o -name .terraform \) -prune`  (extend the `-o -name …` list with the names below)
    - Reserved artifact names (never legit source — safe to list as reclaimable):
      - JS/TS: `node_modules`, `.next`, `.nuxt`, `.svelte-kit`, `.turbo`, `.angular`, `.parcel-cache`
      - Python: `.venv`, `__pycache__`, `.pytest_cache`, `.mypy_cache`
