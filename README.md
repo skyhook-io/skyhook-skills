@@ -21,6 +21,9 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 **PR**
 - **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged).
 
+**Utilities**
+- **`/housekeeping`** — read-only audit of a dev machine's disk, caches, stale tools, and services; triages findings into reclaimable / worth-reviewing / leave-alone and never mutates anything without explicit approval.
+
 Cross-cutting: **never auto-accept a reviewer** (your own, the cross-model pass, or PR bots) — every finding is triaged with evidence; cross-review only when nontrivial; every loop caps and reports; review at altitude (a clean implementation of the wrong thing is still wrong).
 
 ## Concepts
