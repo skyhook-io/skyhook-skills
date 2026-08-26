@@ -1,6 +1,6 @@
 # skyhook-skills
 
-Composable AI **dev-workflow** commands for [Claude Code](https://claude.com/claude-code) — with [Codex](https://github.com/openai/codex) companions. An autonomous plan → implement → review → PR → converge loop, cross-model (Claude ↔ Codex) review, and a product/design/UX critique pass.
+Composable AI **dev-workflow and research** commands for [Claude Code](https://claude.com/claude-code) — with [Codex](https://github.com/openai/codex) companions. An autonomous plan → implement → review → PR → converge loop, cross-model (Claude ↔ Codex) review, product/design/UX critique, and decision-focused competitive research.
 
 Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/skyhook-io/radar); generic enough to use anywhere.
 
@@ -21,6 +21,9 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 **PR**
 - **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged).
 
+**Research**
+- **`/competitive-research [implementation|product|positioning|hybrid] [focus]`** — investigates how comparable products handle the active decision using primary evidence: OSS source and tests for implementation details, official product material for UX/features, or current first-party pages for positioning. Compares the tradeoffs with the current approach and recommends what to keep, adopt, hybridize, or defer.
+
 **Utilities**
 - **`/housekeeping`** — read-only audit of a dev machine's disk, caches, stale tools, and services; triages findings into reclaimable / worth-reviewing / leave-alone and never mutates anything without explicit approval.
 
@@ -31,6 +34,7 @@ Cross-cutting: **never auto-accept a reviewer** (your own, the cross-model pass,
 A few principles run through every command:
 
 - **Review at altitude, intent before details.** Before judging whether code is *correct*, judge whether it's the *right thing to build* and the *right design* — approach, architecture, UX, user journey. A clean implementation of the wrong thing is still wrong. `/product-review` is the dedicated pass for this.
+- **Research at the task's altitude.** Competitive work should answer the decision in front of you: source-level evidence for implementation semantics, product evidence for UX and features, market evidence for positioning. Prefer representative patterns over exhaustive feature grids.
 - **Never auto-accept a reviewer.** Every finding — your own, the cross-model pass, or a PR bot — is triaged against the real code, with evidence cited on every skip. Cross-model reviewers are often right about blind spots and often wrong about things already handled; you decide.
 - **Compose, don't rebuild.** The loops are thin conductors over small, single-purpose commands. Edit one (e.g. `/triage-findings`) and every loop that uses it inherits the change.
 - **Scale ceremony to the task.** Trivial changes skip the loop; nontrivial work gets cross-review + product critique. Steps are judgment calls, and you can steer them inline (`/review-loop consult codex`, `/autodev no PR`, `quick`, `focus on auth`).
