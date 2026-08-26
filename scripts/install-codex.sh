@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# Install the Codex-side skills.
+# Install the Agent Skill adapters used by Codex and Cursor Agent.
 #
-# Claude Code's plugin marketplace manages the CLAUDE plugin (auto-updates).
+# Claude Code's plugin marketplace manages the Claude plugin separately.
 # Codex uses its own skills mechanism (~/.codex/skills), which Claude marketplaces
-# do NOT manage, so the Codex companions are installed with this script.
+# do NOT manage, so the Codex companions are installed with this script. Cursor
+# Agent also discovers ~/.codex/skills for compatibility and uses the same copy.
 #
 # Works two ways:
 #   - one-liner:  curl -fsSL https://raw.githubusercontent.com/skyhook-io/skyhook-skills/main/scripts/install-codex.sh | bash
 #   - from a clone:  bash scripts/install-codex.sh
 #
-# The Codex skills are thin adapters that read the SAME canonical command files as
+# The Agent Skills are thin adapters that read the SAME canonical command files as
 # the Claude plugin (single source of truth); this copies those files into a shared
 # dir the skills reference.
 set -euo pipefail
@@ -37,6 +38,6 @@ mkdir -p "$SKILLS_DIR" "$SHARED_DIR"
 cp -R "$REPO_DIR/codex/skills/." "$SKILLS_DIR/"
 cp "$REPO_DIR/plugins/skyhook-skills/commands/"*.md "$SHARED_DIR/"
 
-echo "Installed Codex skills -> $SKILLS_DIR"
-echo "Canonical commands     -> $SHARED_DIR"
-echo "Restart Codex to pick up the new skills."
+echo "Installed skills (Codex + Cursor) -> $SKILLS_DIR"
+echo "Canonical commands               -> $SHARED_DIR"
+echo "Restart Codex or start a new Cursor Agent session to pick up changes."

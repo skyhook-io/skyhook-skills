@@ -1,6 +1,6 @@
 # skyhook-skills
 
-Composable AI **dev-workflow and research** commands for [Claude Code](https://claude.com/claude-code) — with [Codex](https://github.com/openai/codex) companions. An autonomous plan → implement → review → PR → converge loop, cross-model (Claude ↔ Codex) review, product/design/UX critique, and decision-focused competitive research.
+Composable AI **dev-workflow and research** commands for [Claude Code](https://claude.com/claude-code), [Codex](https://github.com/openai/codex), and [Cursor Agent](https://cursor.com/docs/skills). An autonomous plan → implement → review → PR → converge loop, cross-model review, product/design/UX critique, and decision-focused competitive research.
 
 Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/skyhook-io/radar); generic enough to use anywhere.
 
@@ -59,26 +59,83 @@ Every loop narrates itself and closes with a scannable audit ledger:
    • [discuss] <the one question that needs your call>
 ```
 
-## Install (Claude Code)
+## Install and update
 
-Run these **inside Claude Code** (they're slash commands, not shell commands):
+Claude Code uses the plugin marketplace. Codex and Cursor Agent use the same
+Agent Skill adapters and canonical command bundle under `~/.codex/skills`;
+Cursor discovers that directory for compatibility, so installing for both does
+not create two copies.
 
-```
+The Claude plugin exposes the full command catalog. Codex and Cursor expose the
+companion entry points `autodev`, `plan-loop`, `review-loop`, `product-review`,
+`claude-review`, and `competitive-research`; those skills use the shared
+canonical commands internally.
+
+| Agent | Distribution | Invoke a skill |
+|---|---|---|
+| Claude Code | `skyhook-skills` marketplace plugin | `/skyhook-skills:competitive-research` |
+| Codex | User-level Agent Skills | `$competitive-research` |
+| Cursor Agent | The same Agent Skills as Codex | `/competitive-research` |
+
+### Claude Code
+
+First install — run these **inside Claude Code**:
+
+```text
 /plugin marketplace add skyhook-io/skyhook-skills
 /plugin install skyhook-skills@skyhook-skills
 ```
 
-The commands then appear **namespaced under the plugin** — `/skyhook-skills:autodev`, `/skyhook-skills:review-loop`, `/skyhook-skills:product-review`, etc. (`/plugin` to browse them). Auto-updates at startup — it's a public marketplace, no token needed.
+Update — run these in a terminal:
 
-## Install (Codex companions, optional)
+```bash
+claude plugin marketplace update skyhook-skills
+claude plugin update skyhook-skills@skyhook-skills
+```
 
-Claude's marketplace only manages the Claude plugin; the Codex-side skills install with one line:
+Then apply the update to an already-running Claude Code session:
+
+```text
+/reload-plugins
+```
+
+Use `/plugin` to browse installed commands or enable marketplace auto-update.
+Third-party marketplace auto-update may be disabled, so the explicit update
+commands above are the reliable path. See the
+[Claude Code plugin documentation](https://code.claude.com/docs/en/discover-plugins).
+
+### Codex
+
+First install **and every update** use the same idempotent command:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/skyhook-io/skyhook-skills/main/scripts/install-codex.sh | bash
 ```
 
-Then **restart Codex**. (Rather not pipe curl to bash? `git clone https://github.com/skyhook-io/skyhook-skills && bash skyhook-skills/scripts/install-codex.sh` does the same.) The companions call the `claude` CLI for cross-model review — see Prerequisites.
+The installer fetches `main`, updates the Skyhook adapters and canonical
+commands, and leaves unrelated skills alone. Codex normally detects skill changes
+automatically; if the update does not appear, restart Codex. Verify with
+`/skills`, then invoke a skill with `$competitive-research`. See the
+[OpenAI Agent Skills documentation](https://developers.openai.com/codex/skills).
+
+If you prefer a checkout over piping from the network, clone this repository,
+`git pull --ff-only` for each update, then run
+`bash scripts/install-codex.sh` from the repository root.
+
+### Cursor Agent
+
+Cursor Agent discovers `~/.codex/skills`, so it uses the **same install and
+update command as Codex**:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/skyhook-io/skyhook-skills/main/scripts/install-codex.sh | bash
+```
+
+If you already ran that command for Codex, there is nothing else to install.
+Start a new Cursor Agent session (or restart Cursor) after an update. Verify under
+**Customize → Skills** or invoke `/competitive-research` in Agent chat.
+Updating the Cursor binary with `cursor-agent update` is separate and does not
+update these skills. See the [Cursor Agent Skills documentation](https://cursor.com/docs/skills).
 
 ## The `/qa` seam — bring your own verification
 
