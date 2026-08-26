@@ -1,6 +1,6 @@
 {
   "name": "skyhook-skills",
-  "description": "Autonomous dev-loop (plan -> implement -> review -> PR -> converge), cross-model review, and product/UX critique as composable slash commands.",
+  "description": "Autonomous dev-loop, cross-model review, product/UX critique, and evidence-driven competitive research as composable slash commands.",
   "version": "0.1.8",
   "author": {
     "name": "Skyhook",
@@ -14,6 +14,7 @@
     "autonomous",
     "product-review",
     "codex",
-    "cross-model"
+    "cross-model",
+    "competitive-research"
   ]
 }
