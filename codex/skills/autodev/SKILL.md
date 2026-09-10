@@ -57,3 +57,6 @@ translations** wherever it names a Claude command:
   forced — a skip is fine when small/non-visual, but must be stated). **State
   visual-test and product-review status in the hand-back** (ran/skipped + why),
   never silent. Don't open the PR blind to its own rendered result.
+- **Consider a review packet** before handing back, when the work would be hard to
+  judge from the PR alone — large or multi-PR, a rendered surface, captured output
+  worth showing, or open product calls. Judgement call, not a step; say if skipped.
