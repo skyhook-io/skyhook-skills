@@ -80,7 +80,12 @@ Generalize — read the directive and adjust which phases run and how.
 6. **Converge** — run `/fix-pr-loop`: wait for CI + Bugbot/CodeRabbit/AI
    reviewers, triage each comment skeptically, fix the real ones, push, repeat
    until settled or capped.
-7. **Hand back.** Summarize: what was built, decisions made, **assumptions taken
+7. **Consider a review packet.** When the work would be hard for the reviewer to
+   judge from the PR alone — a large or multi-PR change, a rendered UI surface,
+   captured screenshots or live output worth showing, or open product calls you
+   are handing back — run `/review-packet`. It is a judgement call, not a step:
+   skip it for ordinary changes a diff explains on its own, and say you skipped it.
+8. **Hand back.** Summarize: what was built, decisions made, **assumptions taken
    (`--auto`, from `NOTES.md`)**, reviewer verdicts (Fix/Skip with evidence),
    scenario ledgers for scenario-sensitive work, practical risk/blast radius plus
    mitigation/test proof for nontrivial changes, anything still **open**, and the
@@ -114,7 +119,7 @@ headline number inline — same greppable glyph set every run: 🔭 scope · �
 ⚖️ triage · 🔧 fix · ✅ qa · 📤 PR · 🤖 converge/bots · 📋 summary
 (e.g. `### ⚖️ TRIAGE · 5 fix · 7 skip · 1 discuss`).
 
-Close (step 7) with one run-summary ledger spanning the whole chain, so the user
+Close (step 8) with one run-summary ledger spanning the whole chain, so the user
 can audit the autopilot at a glance:
 
 ```
