@@ -21,6 +21,9 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 **PR**
 - **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged).
 
+**Hand it over**
+- **`/review-packet [pr|set|design|research] [focus]`** — packages work for guided review: a published page that leads with the decisions the reviewer has to make and puts the evidence for every claim right beside it. Built for large PRs, PR *sets*, rendered UI, and design or research proposals — the cases where review otherwise means scrolling a diff and taking your word for it.
+
 **Research**
 - **`/competitive-research [implementation|product|positioning|hybrid] [focus]`** — investigates how comparable products handle the active decision using primary evidence: OSS source and tests for implementation details, official product material for UX/features, or current first-party pages for positioning. Compares the tradeoffs with the current approach and recommends what to keep, adopt, hybridize, or defer.
 
