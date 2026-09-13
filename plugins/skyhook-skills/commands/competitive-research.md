@@ -126,6 +126,12 @@ compatibility before suggesting copied code.
 
 ## Output
 
+Consider `/review-packet` when an open decision depends on comparing substantial
+source excerpts, product captures, or competing tradeoffs. Reuse existing evidence
+and any packet already prepared; do not research more merely to populate one.
+Keep the recommendation in the response and skip the packet for a simple answer.
+Prepare local-only output unless publication is already authorized.
+
 Lead with the decision the research informs and the recommended direction. Then
 provide:
 

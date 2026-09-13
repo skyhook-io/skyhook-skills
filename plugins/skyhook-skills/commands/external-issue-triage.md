@@ -56,4 +56,11 @@ Provide a private recommendation that helps the maintainer choose the next step:
 - **Next decision:** recommend fix now, request focused information, defer/track, discuss product direction, or decline with a reason. Make clear what needs the maintainer's judgment.
 - **Public draft:** the exact suggested acknowledgment or substantive reply, separately labeled. If an acknowledgment draft was already shown, include the current proposed text so it remains reviewable; if already sent with approval, report that and draft another reply only when it adds value.
 
+Consider `/review-packet` for an unresolved product choice or competing diagnoses
+whose evidence is hard to compare in chat. Reuse the investigation; do not delay
+the acknowledgment or expand a straightforward issue just to fill a packet.
+Keep the assessment in the response and the packet local-only unless publication
+of its contents and destination is explicitly authorized. It is not the public
+reply.
+
 Do not paste the internal plan, effort estimates, internal deliberations, or commercial positioning into the public draft. Stop after triage; do not autonomously transition into implementation or promise to pursue it.

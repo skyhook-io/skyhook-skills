@@ -71,4 +71,11 @@ Then give the merge recommendation: ready to merge, ready after small maintainer
 - Verification performed, remaining gaps, and the shortest safe path to merge. State the reviewed SHA.
 - An optional contributor-facing draft containing only what the contributor needs to hear. Keep internal findings and planning separate.
 
+Consider `/review-packet` when an open merge or product decision depends on
+substantial diff evidence, screenshots, or reviewer disagreements that are hard
+to assess in chat. Reuse gathered evidence and any existing packet; keep the
+high-level assessment and merge recommendation in the response. Use local-only
+output unless publication of the packet's contents and destination is explicitly
+authorized. A packet is for the maintainer, not an automatic contributor reply.
+
 Stop at the recommendation unless subsequent action is already authorized. Do not automatically start implementation, publication, or a convergence loop against the contributor.
