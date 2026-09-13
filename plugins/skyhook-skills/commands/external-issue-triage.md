@@ -34,6 +34,17 @@ Ask the reporter only for information that materially changes the diagnosis and 
 
 Public drafts must read like a real maintainer talking to another person. Be brief, plain, specific, and honest. No canned AI phrasing, inflated warmth, excessive apologies, exaggerated appreciation, or unrequested walls of helpful advice. Avoid formulas such as "Thank you for bringing this to our attention," "rest assured," and "we appreciate your patience." Do not copy example wording mechanically or repeat information the reporter already knows. Never turn a hypothesis into a confident diagnosis for a friendlier response.
 
+## Check product scope and ownership
+
+Consider whether the OSS repository is the right place for the capability, or
+whether its scope belongs in a cloud/hosted offering, another component, or both.
+Follow documented boundaries; when they are unclear, surface the decision to the
+maintainer before requesting implementation changes.
+
+A possible overlap is not an automatic reason to reject a contribution. Assess
+user value, architectural fit, maintenance cost, and existing commitments. Do not
+assume a capability is cloud-only or invent a product restriction.
+
 ## Investigate for the maintainer
 
 Scale the work to the uncertainty. If the initial investigation is enough, proceed directly to the private plan. Otherwise:
