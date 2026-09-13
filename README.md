@@ -15,6 +15,13 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 - **`/product-review`** — questions *what* to build and *how* users perceive it: premise, top user journeys (ranked 0–10), UX shape, comprehension, states, AI-slop. Borrows forcing-function patterns from [gstack](https://github.com/garrytan/gstack) and [OneRedOak](https://github.com/OneRedOak/claude-code-workflows) + a journey-ranking + non-expert-comprehension lens.
 - **`/review`**, **`/simple`** (anti-over-engineering), **`/triage-findings`**, **`/fix-findings`**.
 
+**External contributions**
+
+- **`/external-pr-review <GitHub URL> [focus]`** — assesses an outside contribution's premise and implementation, then recommends the shortest safe path to merge. Classifies findings as author changes, maintainer fixes, follow-ups, deferred work, or findings to drop.
+- **`/external-issue-triage <GitHub URL> [focus]`** — drafts a timely acknowledgment, investigates a bug or feature request, and prepares a maintainer recommendation. Keeps public replies separate from private analysis.
+
+Both default to review and recommendations; posting and contributor-branch changes need explicit authorization. They follow the project's documented scope rather than assuming a particular product policy.
+
 **Cross-model review**
 - **`/cross-review`** — runs a review by the configured secondary model — **Codex or Cursor** — prints it verbatim, then triages it skeptically (never auto-accepts). Pick the reviewer via `~/.claude/skyhook-skills.json` (`{"reviewer":"codex|cursor","model":"…"}`), the `SKYHOOK_REVIEWER` env var, or a `consult cursor` / `consult codex` directive. `/codex-review` forces Codex.
 
@@ -71,7 +78,8 @@ not create two copies.
 
 The Claude plugin exposes the full command catalog. Codex and Cursor expose the
 companion entry points `autodev`, `plan-loop`, `review-loop`, `product-review`,
-`claude-review`, `competitive-research`, and `review-packet`; those skills use the shared
+`claude-review`, `competitive-research`, `review-packet`, `external-pr-review`,
+and `external-issue-triage`; those skills use the shared
 canonical commands internally.
 
 | Agent | Distribution | Invoke a skill |
