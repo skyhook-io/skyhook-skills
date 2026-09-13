@@ -5,6 +5,11 @@ argument-hint: "<GitHub URL> [focus or constraints]"
 
 # External contributor issue triage
 
+Use the GitHub issue URL supplied by the user (command arguments in Claude),
+with any trailing focus or constraints. Resolve the repository and issue number
+before investigating. If no target was supplied, use an unambiguous target from
+the session or ask for it; do not guess a different contribution.
+
 Give reporters a timely, honest response and help the maintainer decide what to do. Keep the public reply and private investigation separate. This workflow ends at triage and a recommendation; the maintainer decides what happens next.
 
 ## Exact-message approval
@@ -15,7 +20,7 @@ Do not implement a fix, open a PR, change labels or assignees, close the issue, 
 
 ## Fast first response
 
-Read the report and existing conversation first so the proposed response reflects what the reporter already supplied and what maintainers have already said. Do a brief initial check to determine whether the report is clearly valid and well scoped. Do not delay a useful acknowledgment until a deep investigation or cross-review finishes.
+Read the report and existing conversation first so the proposed response reflects what the reporter already supplied and what maintainers have already said. Do a brief initial check to determine whether the report is clearly valid and well scoped. Do not delay a useful acknowledgment until a deep investigation finishes.
 
 If diagnosis or direction remains uncertain and investigation will take time, suggest a short acknowledgment early in a commentary update for the maintainer to approve, then continue independent investigation. Never send it automatically. Avoid implying that an investigation, fix, or timeline has been committed. For example: "Thanks for reporting this. I don't have a clear explanation yet."
 
@@ -51,4 +56,4 @@ Provide a private recommendation that helps the maintainer choose the next step:
 - **Next decision:** recommend fix now, request focused information, defer/track, discuss product direction, or decline with a reason. Make clear what needs the maintainer's judgment.
 - **Public draft:** the exact suggested acknowledgment or substantive reply, separately labeled. If an acknowledgment draft was already shown, include the current proposed text so it remains reviewable; if already sent with approval, report that and draft another reply only when it adds value.
 
-Do not paste the internal plan, effort estimates, reviewer deliberations, or commercial positioning into the public draft. Stop after triage; do not autonomously transition into implementation or promise to pursue it.
+Do not paste the internal plan, effort estimates, internal deliberations, or commercial positioning into the public draft. Stop after triage; do not autonomously transition into implementation or promise to pursue it.

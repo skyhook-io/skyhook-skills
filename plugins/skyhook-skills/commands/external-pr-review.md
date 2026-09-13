@@ -5,6 +5,11 @@ argument-hint: "<GitHub URL> [focus or constraints]"
 
 # External contributor PR review
 
+Use the GitHub PR URL supplied by the user (command arguments in Claude),
+with any trailing focus or constraints. Resolve the repository and pr number
+before investigating. If no target was supplied, use an unambiguous target from
+the session or ask for it; do not guess a different contribution.
+
 Help the maintainer accept useful contributions safely. Encourage contributors by keeping the work asked of them proportionate. Prefer a sound contribution plus small maintainer fixes or follow-ups over repeated review cycles in pursuit of perfection. This does not lower the bar for correctness, security, or product fit.
 
 ## Authorization and communication
@@ -36,7 +41,7 @@ State a clear judgment: endorse the direction, endorse it with a specific adjust
 
 Trace the changed behavior through callers, producers, consumers, related implementations, and existing tests. Check correctness, regressions, authorization, failure states, compatibility, and user experience where relevant. Search for the same faulty pattern elsewhere before treating a call-site fix as complete. Look for existing helpers before proposing new ones. Separate pre-existing issues from problems introduced or exposed by this PR.
 
-For nontrivial PRs, normally use the installed `review-loop` skill or command with explicit **review-only, no edits, no commits, no push, no posting** scope. In Claude, use the bundled `review-loop.md` command alongside this file. In Codex or Cursor, use the installed `review-loop` skill; resolve its `SKILL.md` relative to the skill installation, not the working directory. Follow that runtime's cross-model reviewer configuration. Its self-review and independent cross-model review should challenge the approach as well as the code and yield findings and a proposed fix plan. These external-contribution approval boundaries override its automatic fix/update stages. Skip the loop for genuinely simple changes and say why. If cross-review is unavailable, finish the useful self-review and report the gap.
+For nontrivial PRs, normally use the installed `review-loop` skill or command with explicit **review only, no PR, no edits, no commits, no push, no posting** scope. Run it in the isolated checkout at the resolved PR head and pass `--base <resolved PR base SHA>` so it reviews the actual contribution, including PRs targeting a non-default branch. In Claude, use `/skyhook-skills:review-loop`. In Codex or Cursor, use the installed `review-loop` skill; resolve its `SKILL.md` relative to the skill installation, not the working directory. Follow that runtime's cross-model reviewer configuration. Its self-review and independent cross-model review should challenge the approach as well as the code and yield findings and a proposed fix plan. These external-contribution approval boundaries override its automatic fix/update stages. Skip the loop for genuinely simple changes and say why. If cross-review is unavailable, finish the useful self-review and report the gap.
 
 Triage every finding skeptically, including your own, the other model's, and PR bots'. Verify it against the actual code and realistic scenarios. Do not turn speculative concerns, style preferences, or reviewer consensus into blockers. Cite evidence when dropping a finding.
 
