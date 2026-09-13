@@ -7,22 +7,26 @@ metadata:
 
 # Review Packet (Codex)
 
-Package work so review is easy to *do* — same workflow as Claude's `/review-packet`.
+Package work so review is easy to *do*: decisions first, evidence beside claims,
+and a document the reviewer can open.
 
-**Canonical procedure:** read `~/.codex/skills/skyhook-skills-commands/review-packet.md`
-and follow it (decisions first → real evidence → proof vs decision → counterfactual
-for invisible wins → honest deferrals → publish). **Codex notes:**
+Read `../skyhook-skills-commands/review-packet.md` relative to this skill's
+installed directory. In this repository, the source is
+`../../../plugins/skyhook-skills/commands/review-packet.md`.
+Follow that canonical procedure, including its **Codex: Sites publishing** route.
 
-- **Output is a self-contained `.html` file** written to the repo or a scratch dir,
-  not a hosted artifact — Codex has no Artifact tool. Tell the user the path and
-  offer to open it. Everything else in the procedure applies unchanged.
-- **Embed images as `data:` URIs** regardless, so the single file survives being
-  emailed, attached to a PR, or opened from anywhere. Crop to the subject and
-  downscale (~1100px wide) before inlining; check the total file size.
-- Gather evidence *before* writing: run the repo's visual-test (see
-  `.claude/commands/qa.md`), the relevant tools, or the real commands. Prefer live
-  output over illustrations — real material surfaces dilemmas you would not invent.
-- **The reader's decisions go at the top**, the verdict at the bottom. If nothing
-  needs deciding, say so and write a short report instead of a packet.
-- Keep the deferral list and the "what I could not verify" section. A packet that
-  only shows wins is marketing, and reviewers stop trusting it.
+- **Publish through Sites by default.** Use the available Sites tools and their
+  current instructions; do not require Claude's Artifact tool or `artifact-design`.
+- **Local-only means self-contained HTML.** Honor that request without publishing.
+  If Sites is unavailable or publication fails, hand over the completed HTML and
+  explain the gap. Do not generate a PDF unless explicitly requested.
+- Reuse the packet's saved Sites configuration on updates, preserve its audience,
+  and verify deployment success before returning a hosted URL. State who can
+  access it; owner-private does not mean team-accessible.
+- Reuse real evidence from the session. Capture UI only when a visual claim needs
+  it. Keep deferred findings, verification gaps, and reviewer disagreements.
+- Put the reader's decisions at the top and the verdict at the bottom. If there
+  is no open decision, write a short report instead of manufacturing a packet.
+
+These adapters are also installed for Cursor. When running there, follow the
+canonical procedure's **Other agents** route instead of assuming Sites exists.

@@ -22,7 +22,7 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 - **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged).
 
 **Hand it over**
-- **`/review-packet [pr|set|design|research] [focus]`** — packages work for guided review: a published page that leads with the decisions the reviewer has to make and puts the evidence for every claim right beside it. Built for large PRs, PR *sets*, rendered UI, and design or research proposals — the cases where review otherwise means scrolling a diff and taking your word for it.
+- **`/review-packet [pr|set|design|research] [focus]`** — packages work for guided review: a document that leads with the decisions the reviewer has to make and puts the evidence for every claim right beside it. Claude publishes an artifact; Codex publishes through Sites. Ask for local-only output to get self-contained HTML with embedded evidence (no PDF). If publishing is unavailable, the skill hands over HTML and explains the gap. Cursor defaults to local HTML. Built for large PRs, PR *sets*, rendered UI, and design or research proposals — the cases where review otherwise means scrolling a diff and taking your word for it.
 
 **Research**
 - **`/competitive-research [implementation|product|positioning|hybrid] [focus]`** — investigates how comparable products handle the active decision using primary evidence: OSS source and tests for implementation details, official product material for UX/features, or current first-party pages for positioning. Compares the tradeoffs with the current approach and recommends what to keep, adopt, hybridize, or defer.
@@ -71,7 +71,7 @@ not create two copies.
 
 The Claude plugin exposes the full command catalog. Codex and Cursor expose the
 companion entry points `autodev`, `plan-loop`, `review-loop`, `product-review`,
-`claude-review`, and `competitive-research`; those skills use the shared
+`claude-review`, `competitive-research`, and `review-packet`; those skills use the shared
 canonical commands internally.
 
 | Agent | Distribution | Invoke a skill |

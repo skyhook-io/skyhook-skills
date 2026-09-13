@@ -84,24 +84,108 @@ Pick what the material needs; do not use them all.
 | **Scoreboard** | Closing verdict across dimensions |
 | **Provenance line** | Always: what was run, against what, when |
 
-## Ship it as an artifact
+## Build and publish the document
 
-Publish with the **Artifact** tool so it is a link the team can open, not a file.
+Choose the delivery route from the running agent, honoring an explicit local-only
+request before publishing:
 
-- **Load the `artifact-design` skill first** — treatment is a deliberate choice.
-  A review packet is a polished *document*, not a landing page.
-- **Images must be embedded** — the artifact CSP blocks external image hosts.
-  Crop, downscale (~1100px wide is legible for UI), convert to JPEG, and inline as
-  `data:` URIs. Keep the page comfortably under the size cap; check the total before
-  publishing. For many or large assets, use the artifact `assets` capability instead.
-- **Ground the design in the subject.** If you are reviewing a product's UI, let the
-  packet borrow that product's own accent and semantic colours so the chips in your
-  prose read the same as the chips in the screenshots.
-- Sticky evidence beside scrolling prose reads well on wide screens; stack on narrow.
-- Give it a real name, and a one-line `description` for the gallery card.
+| Agent / request | Delivery |
+|---|---|
+| Claude | Publish with the **Artifact** tool; load `artifact-design` first |
+| Codex | Publish with **Sites**, following its available skills and current tool instructions |
+| Explicit local-only request, or publishing unavailable | Self-contained HTML file with a clickable absolute local path |
+| Other agents (including Cursor) | Use an available publishing integration when requested; otherwise local HTML |
 
-Then hand over the **link** plus a short orientation: what is in it, which frame to
-look at first, and what you are asking them to decide.
+Do not invoke Claude's Artifact tool or require `artifact-design` from Codex.
+If the selected publishing tool is unavailable or fails, finish and hand over the
+local HTML, explain the publishing gap, and do not claim it is a hosted link.
+Do not install an unrelated hosting service automatically. A local request needs
+only HTML; generate a PDF only if explicitly requested.
+
+### Shared document treatment
+
+- Make a polished *document*, not a landing page. Use readable typography,
+  restrained color, stable decision anchors, and evidence beside each claim.
+- Ground the design in the subject: borrow the product's accent and semantic
+  colors so the prose and screenshots use the same visual language.
+- Stack evidence and prose on narrow screens; use columns on wide screens.
+  Keep images legible or expandable to full size. Keep substantive content
+  accessible without JavaScript.
+- Embed images as `data:` URIs. Crop to the subject and downscale only while
+  preserving legibility (~1100px wide often works). Choose PNG for sharp text or
+  JPEG for photographic material. Check total size against the chosen host's
+  limits. Claude's Artifact `assets` capability is an option for large assets;
+  keep a local HTML deliverable self-contained.
+- For local HTML and Sites, inline CSS and any small optional scripts; use system
+  fonts. Escape evidence excerpts as text, never executable markup. Keep source
+  links and provenance beside evidence; external references are not dependencies.
+- Give the document a real name and a one-line description.
+
+### Codex: Sites publishing
+
+Prepare and inspect the self-contained HTML before publishing. Reuse the packet
+directory from the session or the user's chosen location. Otherwise use
+`${CODEX_HOME:-$HOME/.codex}/review-packets/<repo>/<packet-slug>/`, with a stable
+repo identity (owner/repository when available) and subject slug. Check that
+location for an existing packet before creating anything. When updating a known
+published packet whose local state is missing, locate the existing site through
+Sites discovery instead of creating a replacement.
+The Sites tools may provide more detailed instructions; follow those. The static
+route exercised for this workflow is:
+
+1. Put the HTML at `dist/index.html`. Configure `.openai/hosting.json` with
+   `{"static":{"directory":"dist"}}`, preserving existing configuration.
+   The packet directory must own its Git repository: initialize it if absent,
+   and verify `git rev-parse --show-toplevel` resolves to that directory. Do not
+   use an enclosing application's repository for the Sites push.
+2. Read that configuration before creating a site. Reuse its `project_id` on
+   updates. If absent, create the site once and immediately persist the returned
+   ID atomically. Never invent IDs or recreate a site to retry a failed step.
+3. Commit `.openai/hosting.json` and `dist/index.html` in the packet repository;
+   verify both are tracked even if a global ignore rule excludes `dist/`.
+   Push that exact source state to the site's returned Git repository/branch
+   using its short-lived credential and per-command authentication. Obtain a new
+   credential for the existing site when absent or expired. Do not print or
+   persist the credential. After a successful push, run
+   `git rev-parse --verify HEAD` in the packet repository and use its full output
+   as `commit_sha`.
+4. Package `.openai/hosting.json` and the configured static output from that
+   same source state, excluding `.git` and unrelated files. Use the Sites
+   packaging helper when available; otherwise create and validate a tar archive
+   containing `.openai/hosting.json` and `dist/index.html`. Save a version with
+   the archive and exact pushed SHA.
+5. Deploy the returned saved version. New sites start owner-private; preserve
+   existing access on updates. Use the private deployment operation only for
+   known owner-private sites. Follow current tool instructions for other access
+   modes. Apply an audience explicitly requested by the user through the access
+   tools; otherwise keep access unchanged. Publishing alone is not permission
+   to broaden the audience.
+6. Poll a nonterminal deployment until success or failure. On success, return
+   the server's final URL and state who can open it. A private URL is not a team
+   handoff until the intended reviewers have access. Do not generate a bypass
+   token or change sharing just to inspect the page.
+
+For an existing packet, reuse its directory, site, and URL. If publication fails,
+retain the site/version identifiers for recovery and report the failing step
+alongside the finished local file.
+
+### Verify and hand over
+
+Reuse evidence already gathered. When more is needed, read the repo's
+`.claude/commands/qa.md` if present and run the relevant commands. Capture UI
+when a visual claim needs it; nonvisual work does not require visual-test.
+Distinguish observed results from proposed behavior and label illustrations.
+
+Open the document with an available browser tool. Check wide/narrow layouts,
+decision anchors, and image readability. For self-contained HTML, check image
+loading without external network access or sibling assets. If browser access or
+hosted authentication prevents inspection, report that exact gap; successful
+publication alone does not prove the page rendered correctly.
+
+Hand over the hosted **link** (or a clickable absolute local file path for local
+output), plus a short orientation: the first frame to inspect and the calls
+needed. A local path or localhost address is not a hosted URL. Keep local files
+available after handoff. Do not claim an agent renders HTML inline.
 
 ## Anti-patterns
 
@@ -120,7 +204,8 @@ Announce phases with the shared glyphs: 🔭 scope · 🧾 evidence · 🖼 fram
 
 ```
 📦 review-packet · <subject>
- 🔗 https://claude.ai/code/artifact/…
+ 🔗 <published URL or clickable local HTML link>
+ 🔒 access        <verified audience, or local file only>
  🧾 evidence      9 live runs · 2 clusters · 11 captures
  🖼 frames        8 (3 proof · 5 decision)
  ⚖️ decisions     5 open for you
