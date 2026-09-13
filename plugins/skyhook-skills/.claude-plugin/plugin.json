@@ -1,7 +1,7 @@
 {
   "name": "skyhook-skills",
   "description": "Autonomous dev-loop, cross-model review, product/UX critique, review packets, and evidence-driven competitive research as composable slash commands.",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "author": {
     "name": "Skyhook",
     "url": "https://skyhook.io"
