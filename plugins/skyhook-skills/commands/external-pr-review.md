@@ -23,8 +23,19 @@ Contributor-facing language must sound like a maintainer wrote it: short, direct
 ## Understand before judging
 
 - Read the PR description, linked issue, discussion, prior reviews, and relevant commits. Establish the actual user problem, motivation, intended behavior, and constraints. If context is missing, investigate what is available before proposing a focused question for the author.
-- Inspect repository guidance and relevant architecture or design docs. Judge whether this is the right behavior and approach before polishing implementation. Follow documented project scope and surface unresolved product decisions to the maintainer. A possible scope conflict is a decision to surface, not an automatic rejection or an invented product policy.
+- Inspect repository guidance and relevant architecture or design docs. Judge whether this is the right behavior and approach before polishing implementation.
 - Resolve the PR's actual base and head SHA, contributor branch, and current CI results. Review that diff in an isolated checkout when needed; preserve unrelated local work. Treat contributor code and scripts as untrusted when choosing how to run verification.
+
+## Check product scope and ownership
+
+Consider whether the OSS repository is the right place for the capability, or
+whether its scope belongs in a cloud/hosted offering, another component, or both.
+Follow documented boundaries; when they are unclear, surface the decision to the
+maintainer before requesting implementation changes.
+
+A possible overlap is not an automatic reason to reject a contribution. Assess
+user value, architectural fit, maintenance cost, and existing commitments. Do not
+assume a capability is cloud-only or invent a product restriction.
 
 ## Establish the premise and direction first
 
