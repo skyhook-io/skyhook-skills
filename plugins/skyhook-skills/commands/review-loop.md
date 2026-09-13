@@ -174,6 +174,12 @@ auto-accept), files/PR touched, the **result line**
 `--auto`, add an `assumptions:` block. Show durations only where they matter
 (cross-review, CI waits).
 
+Consider `/review-packet` when open decisions depend on substantial screenshots,
+live output, or reviewer disagreements that the summary cannot show clearly.
+Reuse gathered evidence and any existing packet; skip it for straightforward or
+fully settled changes. Keep the verdict and open calls in the response. Preserve
+review-only and local-only constraints; publication needs existing authorization.
+
 For nontrivial changes, include a compact risk/blast-radius note: affected
 surface, likely failure mode, mitigation/test proof, and any residual risk. Do
 not overbuild this for harmless mechanical edits, but do not leave it implicit

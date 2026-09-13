@@ -69,6 +69,12 @@ shape **before** evaluating execution. Work these passes:
   look when the surface is new or unfamiliar; skip for small or well-trodden changes.
 
 ## Output
+
+Consider `/review-packet` when the user's open product calls depend on comparing
+screenshots, journeys, or design alternatives. Reuse gathered evidence and any
+existing packet; keep the main critique and decisions in the response. Skip it
+when a short critique is enough. Prepare local-only output unless publication is
+already authorized; packaging does not authorize implementation or sharing.
 Per dimension, a **0–10 score + one line on "what a 10 looks like"** — quantify the
 gap, don't wave at it. Then findings triaged by severity:
 **[Blocker]** wrong thing / unusable · **[High]** real UX or comprehension harm ·

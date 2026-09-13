@@ -79,6 +79,12 @@ note any residual disagreement.
 
 ## Step 5 — Gate
 
+Consider `/review-packet` when unresolved architecture or product calls need
+side-by-side evidence or alternatives to make sign-off useful. Reuse the plan's
+evidence and any existing packet; skip it for a plan that reads clearly on its
+own. Keep the plan and open questions in the response, preserve the sign-off gate,
+and prepare local-only output unless publication is already authorized.
+
 - **Default:** present the settled plan + every **Needs-input** question, then
   **STOP for sign-off**. This is the highest-leverage checkpoint — do not start
   coding until the user approves direction and resolves the open questions.
