@@ -123,20 +123,32 @@ only HTML; generate a PDF only if explicitly requested.
 
 ### Codex: Sites publishing
 
-Prepare and inspect the self-contained HTML before publishing. Use a dedicated
-packet directory outside tracked application source unless the user chose a
-location. The Sites tools may provide more detailed instructions; follow those.
-The static route exercised for this workflow is:
+Prepare and inspect the self-contained HTML before publishing. Reuse the packet
+directory from the session or the user's chosen location. Otherwise use
+`${CODEX_HOME:-$HOME/.codex}/review-packets/<repo>/<packet-slug>/`, with a stable
+repo identity (owner/repository when available) and subject slug. Check that
+location for an existing packet before creating anything. When updating a known
+published packet whose local state is missing, locate the existing site through
+Sites discovery instead of creating a replacement.
+The Sites tools may provide more detailed instructions; follow those. The static
+route exercised for this workflow is:
 
 1. Put the HTML at `dist/index.html`. Configure `.openai/hosting.json` with
    `{"static":{"directory":"dist"}}`, preserving existing configuration.
+   The packet directory must own its Git repository: initialize it if absent,
+   and verify `git rev-parse --show-toplevel` resolves to that directory. Do not
+   use an enclosing application's repository for the Sites push.
 2. Read that configuration before creating a site. Reuse its `project_id` on
    updates. If absent, create the site once and immediately persist the returned
    ID atomically. Never invent IDs or recreate a site to retry a failed step.
-3. Push the exact source state to the site's returned Git repository/branch using
-   its short-lived credential and per-command authentication. Do not print or
+3. Commit `.openai/hosting.json` and `dist/index.html` in the packet repository;
+   verify both are tracked even if a global ignore rule excludes `dist/`.
+   Push that exact source state to the site's returned Git repository/branch
+   using its short-lived credential and per-command authentication. Obtain a new
+   credential for the existing site when absent or expired. Do not print or
    persist the credential. After a successful push, run
-   `git rev-parse --verify HEAD` and use its full output as `commit_sha`.
+   `git rev-parse --verify HEAD` in the packet repository and use its full output
+   as `commit_sha`.
 4. Package `.openai/hosting.json` and the configured static output from that
    same source state, excluding `.git` and unrelated files. Use the Sites
    packaging helper when available; otherwise create and validate a tar archive
@@ -145,7 +157,9 @@ The static route exercised for this workflow is:
 5. Deploy the returned saved version. New sites start owner-private; preserve
    existing access on updates. Use the private deployment operation only for
    known owner-private sites. Follow current tool instructions for other access
-   modes; publishing is not permission to broaden the audience.
+   modes. Apply an audience explicitly requested by the user through the access
+   tools; otherwise keep access unchanged. Publishing alone is not permission
+   to broaden the audience.
 6. Poll a nonterminal deployment until success or failure. On success, return
    the server's final URL and state who can open it. A private URL is not a team
    handoff until the intended reviewers have access. Do not generate a bypass
@@ -191,6 +205,7 @@ Announce phases with the shared glyphs: 🔭 scope · 🧾 evidence · 🖼 fram
 ```
 📦 review-packet · <subject>
  🔗 <published URL or clickable local HTML link>
+ 🔒 access        <verified audience, or local file only>
  🧾 evidence      9 live runs · 2 clusters · 11 captures
  🖼 frames        8 (3 proof · 5 decision)
  ⚖️ decisions     5 open for you
