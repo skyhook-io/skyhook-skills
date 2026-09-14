@@ -59,7 +59,7 @@ git diff
 >
 > **NEVER put any of these in a PR body** (instant rewrite if present):
 > - "Cross-review / Codex / Cursor / Bugbot caught N issues" · "review found X"
-> - "Scenarios reviewed" · "what was already OK" · "what got fixed by this PR"
+> - "Scenarios reviewed" · "what was already OK" · "review fixed X, Y, Z"
 > - "Round 1 / round 2" · "initially did X, then changed to Y" · "I reconsidered"
 > - "tightened X", "now requires Y evidence", "suppressed empty Z rows",
 >   "switched to component W" — review-fix minutiae of any kind
@@ -71,6 +71,10 @@ git diff
 > surfaced it. The reader wants the destination, never the route. When in doubt,
 > ask: "does this sentence describe the shipped behavior, or the journey to it?"
 > Journey → cut.
+>
+> Pre-change **product behavior** belongs in the explanation when it makes the
+> problem understandable. This rule excludes the implementation/review journey,
+> not a concrete account of what previously happened to users.
 
 - **Description — depth proportional to the change; substance, not brevity.** A
   1500-line feature is not 4 bullets; a typo fix is not 4 paragraphs. Structure:
@@ -87,6 +91,12 @@ git diff
   - **Notes / tradeoffs / follow-ups:** brief, only if real. Include practical
     risk/blast radius and residual risk here when it would help the reviewer; do
     not add a boilerplate risk section for trivial or obviously low-risk changes.
+
+For a nontrivial bug or integration change, give the reader a causal model,
+preferably with one concrete input or state: what the user sees, which boundary
+or assumption causes it, and how the new behavior changes the outcome. Define
+domain terms rather than relying on component names or shorthand. A reviewer
+should grasp the intended mechanism before inspecting the implementation.
 
 #### If a PR already exists for this branch
 Don't just push the new commit and stop. Re-evaluate the PR title + body against the **full branch diff vs main**, not just the latest commit or this session's work. PRs accumulate scope across sessions and the description goes stale silently.
