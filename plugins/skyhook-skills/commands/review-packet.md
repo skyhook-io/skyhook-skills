@@ -109,8 +109,9 @@ only HTML; generate a PDF only if explicitly requested.
 - Ground the design in the subject: borrow the product's accent and semantic
   colors so the prose and screenshots use the same visual language.
 - Stack evidence and prose on narrow screens; use columns on wide screens.
-  Keep images legible or expandable to full size. Keep substantive content
-  accessible without JavaScript.
+  Make every evidence image click-to-expand to full size (lightbox or a plain
+  link to the full-res `data:` URI both work; the no-JS link must work standalone).
+  Keep substantive content accessible without JavaScript.
 - Embed images as `data:` URIs. Crop to the subject and downscale only while
   preserving legibility (~1100px wide often works). Choose PNG for sharp text or
   JPEG for photographic material. Check total size against the chosen host's
