@@ -89,9 +89,10 @@ Generalize — read the directive and adjust which phases run and how.
    if a UI change warrants it; falls back to plain build/test detection if no
    `/qa`). Skip if `/review-loop` just ran `/qa` green this round. If green, open
    the PR with `/pr`. Stop on failing checks. **Never merge.**
-6. **Converge** — run `/fix-pr-loop`: wait for CI + Bugbot/CodeRabbit/AI
-   reviewers, triage each comment skeptically, fix the real ones, push, repeat
-   until settled or capped.
+6. **Converge** — run `/fix-pr-loop`: wait for Bugbot/CodeRabbit/AI reviewers,
+   triage each comment skeptically, fix the real ones, push, repeat until settled
+   or capped. Check CI as you go and act on failures, but don't wait for slow
+   checks while known work remains; full CI is waited on once, at the end.
 7. **Consider a review packet.** When the work would be hard for the reviewer to
    judge from the PR alone — a large or multi-PR change, a rendered UI surface,
    captured screenshots or live output worth showing, or open product calls you
@@ -100,8 +101,10 @@ Generalize — read the directive and adjust which phases run and how.
 8. **Done audit.** Check every item of the
    [Definition of done](#definition-of-done) against the **final head SHA**,
    with evidence. Fix any gap you can close yourself — that is more work in this
-   run, not a hand-back item — then push, let the PR settle, and re-audit. Cap:
-   2 audit rounds; after that, hand back as `not done` with the gaps named.
+   run, not a hand-back item — then push, let the reviewers settle, and
+   re-audit. Batch the audit's fixes into one push. Cap: 2 audit rounds; after
+   that, hand back as `not done` with the gaps named. Waiting for CI on the final
+   head is the audit's last step, after everything else is done.
 9. **Hand back.** Summarize: what was built, decisions made, **assumptions taken
    (`--auto`, from `NOTES.md`)**, reviewer verdicts (Fix/Skip with evidence),
    scenario ledgers for scenario-sensitive work, practical risk/blast radius plus
@@ -147,6 +150,7 @@ is skipped; say so.
    unless a named contract needs them (see `/simple` #8).
 7. **CI is green on the final head.** Every required check passed on that SHA.
    A slow scanner still pending (per `/fix-pr-loop`'s cap) is named, not hidden.
+   This is checked at the end: don't stall earlier work waiting for CI.
 8. **Zero unaddressed PR feedback.** After the final push, reviewers have
    settled on the final head and every item from every source in `/fix-pr-loop`'s
    feedback inventory — review threads, review bodies, PR conversation comments

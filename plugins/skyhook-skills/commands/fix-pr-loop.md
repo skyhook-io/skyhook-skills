@@ -13,7 +13,7 @@ This command composes the behavior of:
 Run the PR feedback loop without needing the user to babysit every reviewer pass:
 
 1. Inspect the current branch and PR.
-2. Wait for CI and automated reviewers.
+2. Check CI and wait for automated reviewers (never idle on known work).
 3. Triage every new finding.
 4. Fix valid issues.
 5. Update the PR.
@@ -59,12 +59,27 @@ Report briefly:
 
 If there are dirty tracked files, decide whether they are part of the PR work. If they are unrelated, stop and ask. If they are clearly from the current PR work, continue and include them in the next `/pr`-style update.
 
-## Wait For Reviewers
+## Wait For Reviewers — never idle on known work
 
-At the start of each round, wait until automated feedback has settled.
+**Known work comes before waiting.** If you already have something to fix —
+reviewer findings, a failed check, your own audit gaps — fix it now. Don't wait
+for pending CI or for another bot to finish first. Waiting is only for when you
+have run out of known work.
 
-Use the feedback inventory below; `gh pr checks <pr-number> --watch=false` gives
-the quick CI rollup.
+- **AI reviewers pace the rounds.** They usually finish in minutes. Once you
+  have no other work, wait for them to settle on the head, then triage.
+- **CI: check, don't wait.** Read the check rollup
+  (`gh pr checks <pr-number> --watch=false`) whenever it's cheap: at the start
+  of a round, before pushing. A failed check is a finding; act on it right away.
+  A pending check blocks nothing: triage the reviewers, fix, and push without
+  waiting for a slow test suite to finish.
+- **Batch fixes into one push per round.** Every push restarts CI and the bot
+  reviews, so don't push each fix separately.
+- **Wait for full CI once, at the end.** When no known work remains and the
+  reviewers have settled on the final head, wait for CI on that head as part of
+  the convergence check. A failure there starts another round.
+
+Use the feedback inventory below to read reviewer output.
 
 ### Feedback inventory — check every source
 
@@ -105,13 +120,14 @@ clearly unrelated to the change; a changed caller or config can surface a new
 finding in untouched code.
 
 **The automated reviewers are the primary signal** — the whole point of a round is
-their findings (Cursor Bugbot, CodeRabbit, Claude/Copilot review comments) plus any
-failing build/test CI. Those are what you wait for and triage. Security scanners like
-CodeQL are secondary: useful when they flag something, but not worth stalling a round
-on when they're slow (see the cap below).
+their findings (Cursor Bugbot, CodeRabbit, Claude/Copilot review comments). A
+failing build/test check is also a finding, as soon as you see it, but you don't
+wait for CI to finish mid-loop. Security scanners like CodeQL are secondary:
+useful when they flag something, but not worth stalling on when they're slow (see
+the cap below).
 
-Prefer polling over one long `gh pr checks --watch`: wait for the AI reviewers and
-ordinary build/test CI to settle, then poll known-slow scanners separately.
+Prefer short polls over one long `gh pr checks --watch`, and poll only when you
+have no other work.
 
 Treat these as feedback sources:
 - Failing CI checks.
@@ -131,14 +147,15 @@ with the round rather than waiting; its results, if actionable, get picked up ne
 round. Note it as `CodeQL pending` or `Analyze (go) pending
 (CodeQL)` in the status/summary so the gap is visible.
 
-This cap does **not** apply to AI reviewers or normal build/test CI. Wait for
-Cursor Bugbot, CodeRabbit, Claude/Copilot review comments, and failing build/test
-jobs, or triage their output before declaring the round settled.
+This cap does **not** apply to AI reviewers. Wait for Cursor Bugbot, CodeRabbit,
+and Claude/Copilot review comments to settle, or triage their output, before
+declaring a round settled.
 
-If checks are still pending after the wait timeout, continue only if there are
-already actionable findings — **or if the only laggard is a slow scanner like
-CodeQL** (per the cap above). Otherwise stop and report that review is still
-pending.
+If AI reviewers are still pending after the wait timeout, continue only if you
+have actionable findings or other known work. At the final convergence check,
+build/test CI still pending after the wait timeout means `CI pending on <sha>`:
+report it, don't call the PR converged. A slow scanner like CodeQL is the
+exception, per the cap above.
 
 **Settled on the head, not just quiet.** A reviewer has settled on the current
 head only with evidence tied to that SHA: its check run for the head SHA is
