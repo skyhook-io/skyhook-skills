@@ -80,6 +80,8 @@ others, so each round and the final convergence check read all of them:
 gh api graphql --paginate -f query='query($owner:String!,$repo:String!,$pr:Int!,$endCursor:String){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100,after:$endCursor){pageInfo{hasNextPage endCursor} nodes{id isResolved isOutdated path line comments(first:100){totalCount nodes{databaseId author{login} body createdAt url}}}}}}}' \
   -f owner=<owner> -f repo=<repo> -F pr=<pr-number> \
   --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved|not)'
+# A thread with comments.totalCount > 100: fetch the rest before triaging it
+# (reviewThread node's comments(first:100, after:<cursor>)).
 # Review bodies (summary findings, CHANGES_REQUESTED) and which commit each covered
 gh api repos/<owner>/<repo>/pulls/<pr-number>/reviews --paginate \
   --jq '.[] | {user:.user.login, state, commit_id, submitted_at, body}'
@@ -192,15 +194,18 @@ Use the repo’s existing commands and local guidance. If unsure, inspect `Makef
 
 ## Close Every Item
 
-Every inventory item ends the round with a disposition, visible on the PR:
+Every inventory item ends the round with a disposition in the triage table.
+On the PR, it shows where GitHub supports it:
 
 - **Fixed (bot thread):** push the fix, then resolve the thread:
   `gh api graphql -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{isResolved}}}' -f id=<thread-id>`
 - **Skipped (bot thread):** reply with a one-line reason and the evidence, then
   resolve it. `<comment-id>` is the `databaseId` of the thread's first comment:
   `gh api repos/<owner>/<repo>/pulls/<pr-number>/comments/<comment-id>/replies -F body=@<reply-file>`
-- **Bot conversation comments** (no thread to resolve): the round's triage table
-  records the disposition. Reply on the PR only if the bot expects it.
+- **Bot conversation comments** (no thread to resolve): findings that mirror an
+  inline thread close with that thread (Qodo posts each finding as a thread too).
+  For findings that exist only in a conversation comment, post one short reply
+  per round listing each finding's disposition — not one reply per finding.
 - **Human comments:** never resolve a human's thread. Answer clear factual
   questions; otherwise draft the reply, and list it as open for the user.
 - **Discuss:** leave it open and list it for the user.

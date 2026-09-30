@@ -114,7 +114,8 @@ Generalize — read the directive and adjust which phases run and how.
 ## Definition of done
 A PR is **done** only when every item holds **on the final head SHA** — not on
 an earlier commit that later fixes changed. Mark each item `✓` with its evidence,
-`n/a` with a reason, or `✗`. Any `✗` you can fix is work, not a report.
+`n/a` with a reason, `⏸` when it waits only on a named user decision, or `✗`.
+Any `✗` you can fix is work, not a report.
 Scale it to the task: for a trivial change most items are a one-line `✓` or
 `n/a`. With `no PR` / `local only`, items 7–9 are `n/a` and item 8's inventory
 is skipped; say so.
@@ -122,8 +123,8 @@ is skipped; say so.
 1. **The ask is fully delivered.** Re-read the original request and the plan.
    `✓` means every requirement and plan item is built, or its removal was
    approved by the user (at the plan gate or later). A deferral you chose
-   yourself — including one logged as an `--auto` assumption — is not `✓`: the
-   result is at best `waiting on you`, with the deferral named. No stubs or
+   yourself — including one logged as an `--auto` assumption — is not `✓`: mark
+   it `⏸` and name the deferral for the user to approve or reject. No stubs or
    unmentioned "phase 2".
 2. **The final code was reviewed.** `/review-loop` (self + cross-model when
    nontrivial) covered the final state. Commits after the last review — bot
@@ -166,7 +167,7 @@ when I use it?* "Probably" or "I think so" is a `✗`: go find out.
 
 **Result states** (for the run summary's result line):
 - `done` — every item `✓` or `n/a`.
-- `waiting on you` — everything else done; only named user decisions remain.
+- `waiting on you` — no `✗`, and at least one `⏸` naming the decision needed.
 - `not done` — one or more `✗`, each named with what is missing.
 - `blocked` — a ceiling item or external blocker stopped the run.
 
@@ -226,7 +227,7 @@ headline number inline — same greppable glyph set every run: 🔭 scope · �
 ⚖️ triage · 🔧 fix · ✅ qa · 📤 PR · 🤖 converge/bots · 🏁 done audit · 📋 summary
 (e.g. `### ⚖️ TRIAGE · 5 fix · 7 skip · 1 discuss`).
 
-Close (step 8) with one run-summary ledger spanning the whole chain, so the user
+Close the **Hand back** step with one run-summary ledger spanning the whole chain, so the user
 can audit the autopilot at a glance:
 
 ```
@@ -239,7 +240,7 @@ can audit the autopilot at a glance:
  ✅ qa            tsc ✓ · test ✓ · visual-test skipped
  📤 PR            #<n> opened
  🤖 converge      bugbot 4 → ⚖️ 3 fix · 1 skip → 🔧 3 applied · pushed · CI ✓
- 🏁 done audit    9 ✓ · 1 n/a · 0 ✗ · threads 0 open · product-review ✓ · head a1b2c3d
+ 🏁 done audit    8 ✓ · 1 n/a · 1 ⏸ · 0 ✗ · threads 0 open · product-review ✓ · head a1b2c3d
  result: waiting on you · plan 2 cycles · review 2 rounds · 11 fixed · 7 skipped · 1 open
  assumptions (--auto):
    • <decision you made on your own + why>
@@ -250,7 +251,8 @@ can audit the autopilot at a glance:
 Always include the **triage breakdowns** (your skepticism signal), the **done
 audit** line, the **result line** (`done` · `waiting on you` · `not done` ·
 `blocked`), **assumptions** (in `--auto`), and **open items**. Any `✗` in the
-audit must appear under open items with what is missing. Durations only where
+audit must appear under open items with what is missing, and every `⏸` with
+the decision it needs. Durations only where
 they matter (cross-review, CI waits). **The `✅ qa` line must state visual-test
 explicitly** — ran ⇒ link the screenshot directory as an **absolute path** (or
 `file://`, not relative/`~`, so it linkifies); skipped ⇒ `visual-test: skipped

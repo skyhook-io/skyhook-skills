@@ -29,7 +29,7 @@ Contributor-facing language must sound like a maintainer wrote it: short, direct
 - Build a short **author context** to calibrate review effort and trust, not to judge merit:
   ```bash
   gh api users/<login> --jq '{login,name,company,created_at,public_repos,followers}'
-  gh search prs --repo <owner>/<repo> --author <login> --limit 20 --json number,title,state,url
+  gh search prs --repo <owner>/<repo> --author <login> --limit 200 --json number,title,state,url --jq 'group_by(.state) | map({state:.[0].state, count:length})'
   gh api repos/<owner>/<repo>/collaborators/<login>/permission --jq .permission 2>/dev/null || true
   ```
   Summarize who they are (name, company, confidence), their history in this repo (merged, open, and closed PRs; issues), and review-load signals (first contribution, broad or generated-looking change, vendor or company interest). Don't include private contact details, and keep this context out of public drafts.
