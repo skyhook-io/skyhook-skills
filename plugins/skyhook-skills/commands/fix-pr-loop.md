@@ -288,7 +288,7 @@ Stop and report clearly when:
 - Merge/rebase conflicts occur.
 - A finding requires user/product/design judgment.
 - A required external system is unavailable.
-- CI is still pending after the wait timeout and no actionable findings are available.
+- At the final convergence check, with no known work left, build/test CI is still pending after the wait timeout (report `CI pending on <sha>`). Pending CI mid-loop is never a stop reason.
 - The same issue persists after two fix attempts.
 - Max rounds are reached.
 
