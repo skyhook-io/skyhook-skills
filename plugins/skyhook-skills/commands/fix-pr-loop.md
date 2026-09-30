@@ -249,7 +249,7 @@ After fixes, follow `/pr` discipline:
    - Existing PR branch: `git push --force-with-lease` after amend/rebase, otherwise normal `git push`.
 5. Re-evaluate the PR title/body against the full branch diff.
 6. Update the PR body if verification, scope, or behavior changed — **re-derive the narrative per `/pr`'s description guidance, don't append a fix bullet each round.** The body describes the feature's end state and value, NOT the review journey; keep review-fix trivia ("now requires X evidence", "suppressed Y rows") out of it.
-7. Before updating the PR body, remove local filesystem paths (e.g. `.playwright-mcp/`, `/tmp/`, workspace paths). Replace screenshot artifact paths with uploaded GitHub links or a short description of what was visually verified.
+7. Before updating the PR body, remove local filesystem paths (e.g. `.playwright-mcp/`, `/tmp/`, workspace paths). Replace screenshot artifact paths with uploaded, embedded images (see `/pr`'s "Screenshots and video") or a short description of what was visually verified.
 
 ## Convergence Check
 
