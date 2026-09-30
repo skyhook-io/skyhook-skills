@@ -13,13 +13,15 @@ setting, not by editing commands.
 ## Step 1 — Resolve the reviewer + model
 Pick in this order (first wins):
 1. **Directive in `$ARGUMENTS`** — `codex` / `cursor` (and `use <model>` / a bare
-   model id like `gpt-5.6-high`).
+   model id like `gpt-6.1-sol`).
 2. **Env** — `SKYHOOK_REVIEWER` (`codex|cursor`), `SKYHOOK_REVIEW_MODEL`.
 3. **Config file** — `~/.claude/skyhook-skills.json`, fields `reviewer` + `model`
    (read it: `cat ~/.claude/skyhook-skills.json 2>/dev/null`).
-4. **Default** — `codex`.
+4. **Default** — reviewer `codex`; model per reviewer: codex → **`gpt-6.1-sol`**
+   (the latest Sol tier — Codex has no moving `sol` alias, so bump this id when a
+   newer Sol ships), cursor → `gpt-5.6-high`.
 
-Announce what you resolved, e.g. `### 🔁 CROSS-REVIEW · cursor (gpt-5.6-high)`.
+Announce what you resolved, e.g. `### 🔁 CROSS-REVIEW · codex (gpt-6.1-sol)`.
 
 ## Step 2 — Resolve scope
 Default: branch vs `main` (`git diff main...HEAD` + uncommitted). `--base <ref>` /
@@ -31,12 +33,12 @@ Default: branch vs `main` (`git diff main...HEAD` + uncommitted). `--base <ref>`
 `review`; focus text ⇒ `adversarial-review`):
 ```bash
 SCRIPT="$(ls -t ~/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | head -1)"
-node "$SCRIPT" review --base <ref>                      # or: adversarial-review --base <ref> "focus…"
+node "$SCRIPT" review --base <ref> --model "<model>"    # or: adversarial-review --base <ref> --model "<model>" "focus…"
 ```
-- The companion runs on your **codex config model** (`~/.codex/config.toml`).
-  For review depth, **`gpt-5.6-sol` at `high`+ reasoning effort** is recommended
-  (`gpt-5.6-terra` is the lighter everyday tier). Plain `review` maps to Codex's
-  purpose-built reviewer — don't force `--model` onto it; tune the config default.
+- Always pass `--model` with the resolved model, so the review runs on the
+  latest Sol even when `~/.codex/config.toml` defaults to something lighter.
+  Reasoning effort still comes from the codex config (the companion has no
+  `--effort` on reviews); `high`+ is recommended for review depth.
 
 **cursor** — via the Cursor CLI, pinned to the resolved model:
 ```bash

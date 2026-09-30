@@ -39,12 +39,12 @@ The companion has two review modes — pick by whether you have **focus text**:
   / `--scope auto|working-tree|branch`) and **rejects prose** ("does not support
   custom focus text"):
   ```bash
-  node "$SCRIPT" review --base <ref>
+  node "$SCRIPT" review --base <ref> --model gpt-6.1-sol
   ```
 - **Focused review** — when you want to direct attention to specific areas — uses
   `adversarial-review`, which **does** take trailing focus text plus scope flags:
   ```bash
-  node "$SCRIPT" adversarial-review --base <ref> "Focus on: <areas>. Flag correctness bugs, silent failures, races, logic errors."
+  node "$SCRIPT" adversarial-review --base <ref> --model gpt-6.1-sol "Focus on: <areas>. Flag correctness bugs, silent failures, races, logic errors."
   ```
 
 Map the caller's intent: scope-only ⇒ `review`; any focus/instructions ⇒
@@ -59,10 +59,10 @@ plain `review` only hunts defects. For substantive changes prefer it (or run bot
 implementation of the wrong design is still wrong, and the cross-model voice is
 most valuable challenging direction, not just nitpicking lines.
 
-- **Model:** the companion runs on your codex config model (`~/.codex/config.toml`).
-  For review depth, **`gpt-5.6-sol` at `high`+ reasoning effort** is recommended;
-  set it in config rather than forcing `--model` on the native `review` (that path
-  uses Codex's purpose-built reviewer).
+- **Model:** always pass `--model gpt-6.1-sol`, the latest Sol tier, unless the
+  caller names a different model. Codex has no moving `sol` alias, so bump this
+  id when a newer Sol ships. Reasoning effort comes from `~/.codex/config.toml`
+  (the companion has no `--effort` on reviews); `high`+ is recommended.
 - **Use a 10-minute Bash timeout (`timeout: 600000`)** — the default 2 min will
   kill the review mid-run.
 - This is foreground-only by design, because Step 4 triages the output now. If
