@@ -115,7 +115,60 @@ Don't just push the new commit and stop. Re-evaluate the PR title + body against
 - **Concise ≠ shallow**: cut fluff, incidental detail, and review-fix trivia — but give a nontrivial PR the real motivation + design depth a reviewer needs. Don't reduce a big feature to a handful of bullets.
 - **Be clear**: Someone unfamiliar with the code should understand the change
 - **Be honest**: If something is incomplete or needs follow-up, say so
-- Do not include local filesystem paths in PR descriptions, including screenshot artifact paths. If screenshots matter, upload/attach them to GitHub and link them; otherwise summarize what was visually verified.
+- Do not include local filesystem paths in PR descriptions, including screenshot artifact paths. If screenshots matter, upload them (see below) and embed them; otherwise summarize what was visually verified.
+
+## Screenshots and video
+
+UI changes should show the result: a few before/after screenshots, or a short
+video for a flow. Upload them to GitHub and embed them in the PR body; never link
+a local path in the PR.
+
+**A few images, not a gallery.** Pick the handful that show the change — the new
+surface, the key state, the before/after that matters. A PR description is not a
+review packet: the full capture set, scenario-by-scenario evidence, and anything
+sensitive go in `/review-packet` (local HTML, a Claude artifact, or a
+team-shared site), which can hold internal detail. Link it from your summary to
+the user, not from the PR, unless it is safe to share with everyone who can see
+the repo.
+
+**Check every capture before uploading.** Treat uploads as permanent. Anyone who
+can see the repo can see them. Look at each image in full and leave out anything
+with secrets, tokens, customer or private data, real cluster or account names
+from non-demo environments, or unrelated desktop content. Prefer captures from
+demo or fixture data. If a capture isn't safe, say so in the PR instead of
+uploading it.
+
+**New PR — `gh pr create --attach`** (gh 2.100+). Reference files in the body by
+relative path, and gh uploads them and rewrites the references; files the body
+doesn't mention are appended at the end:
+
+```bash
+gh pr create --title "..." --body-file body.md \
+  --attach './before.png#Before: empty state' --attach './after.png#After: empty state'
+```
+
+**Existing PR or a comment — upload, then embed.** `gh pr edit`, `gh pr comment`,
+and the issue commands don't have `--attach`, so upload each file and use the
+returned URL:
+
+```bash
+repo_id=$(gh api repos/<owner>/<repo> --jq .id)
+url=$(curl -sS --fail-with-body -X POST \
+  "https://uploads.github.com/user-attachments/assets?name=after.png&content_type=image/png&repository_id=$repo_id" \
+  -H "Authorization: Bearer $(gh auth token)" -H "Accept: application/json" \
+  --data-binary @after.png | jq -er '.url // empty') && echo "$url"
+```
+
+Embed the URL only when that command succeeds. On an HTTP error, curl prints
+the status (for example, `returned error: 422`) and `jq -e` fails because the
+response has no `url`, so nothing usable is echoed. The `url` embeds as `![After: empty state](<url>)`; a video URL goes
+on its own line and renders as a player. Images and video only: other types fail
+with a 422 (the file extension must also match `content_type`), and a 404 means a
+wrong repo ID or no push access. The raw asset URL isn't
+publicly fetchable; GitHub serves the image to anyone who can view the PR when
+it renders the body, on public and private repos alike. This endpoint isn't
+documented by GitHub, so if it fails, state that the screenshots couldn't be
+attached rather than falling back to a local path.
 
 ## Example Flow
 ```
