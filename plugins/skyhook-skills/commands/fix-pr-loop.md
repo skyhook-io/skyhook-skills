@@ -202,6 +202,9 @@ On the PR, it shows where GitHub supports it:
 - **Skipped (bot thread):** reply with a one-line reason and the evidence, then
   resolve it. `<comment-id>` is the `databaseId` of the thread's first comment:
   `gh api repos/<owner>/<repo>/pulls/<pr-number>/comments/<comment-id>/replies -F body=@<reply-file>`
+  This endpoint can return a transient 404 for a comment that exists; retry
+  once. If it still fails, reply with the GraphQL mutation
+  `addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:<thread-id>, body:...})`.
 - **Bot conversation comments** (no thread to resolve): findings that mirror an
   inline thread close with that thread (Qodo posts each finding as a thread too).
   For findings that exist only in a conversation comment, post one short reply
