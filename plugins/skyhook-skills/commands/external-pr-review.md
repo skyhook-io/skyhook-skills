@@ -25,6 +25,14 @@ Contributor-facing language must sound like a maintainer wrote it: short, direct
 - Read the PR description, linked issue, discussion, prior reviews, and relevant commits. Establish the actual user problem, motivation, intended behavior, and constraints. If context is missing, investigate what is available before proposing a focused question for the author.
 - Inspect repository guidance and relevant architecture or design docs. Judge whether this is the right behavior and approach before polishing implementation.
 - Resolve the PR's actual base and head SHA, contributor branch, and current CI results. Review that diff in an isolated checkout when needed; preserve unrelated local work. Treat contributor code and scripts as untrusted when choosing how to run verification.
+- Check whether current `main` already fixes or conflicts with the change (recent commits, merged or open PRs touching the same area). If the PR fixes a regression, say what introduced it, with `clear`, `likely`, or `unknown` confidence: confirm a candidate from `git log -S`/`git blame` by diffing it against its parent, and never infer it from a commit subject, date, or author.
+- Build a short **author context** to calibrate review effort and trust, not to judge merit:
+  ```bash
+  gh api users/<login> --jq '{login,name,company,created_at,public_repos,followers}'
+  gh search prs --repo <owner>/<repo> --author <login> --limit 20 --json number,title,state,url
+  gh api repos/<owner>/<repo>/collaborators/<login>/permission --jq .permission 2>/dev/null || true
+  ```
+  Summarize who they are (name, company, confidence), their history in this repo (merged, open, and closed PRs; issues), and review-load signals (first contribution, broad or generated-looking change, vendor or company interest). Don't include private contact details, and keep this context out of public drafts.
 
 ## Check product scope and ownership
 
@@ -74,7 +82,7 @@ Do not defer a serious introduced bug merely to merge quickly. Do not make the c
 
 ## Deliver to the maintainer
 
-Start the review delivered to the maintainer with the high-level assessment above: the core issue and its validity, the premise, the chosen direction and why it is or is not good, and whether a credible alternative would be better. Make this reasoning visible in the opening paragraphs; do not bury it in a linked report or reduce it to “the bug is real and the approach fits.” Keep the depth proportionate to the PR.
+Open with a one-line `Author context:` summary (for example, `@login · 3 merged PRs here · works at Acme · first change to this area`), then the high-level assessment above: the core issue and its validity, the premise, the chosen direction and why it is or is not good, and whether a credible alternative would be better. Make this reasoning visible in the opening paragraphs; do not bury it in a linked report or reduce it to “the bug is real and the approach fits.” Keep the depth proportionate to the PR.
 
 Then give the merge recommendation: ready to merge, ready after small maintainer fixes, needs a focused author change, or needs a product/design decision. Follow with:
 

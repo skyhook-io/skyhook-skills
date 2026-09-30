@@ -80,10 +80,10 @@ For each finding, cite `file:line`, name the smell, show the detector evidence, 
 **Detector:** A new abstract type, base class, or generic interface has exactly one concrete implementation.
 **Action:** Collapse to the concrete type.
 
-### 8. Defensive fallback for nonexistent legacy
-**Detector:** Code like `resp?.field ?? resp` or `if oldShape { ... } else { newShape }` with no versioned producer that emits the old shape in the current repo.
-**Action:** Delete the fallback. Trust the producer's type.
-**Don't flag** if: the codebase actually has multiple producers emitting different shapes (e.g., during a documented migration).
+### 8. Kept old path without a named contract
+**Detector:** A fix or refactor that keeps the old path alongside the new one — an alias, shim, fallback, dual read, deprecated wrapper, or code like `resp?.field ?? resp` / `if oldShape { ... } else { newShape }`.
+**Action:** Delete the old path. Keeping it requires a **named contract** that still needs it: a public API, CLI, config, or data format; a tagged upgrade path; a security boundary; or observed production state still in the old shape. Tests that exercise the old path are not a contract. If you can't name one, delete it; if unsure whether one exists, ask before keeping it.
+**Don't flag** if: the contract is named in the code or PR (for example, a documented migration with multiple producers still emitting the old shape).
 
 ### 9. Phantom dependency / disconnected pipeline
 **Detector:** New imports/code paths that aren't reached from any entry point. Setup that no runtime caller invokes.

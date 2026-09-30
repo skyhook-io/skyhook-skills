@@ -63,13 +63,44 @@ If there are dirty tracked files, decide whether they are part of the PR work. I
 
 At the start of each round, wait until automated feedback has settled.
 
-Use:
+Use the feedback inventory below; `gh pr checks <pr-number> --watch=false` gives
+the quick CI rollup.
+
+### Feedback inventory — check every source
+
+Bots spread findings across different GitHub surfaces. Qodo posts its review as
+PR conversation comments and inline threads; Cursor Bugbot uses inline threads
+and a check run; CodeRabbit posts reviews. Checking one surface misses the
+others, so each round and the final convergence check read all of them:
 
 ```bash
-gh pr checks <pr-number> --watch=false
-gh pr view <pr-number> --json comments,reviews,latestReviews,headRefOid
-gh api repos/:owner/:repo/pulls/<pr-number>/comments
+# Unresolved review threads, the source of truth for "open inline comments".
+# --paginate walks every page of threads; read every reply in a thread, since a
+# human can reply between a bot's finding and its acknowledgment.
+gh api graphql --paginate -f query='query($owner:String!,$repo:String!,$pr:Int!,$endCursor:String){repository(owner:$owner,name:$repo){pullRequest(number:$pr){reviewThreads(first:100,after:$endCursor){pageInfo{hasNextPage endCursor} nodes{id isResolved isOutdated path line comments(first:100){totalCount nodes{databaseId author{login} body createdAt url}}}}}}}' \
+  -f owner=<owner> -f repo=<repo> -F pr=<pr-number> \
+  --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved|not)'
+# Review bodies (summary findings, CHANGES_REQUESTED) and which commit each covered
+gh api repos/<owner>/<repo>/pulls/<pr-number>/reviews --paginate \
+  --jq '.[] | {user:.user.login, state, commit_id, submitted_at, body}'
+# PR conversation comments; compare updated_at, since some bots edit one comment in place
+gh api repos/<owner>/<repo>/issues/<pr-number>/comments --paginate \
+  --jq '.[] | {user:.user.login, created_at, updated_at, body}'
+# Check runs on the head SHA, including bot output and annotation counts
+gh api repos/<owner>/<repo>/commits/<head-sha>/check-runs --paginate \
+  --jq '.check_runs[] | {id, name, status, conclusion, head_sha, url:.html_url, title:.output.title, summary:.output.summary, text:.output.text, annotations:.output.annotations_count}'
+# For any check run with annotations > 0 (warnings can sit on passing checks)
+gh api repos/<owner>/<repo>/check-runs/<check-run-id>/annotations --paginate
 ```
+
+An outdated thread (`isOutdated`) can still be unaddressed: the line moved, but
+the problem may remain. Triage it like any other.
+
+Triage check annotations by relevance to the change. Runner notices (for
+example, image migration notices) are not PR feedback. A warning in code the PR
+didn't touch is pre-existing only if the base branch's run shows it too or it is
+clearly unrelated to the change; a changed caller or config can surface a new
+finding in untouched code.
 
 **The automated reviewers are the primary signal** — the whole point of a round is
 their findings (Cursor Bugbot, CodeRabbit, Claude/Copilot review comments) plus any
@@ -106,6 +137,18 @@ If checks are still pending after the wait timeout, continue only if there are
 already actionable findings — **or if the only laggard is a slow scanner like
 CodeQL** (per the cap above). Otherwise stop and report that review is still
 pending.
+
+**Settled on the head, not just quiet.** A reviewer has settled on the current
+head only with evidence tied to that SHA: its check run for the head SHA is
+complete, its latest review's `commit_id` is the head, or it posted a finished
+review result that names the head commit (Qodo, for example, notes the commit a
+review covers). A progress note ("reviewing <sha>…") is not a result, even when
+it names the head. A comment that is merely newer than the push is not enough
+either: it can be output from a run that started before the push. Without SHA-tied evidence by the
+wait timeout, report that reviewer as `pending on <sha>`, not settled. A bot that
+doesn't re-review every push still leaves its earlier findings open until you
+close them. After every push, the previous round's "no findings" no longer
+counts.
 
 ## Triage Findings
 
@@ -147,6 +190,27 @@ For all `Fix` items:
 
 Use the repo’s existing commands and local guidance. If unsure, inspect `Makefile`, package scripts, and nearby tests.
 
+## Close Every Item
+
+Every inventory item ends the round with a disposition, visible on the PR:
+
+- **Fixed (bot thread):** push the fix, then resolve the thread:
+  `gh api graphql -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{isResolved}}}' -f id=<thread-id>`
+- **Skipped (bot thread):** reply with a one-line reason and the evidence, then
+  resolve it. `<comment-id>` is the `databaseId` of the thread's first comment:
+  `gh api repos/<owner>/<repo>/pulls/<pr-number>/comments/<comment-id>/replies -F body=@<reply-file>`
+- **Bot conversation comments** (no thread to resolve): the round's triage table
+  records the disposition. Reply on the PR only if the bot expects it.
+- **Human comments:** never resolve a human's thread. Answer clear factual
+  questions; otherwise draft the reply, and list it as open for the user.
+- **Discuss:** leave it open and list it for the user.
+
+This covers PRs this workflow owns. On someone else's PR, draft replies and ask
+before posting or resolving anything.
+
+Write reply text to a file with a quoted heredoc (`cat > <reply-file> <<'EOF'`)
+and pass it as `-F body=@<reply-file>`, so backticks, `$`, and quotes survive.
+
 ## Update PR
 
 After fixes, follow `/pr` discipline:
@@ -166,12 +230,18 @@ After fixes, follow `/pr` discipline:
 
 After pushing, start the next round.
 
-Converged means:
-- All required checks pass or are intentionally skipped.
-- Latest automated reviewer pass has no open actionable findings.
+Converged means, **all checked on the final head SHA after the last push**:
+- All required checks pass or are intentionally skipped (slow scanners named).
+- Every AI reviewer has settled on that head (see "Settled on the head").
+- The feedback inventory shows **zero unresolved review threads** except ones
+  explicitly listed for the user, and every review body and conversation comment
+  has a disposition.
 - No human reviewer has unresolved blocking feedback.
 - Branch has no tracked local changes.
 - PR description still matches the full branch diff.
+
+If the last push was a fix, you are not converged yet: wait for reviewers to
+settle on it and read the inventory again.
 
 When converged, report:
 
@@ -181,7 +251,8 @@ PR loop converged.
 - Rounds: <n>
 - Final commit: <sha>
 - Checks: <summary>
-- Reviewers: <summary>
+- Reviewers: <summary, each settled on the final head>
+- Threads: <n resolved this run · 0 open, or the open ones listed for the user>
 - Validation run: <commands>
 ```
 
