@@ -119,16 +119,24 @@ Don't just push the new commit and stop. Re-evaluate the PR title + body against
 
 ## Screenshots and video
 
-UI changes should show the result: before/after screenshots, or a short video
-for a flow. Upload them to GitHub and embed them in the PR body; never link a
-local path.
+UI changes should show the result: a few before/after screenshots, or a short
+video for a flow. Upload them to GitHub and embed them in the PR body; never link
+a local path in the PR.
+
+**A few images, not a gallery.** Pick the handful that show the change — the new
+surface, the key state, the before/after that matters. A PR description is not a
+review packet: the full capture set, scenario-by-scenario evidence, and anything
+sensitive go in `/review-packet` (local HTML, a Claude artifact, or a
+team-shared site), which can hold internal detail. Link it from your summary to
+the user, not from the PR, unless it is safe to share with everyone who can see
+the repo.
 
 **Check every capture before uploading.** Treat uploads as permanent. Anyone who
-can see the repo can see them. Look at each
-image in full and leave out anything with secrets, tokens, customer or private
-data, real cluster or account names from non-demo environments, or unrelated
-desktop content. Prefer captures from demo or fixture data. If a capture isn't
-safe, say so in the PR instead of uploading it.
+can see the repo can see them. Look at each image in full and leave out anything
+with secrets, tokens, customer or private data, real cluster or account names
+from non-demo environments, or unrelated desktop content. Prefer captures from
+demo or fixture data. If a capture isn't safe, say so in the PR instead of
+uploading it.
 
 **New PR — `gh pr create --attach`** (gh 2.100+). Reference files in the body by
 relative path, and gh uploads them and rewrites the references; files the body

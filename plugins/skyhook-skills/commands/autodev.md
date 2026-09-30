@@ -158,10 +158,12 @@ is skipped; say so.
    closed: fixed, answered with a reason, or listed as a decision for the user.
    An unresolved bot thread that still looks open is not done.
 9. **The PR explains the final state.** Title and body match the full diff (per
-   `/pr`); UI changes show the result — before/after images or a short video,
-   uploaded per `/pr`'s "Screenshots and video" — or say why no capture was safe
-   to upload, never a local path; the branch merges cleanly into its base and
-   contains no unrelated files.
+   `/pr`); UI changes show the result — a few before/after images or a short
+   video, uploaded per `/pr`'s "Screenshots and video" — or say why no capture
+   was safe to upload. The PR contains no local paths and nothing sensitive;
+   local paths belong in your hand-back summary, and the full evidence set in a
+   review packet. The branch merges cleanly into its base and contains no
+   unrelated files.
 10. **Loose ends are visible.** Deferred work, follow-ups, and open decisions
     appear in the hand-back, not only in commit messages or `NOTES.md`.
 
