@@ -49,8 +49,9 @@ assume a capability is cloud-only or invent a product restriction.
 
 Scale the work to the uncertainty. If the initial investigation is enough, proceed directly to the private plan. Otherwise:
 
+- **Check current `main` first.** The report may describe an older release: look for a fix or change since the reported version (recent commits, merged PRs, linked issues) and whether current `main` still behaves that way. If it's already fixed, the triage is "fixed in <commit/PR>, ships in <release or next release>", with the evidence.
 - Establish expected versus observed behavior, affected versions and configuration where known, reproduction steps, scope, and user impact. For a feature request, identify the underlying task and assess whether existing functionality already serves it.
-- Read relevant repository instructions, docs, implementation paths, related issues, and tests. Trace the behavior instead of assuming the reporter's diagnosis is correct. Check the same pattern at related call sites and reuse existing concepts or helpers in proposed fixes.
+- Read relevant repository instructions, docs, implementation paths, related issues, and tests. Trace the behavior instead of assuming the reporter's diagnosis is correct. Check the same pattern at related call sites and reuse existing concepts or helpers in proposed fixes. For a regression, say what introduced it — commit or PR, and when — with `clear`, `likely`, or `unknown` confidence. `git log -S`/`-G` and `git blame` find candidates; confirm by diffing the candidate against its parent and checking that it changed the behavior in question. Otherwise say `unknown` and what evidence is missing; never infer it from a commit subject, date, or author.
 - Reproduce or run targeted verification when it will resolve a meaningful uncertainty. State what was observed, what follows from code inspection, and what remains hypothetical. Do not equate "not reproduced" with "invalid." Avoid executing untrusted attachments or scripts blindly.
 - Consider a workaround, a smaller fix, an alternative design, deferral, or declining the request when warranted. Research external behavior only if it would materially settle a technical or product question.
 - Surface product and architecture decisions early. Use the project's documented scope; ask for the maintainer's direction when ownership or product fit is unresolved. Do not invent a public promise or product boundary.
@@ -62,7 +63,7 @@ Do not expand a clear small issue into an exhaustive audit. If progress depends 
 Provide a private recommendation that helps the maintainer choose the next step:
 
 - **Assessment:** validity and confidence, scope and impact, whether the proposed feature is needed and fits, and any open product decision.
-- **Evidence:** what was checked, relevant code or discussion links, reproduction/test results, and remaining uncertainty.
+- **Evidence:** what was checked, relevant code or discussion links, reproduction/test results, whether current `main` is still affected, what introduced a regression (with confidence), and remaining uncertainty.
 - **Proposed plan:** the likely fix or approach, rough effort when supportable, alternatives and their tradeoffs, and additional verification needed before calling it fixed. This plan is for the maintainer, never the reporter-facing response.
 - **Next decision:** recommend fix now, request focused information, defer/track, discuss product direction, or decline with a reason. Make clear what needs the maintainer's judgment.
 - **Public draft:** the exact suggested acknowledgment or substantive reply, separately labeled. If an acknowledgment draft was already shown, include the current proposed text so it remains reviewable; if already sent with approval, report that and draft another reply only when it adds value.

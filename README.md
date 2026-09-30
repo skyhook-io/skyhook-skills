@@ -7,7 +7,7 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 ## What you get
 
 **The loop**
-- **`/autodev [--auto] <task>`** — full autopilot: plan → implement → review → PR → converge, end-to-end, stopping only at real decisions. Default mode gates on the plan before coding; `--auto` makes product calls itself (logging assumptions) and stops only for an irreversible-action ceiling.
+- **`/autodev [--auto] <task>`** — full autopilot: plan → implement → review → PR → converge, end-to-end, stopping only at real decisions. Default mode gates on the plan before coding; `--auto` makes product calls itself (logging assumptions) and stops only for an irreversible-action ceiling. A run ends with a **done audit** against an explicit definition of done on the PR's final commit — ask fully delivered, final code reviewed, `/product-review` passed for user-visible work, exercised as a user, CI green, zero unaddressed PR comments — and reports `done`, `waiting on you`, `not done`, or `blocked`.
 - **`/plan-loop`** — draft a plan, cross-review it with the *other* model, triage the critique skeptically, iterate, gate.
 - **`/review-loop`** — proactively review the current code (self + cross-model), triage, fix, update the PR — loop until clean.
 
@@ -26,9 +26,10 @@ Both default to review and recommendations; posting and contributor-branch chang
 - **`/cross-review`** — runs a review by the configured secondary model — **Codex or Cursor** — prints it verbatim, then triages it skeptically (never auto-accepts). Pick the reviewer via `~/.claude/skyhook-skills.json` (`{"reviewer":"codex|cursor","model":"…"}`), the `SKYHOOK_REVIEWER` env var, or a `consult cursor` / `consult codex` directive. `/codex-review` forces Codex.
 
 **PR**
-- **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged).
+- **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged: reads every feedback surface — review threads, review bodies, PR comments bots edit in place, check-run output — waits for reviewers to settle on the final commit, and resolves or answers every thread).
 
 **Hand it over**
+- **`/handoff [work order] <task>`** — writes a self-contained prompt for a fresh agent (a new Claude or Codex session, a teammate, a delegated worker) and copies it to the clipboard. Defaults to a discussion prompt that asks the receiver to review independently first; `work order` produces a spec with exact proof and an explicit stop-and-report exit for every hard rule.
 - **`/review-packet [pr|set|design|research] [focus]`** — packages work for guided review: a document that leads with the decisions the reviewer has to make and puts the evidence for every claim right beside it. Claude publishes an artifact; Codex publishes through Sites. Ask for local-only output to get self-contained HTML with embedded evidence (no PDF). If publishing is unavailable, the skill hands over HTML and explains the gap. Cursor defaults to local HTML. Built for large PRs, PR *sets*, rendered UI, and design or research proposals — the cases where review otherwise means scrolling a diff and taking your word for it.
 
 **Research**
@@ -78,8 +79,8 @@ not create two copies.
 
 The Claude plugin exposes the full command catalog. Codex and Cursor expose the
 companion entry points `autodev`, `plan-loop`, `review-loop`, `product-review`,
-`claude-review`, `competitive-research`, `review-packet`, `external-pr-review`,
-and `external-issue-triage`; those skills use the shared
+`claude-review`, `competitive-research`, `review-packet`, `handoff`,
+`external-pr-review`, and `external-issue-triage`; those skills use the shared
 canonical commands internally.
 
 | Agent | Distribution | Invoke a skill |

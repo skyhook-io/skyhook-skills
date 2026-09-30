@@ -19,9 +19,10 @@ translations** wherever it names a Claude command:
 | `/plan-loop` | the **plan-loop** skill |
 | `/review-loop` | the **review-loop** skill |
 | `/cross-review` (cross-model) | the **claude-review** skill — from Codex the secondary reviewer stays Claude (it reviews your work) |
+| `/competitive-research` (optional, when warranted) | the **competitive-research** skill |
 | `/qa` | read the repo's `.claude/commands/qa.md` and follow it (Codex reads it as a file) |
 | `/pr` (verify + open/update PR) | inline via `git` + `gh`: run `/qa`, then create/update the PR (stage relevant files only, `--force-with-lease`). **Write the body per `~/.codex/skills/skyhook-skills-commands/pr.md`** — depth proportional to the change, lead with motivation + design, **no review-fix trivia, re-derive don't append**. (Codex especially tends to dump 4 terse bullets — don't.) |
-| `/fix-pr-loop` (converge) | inline the reactive loop: wait for CI + bots (`gh pr checks`, `gh pr view --json comments,reviews`), triage each finding skeptically, fix the real ones, push, repeat until settled or capped. **The AI reviewers + failing build/test CI are the primary signal** — wait for those, triage them. **Don't block on CodeQL >~2 min** — it's a secondary scanner; if it's the only laggard, proceed and note `CodeQL pending` |
+| `/fix-pr-loop` (converge) | follow `~/.codex/skills/skyhook-skills-commands/fix-pr-loop.md` inline: wait for the AI reviewers (check CI as you go and act on failures, but don't wait for slow checks while known work remains; wait for full CI once, at the end), read its **full feedback inventory** (unresolved review threads, review bodies, PR conversation comments incl. edited-in-place bot comments, check-run output), triage each finding skeptically, fix the real ones, push, **close every item** (resolve fixed bot threads, reply + resolve skipped ones), repeat until reviewers have settled on the final head or the loop caps. **The AI reviewers + failing build/test CI are the primary signal** — wait for those, triage them. **Don't block on CodeQL >~2 min** — it's a secondary scanner; if it's the only laggard, proceed and note `CodeQL pending` |
 | `/triage-findings`, `/fix-findings`, `/simple` | no such commands — perform the discipline inline (read the real code, never auto-accept, cite evidence on skips, don't ping-pong, fix confirmed issues) |
 
 **Non-negotiable invariants** (don't let translation lose them):
@@ -52,11 +53,21 @@ translations** wherever it names a Claude command:
   run, and **honor free-text steering in the invocation** (e.g. `consult claude`,
   `no PR`, `plan only`, `quick`, `focus on <area>`) as an override, per the
   canonical file's directives section.
-- **UI / product-facing features:** lean toward running visual-test +
-  product-review in the review phase, **before opening the PR** (recommended, not
-  forced — a skip is fine when small/non-visual, but must be stated). **State
-  visual-test and product-review status in the hand-back** (ran/skipped + why),
-  never silent. Don't open the PR blind to its own rendered result.
+- **User-visible changes run the product-review skill** before the PR, and
+  again on anything that changed after it ran. It is part of the Definition of
+  done; non-user-visible work records `product-review: n/a (<why>)`. Run
+  visual-test when the rendered result is worth capturing, and state its status.
+- **Finish with the done audit.** Before handing back, check every item of the
+  canonical file's **Definition of done** against the final head SHA with
+  evidence (ask delivered, final code reviewed, product-review, works when used,
+  tests/docs, no leftovers, CI green, zero unaddressed PR feedback, PR body
+  accurate, loose ends visible). Fix what you can, re-audit (cap 2), and report
+  `done` · `waiting on you` · `not done` · `blocked`. Apply its honest-answer
+  test: if the user's likely next question would expose a gap, you are not done.
+- **Delegated work stays yours:** follow the canonical file's "Delegating to
+  workers" rules — complete work orders, an exit for every hard rule, verify the
+  diff not the report, one order per fresh session, one writer at a time. Never
+  pass a gate by gaming it yourself.
 - **Consider a review packet** before handing back, when the work would be hard to
   judge from the PR alone — large or multi-PR, a rendered surface, captured output
   worth showing, or open product calls. Judgement call, not a step; say if skipped.

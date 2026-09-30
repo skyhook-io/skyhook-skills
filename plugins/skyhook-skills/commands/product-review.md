@@ -24,6 +24,10 @@ lead with premise/journey problems, not pixels.
   UI — lean on `/visual-test` for live screens.
 - **Gated by relevance:** product / UI-facing / user-perceived work only. Pure
   backend / refactor / infra → skip and say so. Judge the *actual* change.
+- **Scaled to the change:** a new surface or journey gets the full passes below.
+  A small user-visible change — a wording fix, one new state, one error message —
+  gets a **focused pass**: the affected copy, the one or two journeys it touches,
+  and their states (empty, error, loading, success). Say which mode you ran.
 
 ## How to think — force the mindset, don't go with the flow
 Take a skeptical product+design lead's voice. Question the premise and the chosen
