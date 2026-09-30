@@ -196,6 +196,18 @@ subagent or `codex exec`), you stay responsible for the result:
   still running against the same files (`pgrep -fl "codex exec"`, running
   subagents). A worker that keeps looping can overwrite your fixes.
 
+## Optional tools — use when warranted
+Beyond the chain's phases, reach for these when they would change a decision,
+not by default:
+
+- **`/competitive-research`** — when a design, UX, or implementation choice
+  depends on how comparable products handle it: a new surface, an unfamiliar
+  domain, a convention you'd otherwise guess at, or a positioning question.
+  Scope it to the specific decision. It fits at planning, but also mid-run when
+  a question comes up that planning didn't anticipate. Skip it for
+  well-understood, mechanical, or internal-pattern work. If it ran, note what it
+  changed in the hand-back.
+
 ## Cross-cutting rules (inherited, restated)
 - **Triage every reviewer — self, Codex, bots — skeptically. Never auto-accept;
   cite evidence on Skips.** Don't ping-pong with reviewers (`/simple`'s rule).

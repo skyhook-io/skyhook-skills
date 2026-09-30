@@ -27,7 +27,10 @@ comparable tools/competitors solve this, established best practices, relevant
 docs/standards/prior art. Worth it for novel, ambiguous, or convention-heavy
 problems (a new surface, an unfamiliar domain, "is there a standard way to do
 this?"); skip for well-understood, mechanical, or internal-pattern work. Don't
-research by reflex — but don't skip it just because the user didn't ask.
+research by reflex — but don't skip it just because the user didn't ask. A quick
+search is often enough; when the decision hinges on how comparable products
+actually behave (their source, defaults, UX, or positioning), run
+`/competitive-research` scoped to that decision.
 
 Then read the relevant code first; anchor every claim in evidence. Follow your
 plan conventions:
