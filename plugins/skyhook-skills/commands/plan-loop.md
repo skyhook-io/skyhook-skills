@@ -53,14 +53,15 @@ avoids argv-quoting issues with backticks / `$` in the plan:
 
 ```bash
 # Plan text already written to plan.md
-codex exec "Critique this implementation plan as a skeptical senior engineer. FIRST challenge the premise: is this the right thing to build and the right approach, or is there a fundamentally simpler/different design? Then find flawed assumptions, missing steps, hidden complexity, and risks. Don't just check internal consistency — question whether the whole direction is correct. Be specific; challenge it, don't rewrite it. The plan is in the <stdin> block." < plan.md
+codex exec -m gpt-6.1-sol "Critique this implementation plan as a skeptical senior engineer. FIRST challenge the premise: is this the right thing to build and the right approach, or is there a fundamentally simpler/different design? Then find flawed assumptions, missing steps, hidden complexity, and risks. Don't just check internal consistency — question whether the whole direction is correct. Be specific; challenge it, don't rewrite it. The plan is in the <stdin> block." < plan.md
 ```
 
-(Prompt-only, no plan file? Still redirect: `codex exec "…" < /dev/null`.)
+(Prompt-only, no plan file? Still redirect: `codex exec -m gpt-6.1-sol "…" < /dev/null`.)
 
-`codex exec` runs on your codex config model. Plan critique is deep reasoning —
-**`gpt-5.6-sol` at `high`+ effort** is recommended (set in `~/.codex/config.toml`,
-or pin per-call with `codex exec -m gpt-5.6-sol …`).
+Always pin `-m gpt-6.1-sol`, the latest Sol tier. Codex has no moving `sol` alias,
+so bump this id when a newer Sol ships. Plan critique is deep reasoning, so
+`high`+ effort is recommended: set it in `~/.codex/config.toml` or per call with
+`-c model_reasoning_effort=high`.
 
 (Trivial plans skip this. This is Claude→Codex, which has no export gate.)
 
