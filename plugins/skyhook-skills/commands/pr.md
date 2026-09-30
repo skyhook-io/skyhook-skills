@@ -145,13 +145,15 @@ returned URL:
 
 ```bash
 repo_id=$(gh api repos/<owner>/<repo> --jq .id)
-curl -s -X POST \
+url=$(curl -sS --fail-with-body -X POST \
   "https://uploads.github.com/user-attachments/assets?name=after.png&content_type=image/png&repository_id=$repo_id" \
   -H "Authorization: Bearer $(gh auth token)" -H "Accept: application/json" \
-  --data-binary @after.png | jq -r .url
+  --data-binary @after.png | jq -er '.url // empty') && echo "$url"
 ```
 
-The response's `url` embeds as `![After: empty state](<url>)`; a video URL goes
+Embed the URL only when that command succeeds. On an HTTP error, curl prints
+the status (for example, `returned error: 422`) and `jq -e` fails because the
+response has no `url`, so nothing usable is echoed. The `url` embeds as `![After: empty state](<url>)`; a video URL goes
 on its own line and renders as a player. Images and video only: other types fail
 with a 422 (the file extension must also match `content_type`), and a 404 means a
 wrong repo ID or no push access. The raw asset URL isn't
