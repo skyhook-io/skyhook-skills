@@ -36,6 +36,9 @@ Both default to review and recommendations; posting and contributor-branch chang
 - **`/competitive-research [implementation|product|positioning|hybrid] [focus]`** — investigates how comparable products handle the active decision using primary evidence: OSS source and tests for implementation details, official product material for UX/features, or current first-party pages for positioning. Compares the tradeoffs with the current approach and recommends what to keep, adopt, hybridize, or defer.
 
 **Utilities**
+- **`/retro`** — session retrospective: finds the friction in this session (wrong approaches, repeated corrections, permission prompts, missing context) and proposes exact instruction, settings, command, and doc changes, applying only the ones you approve.
+- **`/gpra`** — rebase the current branch over the remote default branch with `--autostash`; never resolves conflicts on its own and force-pushes (`--force-with-lease`) only after you confirm.
+- **`/diagram`** — draws a diagram as an Excalidraw file and exports it to PNG.
 - **`/housekeeping`** — read-only audit of a dev machine's disk, caches, stale tools, and services; triages findings into reclaimable / worth-reviewing / leave-alone and never mutates anything without explicit approval.
 
 Cross-cutting: **never auto-accept a reviewer** (your own, the cross-model pass, or PR bots) — every finding is triaged with evidence; cross-review only when nontrivial; every loop caps and reports; review at altitude (a clean implementation of the wrong thing is still wrong).
@@ -80,7 +83,7 @@ not create two copies.
 The Claude plugin exposes the full command catalog. Codex and Cursor expose the
 companion entry points `autodev`, `plan-loop`, `review-loop`, `product-review`,
 `claude-review`, `competitive-research`, `review-packet`, `handoff`,
-`external-pr-review`, and `external-issue-triage`; those skills use the shared
+`external-pr-review`, `external-issue-triage`, `retro`, `gpra`, and `diagram`; those skills use the shared
 canonical commands internally.
 
 | Agent | Distribution | Invoke a skill |
