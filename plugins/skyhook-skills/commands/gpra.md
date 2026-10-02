@@ -2,7 +2,7 @@
 
 Perform a "git pull rebase autostash" operation - rebase my current work over the remote default branch.
 
-Resolve the default branch first: refresh it from the remote with `git remote set-head origin --auto` (a local `origin/HEAD` goes stale if the remote renames its default branch), then read `git symbolic-ref --short refs/remotes/origin/HEAD` (e.g. `origin/main`); below, `<default>` is that branch name without `origin/`. Fall back to `main` if it can't be resolved.
+Resolve the default branch first by asking the remote: `git ls-remote --symref origin HEAD` prints `ref: refs/heads/<default>	HEAD`. Below, `<default>` is that branch name. Don't trust a local `origin/HEAD`, which goes stale when the remote renames its default branch. Fall back to `main` only if the remote can't be reached.
 
 ## Instructions
 
