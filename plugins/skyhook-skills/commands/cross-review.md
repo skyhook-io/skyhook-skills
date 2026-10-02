@@ -51,6 +51,10 @@ cursor-agent -p "You are doing a READ-ONLY code review. Inspect <SCOPE> (e.g. ru
   it read files + run `git` headless; the prompt keeps it read-only.
 - If the reviewer errors (not installed / not logged in / no diff), surface it
   verbatim and stop — don't fabricate findings.
+- If `--base` dies with `spawnSync git ENOBUFS`, the diff includes binary files
+  (images, fonts) that overflow the subprocess buffer. Narrow the diff to text
+  files, or skip git scoping with `node "$SCRIPT" task "<prompt naming the files to
+  review>"` so Codex reads the paths itself.
 
 ## Step 4 — Print findings **verbatim**
 Reproduce the reviewer's stdout exactly, no summarizing/re-ranking:
