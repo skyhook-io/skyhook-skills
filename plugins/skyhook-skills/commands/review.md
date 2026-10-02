@@ -121,6 +121,7 @@ When in deep mode, also examine:
 1. **Announce**: "Running QUICK review..."
 2. Run `git diff main..HEAD` to see all changes
 3. Scan for critical issues
+   - Frontend changes: if the repo has a design doc (e.g. `DESIGN.md`), read it first and flag styling that bypasses its tokens or shared components
 4. Make quick fixes automatically
 5. Flag important issues if easy to fix
 6. Skip deprioritized items unless exceptional
