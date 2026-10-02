@@ -2,7 +2,7 @@
 
 Perform a "git pull rebase autostash" operation - rebase my current work over the remote default branch.
 
-Resolve the default branch first (`git symbolic-ref --short refs/remotes/origin/HEAD`, e.g. `origin/main`); below, `<default>` is that branch name without `origin/`. Fall back to `main` if it can't be resolved.
+Resolve the default branch first: refresh it from the remote with `git remote set-head origin --auto` (a local `origin/HEAD` goes stale if the remote renames its default branch), then read `git symbolic-ref --short refs/remotes/origin/HEAD` (e.g. `origin/main`); below, `<default>` is that branch name without `origin/`. Fall back to `main` if it can't be resolved.
 
 ## Instructions
 
@@ -22,8 +22,7 @@ Resolve the default branch first (`git symbolic-ref --short refs/remotes/origin/
 3. **Perform the rebase**:
    - First run `git fetch origin <default>` to update the remote tracking branch
    - Then run `git pull origin <default> --rebase --autostash`
-   - After a successful rebase, update the local default branch to match: `git branch -f <default> origin/<default>` (skip if it is the current branch)
-     (This keeps it in sync so `git log <default>..HEAD` is accurate for PR workflows)
+   - After a successful rebase, fast-forward the local default branch so `git log <default>..HEAD` stays accurate for PR workflows. Skip this if it is the current branch. Only move it when it has no local-only commits: if `git merge-base --is-ancestor <default> origin/<default>` succeeds, run `git branch -f <default> origin/<default>`; otherwise leave it alone and report that local `<default>` has commits not on `origin/<default>`.
 
 4. **Handle the outcome**:
    - If successful: report the result and whether any stashed changes were restored
