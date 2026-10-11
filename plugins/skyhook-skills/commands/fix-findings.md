@@ -46,4 +46,6 @@ Immediately proceed to fix all issues marked as "Fix" in the triage summary. Do 
 
 **Bugs of-a-kind cluster — fix the pattern, not just the reported site.** When a finding is a *kind* of bug (a wrong call shape, a missing guard, an unsafe unwrap), grep the codebase for the same pattern before calling it fixed. Patching only the flagged line leaves the same bug at the sibling sites — the next reviewer just re-flags them. Fix every instance; if you deliberately leave one, say why.
 
+**A fix has two sides.** When a fix changes a contract — cancellation, retries, caching, error shapes, timeouts, what a request carries — check its effect on the other side of the API or process boundary before calling it done. A client-side fix such as forwarding an abort signal is a server-side behavior change too.
+
 After fixing, verify the changes compile and tests pass using whatever build/test commands are appropriate for the project.

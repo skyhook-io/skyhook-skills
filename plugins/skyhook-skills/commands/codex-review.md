@@ -33,6 +33,14 @@ to a hand-rolled `codex exec review`; the whole point is to use the plugin.
 
 ## Step 2 — Run the native Codex review (foreground)
 
+**Don't brief the reviewer with your conclusions.** Give scope and focus
+*areas*, never your summary of what the change does, why it is correct, or what
+to sign off on. Your assumptions are what is under review: an author's comment
+stating an assumption gets accepted by every reviewer who reads it as context.
+Final rounds use an adversarial review of the full scope, not "verify these
+fixes." Run the review through the documented command; a hand-written prompt is
+where framing creeps in.
+
 The companion has two review modes — pick by whether you have **focus text**:
 
 - **Plain review** takes **scope flags only** (`--base <ref>` / `--commit <sha>`
