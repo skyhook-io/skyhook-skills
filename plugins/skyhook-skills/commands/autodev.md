@@ -142,6 +142,10 @@ is skipped; say so.
    persisted, try empty and error states, and confirm each action does real work
    rather than showing a success message. Record what you ran and saw. When the
    surface can't be exercised locally, say so and name the missing proof.
+   Equality with the previous release proves only that old paths didn't
+   regress; exercise each *new* path in its non-default states too (narrowed
+   scope, a selection, refresh, cancel mid-flight, a shared link, a second
+   user).
 5. **Tests and docs follow the change.** Bug fixes have a regression test where
    one fits; new behavior is covered at a meaningful seam; user-visible changes
    update the relevant docs, README, config reference, or help text.
@@ -169,7 +173,8 @@ is skipped; say so.
 
 **Honest-answer test.** Before declaring done, answer the questions the user is
 likely to ask next, with evidence: *Does this pass `/product-review`? Are there
-open PR comments? Would `/review-loop` on the final head find anything? Is every
+open PR comments? Would a fresh, context-free review of the final head find
+anything (for multi-PR or large work, run one rather than guessing)? Is every
 part of what I asked done? Is CI green on the last commit? Does it actually work
 when I use it?* "Probably" or "I think so" is a `✗`: go find out.
 

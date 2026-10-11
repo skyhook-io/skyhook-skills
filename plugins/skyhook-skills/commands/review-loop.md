@@ -70,6 +70,12 @@ Each round:
    If which slice the user wants is genuinely ambiguous **and** it materially
    changes the review, state your assumption in the banner or ask — never silently
    narrow to a convenient small delta.
+
+   **Sets of PRs (stacked or related).** Per-PR rounds are not enough. Before
+   calling the set reviewed, run one round on the **combined** diff (every PR
+   against `main`, e.g. a scratch merge of the stack), with an explicit pass on
+   how the PRs interact: shared state, a call one PR adds and another changes,
+   flags or capabilities they share.
 2. **Review at two altitudes — intent before details.**
    - **Right thing / right design FIRST:** does this serve the real goal, is the
      approach/architecture sound, and (for UI) does the layout + user journey hold
@@ -83,6 +89,15 @@ Each round:
      break, who or what is affected, and whether the tests, live checks,
      guardrails, or rollback path actually cover that risk. Keep it proportional:
      one line is enough for low-risk copy/test-only changes.
+   - **Operating contexts:** enumerate where this code runs and review each:
+     single local user vs shared multi-user server (process-wide state, per-user
+     RBAC and side channels in derived data such as counts or timings), a newer
+     client against an older server, scale beyond the test environment (do the
+     arithmetic at 10× the test size), cancellation and retries, and state that
+     must survive a refresh or a shared URL. Repos list their concrete modes in
+     CLAUDE.md.
+   - **Layers:** for a nontrivial full-stack change, give the backend and the
+     frontend each their own line-level reviewer.
    - **Then line-level:** run `/review` (`--deep` ⇒ `/pr-review-toolkit:review-pr
      all`) and `/simple` for correctness, bugs, and dead weight.
    - **Cross-model pass** (nontrivial only): run `/cross-review` — the configured
@@ -106,14 +121,17 @@ Each round:
 5. **Update the PR** if one exists — `/pr` (relevant files only,
    `--force-with-lease`, accurate title/body). No PR yet ⇒ leave commits local
    and say so; do not open one here (that's `/autodev`'s job).
-6. **Repeat** until a round yields **no new valid Fix verdicts** and all
-   required review artifacts for this scope are complete (for example, the
-   scenario ledger for scenario-sensitive work and the risk/blast-radius note for
-   nontrivial changes).
+6. **Repeat — every round is whole-scope** — until a round yields **no new valid
+   Fix verdicts** and all required review artifacts for this scope are complete
+   (for example, the scenario ledger for scenario-sensitive work and the
+   risk/blast-radius note for nontrivial changes). A round may re-check only a
+   fix delta when the fix is trivial; the **converging** round must be a fresh
+   full-scope review (self + cross-model) of the final head. A clean round that
+   only looked at the fixes is not convergence.
 
 ## Stop / caps
-- **Converged:** a clean round (only Skips) **and required review artifacts
-  complete** → stop, summarize.
+- **Converged:** a clean **full-scope** round on the final head (only Skips)
+  **and required review artifacts complete** → stop, summarize.
 - **Cap:** default **3 rounds**; report and stop rather than looping silently.
 - **Stuck:** the same finding survives **2 fix attempts** → stop and surface the
   blocker.

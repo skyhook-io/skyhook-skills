@@ -47,6 +47,14 @@ head unless you reran Claude on that new head.
 
 ## Step 2 — Run Claude's review (headless)
 
+**Don't brief the reviewer with your conclusions.** Give scope and focus
+*areas*, never your summary of what the change does, why it is correct, or what
+to sign off on. Your assumptions are what is under review: an author's comment
+stating an assumption gets accepted by every reviewer who reads it as context.
+Final rounds use an adversarial review of the full scope, not "verify these
+fixes." Run the review through the documented command; a hand-written prompt is
+where framing creeps in.
+
 Invoke Claude Code in print mode with a read-only review prompt. Whitelist only
 read/search/git tools so the review can't mutate the tree. Build the
 `<SCOPE>` clause from Step 1 (e.g. "this branch vs main", "the uncommitted

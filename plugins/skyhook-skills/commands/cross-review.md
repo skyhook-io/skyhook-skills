@@ -29,6 +29,14 @@ Default: branch vs `main` (`git diff main...HEAD` + uncommitted). `--base <ref>`
 
 ## Step 3 — Run the reviewer (foreground, 10-min Bash timeout)
 
+**Don't brief the reviewer with your conclusions.** Give scope and focus
+*areas*, never your summary of what the change does, why it is correct, or what
+to sign off on. Your assumptions are what is under review: an author's comment
+stating an assumption gets accepted by every reviewer who reads it as context.
+Final rounds use an adversarial review of the full scope, not "verify these
+fixes." Run the review through the documented command; a hand-written prompt is
+where framing creeps in.
+
 **codex** — via the official codex plugin's companion (scope flags only on
 `review`; focus text ⇒ `adversarial-review`):
 ```bash
