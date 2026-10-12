@@ -53,12 +53,16 @@ printf '%s\n' "$REVISION" > "$SHARED_DIR/.source-revision"
 echo "Installed skills (Codex + Cursor) -> $SKILLS_DIR"
 echo "Installed source revision        -> $REVISION"
 echo "Canonical commands               -> $SHARED_DIR"
-echo "Adapter command references (relative to each installed skill):"
+echo "Adapter command references:"
 HAS_DUPLICATES=false
 for ADAPTER in "$REPO_DIR"/codex/skills/*/SKILL.md; do
   SKILL="$(basename "$(dirname "$ADAPTER")")"
   COMMAND_REF="$(sed -n 's/.*`\([^`]*skyhook-skills-commands\/[^`]*\.md\)`.*/\1/p' "$ADAPTER" | sed -n '1p')"
   printf '  %s -> %s\n' "$SKILL" "${COMMAND_REF:-self-contained skill}"
+
+  if [[ "$COMMAND_REF" == '~/.codex/skills/'* ]] && ! [ "$SKILLS_DIR" -ef "$HOME/.codex/skills" ]; then
+    echo "WARNING: $SKILL references the default ~/.codex/skills command bundle outside this custom install." >&2
+  fi
 
   for OTHER_ROOT in "$HOME/.agents/skills" "$HOME/.codex/skills"; do
     OTHER_ADAPTER="$OTHER_ROOT/$SKILL/SKILL.md"

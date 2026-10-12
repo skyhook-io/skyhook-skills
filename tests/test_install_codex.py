@@ -113,7 +113,7 @@ class InstallCodexTest(unittest.TestCase):
         self.assertNotIn("WARNING", result.stderr)
         self.assertTrue(linked.is_symlink())
 
-    def test_custom_install_resolves_commands_and_preserves_default_copy(self):
+    def test_custom_install_reports_references_and_preserves_default_copy(self):
         self.install()
         default_adapter = self.skills / "retro/SKILL.md"
         previous = default_adapter.read_bytes()
@@ -122,8 +122,7 @@ class InstallCodexTest(unittest.TestCase):
         result = self.install()
         self.assert_bundle()
         self.assertIn(str(default_adapter), result.stderr)
-        for adapter in self.skills.glob("*/SKILL.md"):
-            self.assertNotIn("~/.codex/skills/skyhook-skills-commands/", adapter.read_text())
+        self.assertIn("references the default ~/.codex/skills command bundle", result.stderr)
         self.assertEqual(default_adapter.read_bytes(), previous)
 
     def test_archive_install_reports_unavailable_revision_without_failing(self):
