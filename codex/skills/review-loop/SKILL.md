@@ -35,7 +35,11 @@ translations:**
   risk. Keep it proportional; don't add boilerplate for harmless edits.
 - **Triage** ("/triage-findings") → inline: read the real code at each
   `file:line`, **never auto-accept**, cite evidence on every skip.
-- **Fix** ("/fix-findings") → apply the confirmed Fix verdicts.
+- **Fix** ("/fix-findings") → apply the confirmed Fix verdicts. Retain reviewed
+  revisions and check evidence for contextual follow-ups; batch known fixes
+  before expensive QA. A focused follow-up is not whole-PR convergence: the
+  final-head full-scope review and clean end-to-end verification remain required,
+  with required CI and PR feedback closure before calling the PR settled.
 - **`/qa`** → read the repo's `.claude/commands/qa.md` and follow it (type-check
   + tests; visual-test default-skip, only warranted self-contained UI changes).
 - **Update PR** ("/pr") → via `git` + `gh`: stage relevant files only, commit/

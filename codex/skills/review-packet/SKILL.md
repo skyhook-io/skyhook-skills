@@ -25,6 +25,10 @@ Follow that canonical procedure, including its **Codex: Sites publishing** route
   access it; owner-private does not mean team-accessible.
 - Reuse real evidence from the session. Capture UI only when a visual claim needs
   it. Keep deferred findings, verification gaps, and reviewer disagreements.
+- Apply the canonical cold-reader check: explain the complete final-state
+  problem, journey, scope, design, and verification gaps; rewrite on updates.
+  Publishing a snapshot can precede CI completion when pending checks are named
+  and linked. A settled/merge-ready verdict still requires the completion gates.
 - Put the reader's decisions at the top and the verdict at the bottom. If there
   is no open decision, write a short report instead of manufacturing a packet.
 

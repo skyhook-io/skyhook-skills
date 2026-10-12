@@ -128,7 +128,16 @@ curl -fsSL https://raw.githubusercontent.com/skyhook-io/skyhook-skills/main/scri
 ```
 
 The installer fetches `main`, updates the Skyhook adapters and canonical
-commands, and leaves unrelated skills alone. Codex normally detects skill changes
+commands, and leaves unrelated skills alone. It prints the source revision and
+each adapter's command reference, saves the revision in
+`~/.codex/skills/skyhook-skills-commands/.source-revision`, and warns about
+same-name copies under `~/.agents/skills` or the default `~/.codex/skills` when
+installing elsewhere. It does not delete those copies or determine which adapter
+an agent loads. Check the selected skill's path when a command appears stale.
+Custom `CODEX_HOME` installs also warn about adapters that still reference the
+default `~/.codex/skills` command path.
+
+Codex normally detects skill changes
 automatically; if the update does not appear, restart Codex. Verify with
 `/skills`, then invoke a skill with `$competitive-research`. See the
 [OpenAI Agent Skills documentation](https://developers.openai.com/codex/skills).
@@ -136,6 +145,10 @@ automatically; if the update does not appear, restart Codex. Verify with
 If you prefer a checkout over piping from the network, clone this repository,
 `git pull --ff-only` for each update, then run
 `bash scripts/install-codex.sh` from the repository root.
+
+To verify installer changes without touching your installed skills, run
+`python3 -m unittest discover -s tests -v`. The fixtures exercise local and piped
+installs in temporary homes, including updates and competing adapters.
 
 ### Cursor Agent
 

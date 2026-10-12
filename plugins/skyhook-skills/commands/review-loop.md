@@ -51,6 +51,23 @@ intent beats the heuristic. Examples (generalize beyond them):
   `this commit` / `--commit <sha>` narrow it (see Step 1). Scope = *which commits*;
   focus = *what to look at within them*.
 
+## Continuing with context
+
+A quick contextual follow-up and a fresh end-to-end review serve different
+purposes. Honor the caller's requested depth and scope; keep the whole-PR default
+above. At a follow-up, identify the last reviewed revision, the intervening delta,
+and the completed checks with their scope and evidence. Reuse that evidence
+where it still applies, and explain which checks the new changes invalidate.
+Missing prior evidence is a gap, not an assumed pass.
+
+A focused fix check can finish as **follow-up checked**. Calling the whole PR
+settled through this command or `/autodev` still requires the clean final-head
+full-scope review below, with the complete feature's design and end-to-end
+behavior covered. Exercise the relevant user/operator surface, including failure
+states; unit tests alone do not establish that the journey works. Re-run affected
+scenarios and retain valid earlier proof for unchanged paths. Name any missing
+live proof; do not silently narrow the verdict to the last fix.
+
 ## Loop
 
 Each round:
@@ -131,7 +148,10 @@ Each round:
 
 ## Stop / caps
 - **Converged:** a clean **full-scope** round on the final head (only Skips)
-  **and required review artifacts complete** → stop, summarize.
+  **and required review artifacts and end-to-end verification complete** →
+  stop, summarize. This establishes local convergence; a PR-level **settled**
+  verdict additionally needs required CI green and PR feedback addressed on the
+  final head. Pending remote checks or missing proof stay explicit.
 - **Cap:** default **3 rounds**; report and stop rather than looping silently.
 - **Stuck:** the same finding survives **2 fix attempts** → stop and surface the
   blocker.
@@ -145,7 +165,12 @@ the checks that fit the *delta* — most rounds that's just type-check/tests (or
 nothing for a trivial fix). Heavier checks like a repo's `/visual-test` are
 **reserved for self-contained UI changes worth a capture and skipped by default**
 otherwise (logic, utils, server, Go-only, refactors, types, copy → no
-visual-test). When in doubt whether a UI change warrants it, ask rather than
+visual-test). Batch known fixes before expensive QA. Use focused checks while
+iterating; run the required completion checks after the final batch. Before
+repeating a broad suite or live run, name what changed or failed that makes the
+previous result insufficient. A fresh full-scope review remains required for
+convergence; it need not repeat every still-valid test or live exercise. When
+in doubt whether a UI change warrants it, ask rather than
 auto-run. No repo `/qa` ⇒ fall back to plain build/test detection.
 
 ## Safety

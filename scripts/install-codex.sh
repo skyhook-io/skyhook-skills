@@ -28,7 +28,7 @@ if [ -n "${SCRIPT_DIR:-}" ] && [ -d "$SCRIPT_DIR/../codex/skills" ]; then
 else
   TMP="$(mktemp -d)"
   CLEANUP="$TMP"
-  trap '[ -n "$CLEANUP" ] && rm -rf "$CLEANUP"' EXIT
+  trap 'if [ -L "$CLEANUP" ]; then echo "Temporary checkout became a symlink; leaving it: $CLEANUP -> $(readlink "$CLEANUP")" >&2; else rm -rf -- "$CLEANUP"; fi' EXIT
   echo "Fetching $REPO_URL ..."
   git clone --depth 1 --quiet "$REPO_URL" "$TMP/skyhook-skills"
   REPO_DIR="$TMP/skyhook-skills"
@@ -38,6 +38,32 @@ mkdir -p "$SKILLS_DIR" "$SHARED_DIR"
 cp -R "$REPO_DIR/codex/skills/." "$SKILLS_DIR/"
 cp "$REPO_DIR/plugins/skyhook-skills/commands/"*.md "$SHARED_DIR/"
 
+REVISION="$(git -C "$REPO_DIR" rev-parse --verify HEAD)"
+if [ -n "$(git -C "$REPO_DIR" status --porcelain -- codex/skills plugins/skyhook-skills/commands scripts/install-codex.sh)" ]; then
+  REVISION="$REVISION (modified checkout)"
+fi
+printf '%s\n' "$REVISION" > "$SHARED_DIR/.source-revision"
+
 echo "Installed skills (Codex + Cursor) -> $SKILLS_DIR"
+echo "Installed source revision        -> $REVISION"
 echo "Canonical commands               -> $SHARED_DIR"
+echo "Adapter command references:"
+for ADAPTER in "$REPO_DIR"/codex/skills/*/SKILL.md; do
+  SKILL="$(basename "$(dirname "$ADAPTER")")"
+  COMMAND_REF="$(sed -n 's/.*`\([^`]*skyhook-skills-commands\/[^`]*\.md\)`.*/\1/p' "$ADAPTER" | sed -n '1p')"
+  printf '  %s -> %s\n' "$SKILL" "$COMMAND_REF"
+
+  if [[ "$COMMAND_REF" == '~/.codex/skills/'* ]] && [ "$SKILLS_DIR" != "$HOME/.codex/skills" ]; then
+    echo "  WARNING: $SKILL uses the default ~/.codex/skills path, outside this custom install." >&2
+  fi
+
+  for OTHER_ROOT in "$HOME/.agents/skills" "$HOME/.codex/skills"; do
+    OTHER_ADAPTER="$OTHER_ROOT/$SKILL/SKILL.md"
+    if [ -f "$OTHER_ADAPTER" ] && ! [ "$OTHER_ADAPTER" -ef "$SKILLS_DIR/$SKILL/SKILL.md" ]; then
+      OTHER_REF="$(sed -n 's/.*`\([^`]*\.md\)`.*/\1/p' "$OTHER_ADAPTER" | sed -n '1p')"
+      printf 'WARNING: another %s adapter exists: %s\n  First document reference: %s\n' "$SKILL" "$OTHER_ADAPTER" "${OTHER_REF:-not detected; inspect the adapter}" >&2
+    fi
+  done
+done
+echo "Duplicate warnings do not establish loader precedence; inspect the selected skill before removing any copy."
 echo "Restart Codex or start a new Cursor Agent session to pick up changes."
