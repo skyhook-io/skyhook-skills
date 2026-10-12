@@ -130,7 +130,8 @@ curl -fsSL https://raw.githubusercontent.com/skyhook-io/skyhook-skills/main/scri
 The installer fetches `main`, updates the Skyhook adapters and canonical
 commands, and leaves unrelated skills alone. It prints the source revision and
 each adapter's command reference, saves the revision in
-`~/.codex/skills/skyhook-skills-commands/.source-revision`, and warns about
+`$CODEX_HOME/skills/skyhook-skills-commands/.source-revision` (`CODEX_HOME`
+defaults to `~/.codex`), and warns about
 same-name copies under `~/.agents/skills` or the default `~/.codex/skills` when
 installing elsewhere. It does not delete those copies or determine which adapter
 an agent loads. Check the selected skill's path when a command appears stale.

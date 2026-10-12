@@ -82,6 +82,16 @@ class InstallCodexTest(unittest.TestCase):
         self.assertIn("modified checkout",
                       (self.skills / "skyhook-skills-commands/.source-revision").read_text())
 
+    def test_copied_ignored_command_marks_source_as_modified(self):
+        command = self.repo / "plugins/skyhook-skills/commands/local-only.md"
+        command.write_text("Local command not in the recorded commit\n")
+        (self.repo / ".git/info/exclude").write_text("local-only.md\n")
+        result = self.install()
+        self.assert_bundle()
+        self.assertIn(self.revision + " (modified checkout)", result.stdout)
+        self.assertIn("modified checkout",
+                      (self.skills / "skyhook-skills-commands/.source-revision").read_text())
+
     def test_conflicting_adapter_is_reported_and_preserved(self):
         conflict = self.user_home / ".agents/skills/retro/SKILL.md"
         conflict.parent.mkdir(parents=True)
@@ -128,6 +138,19 @@ class InstallCodexTest(unittest.TestCase):
         self.assertEqual(
             (self.skills / "skyhook-skills-commands/.source-revision").read_text().strip(),
             "unavailable (git metadata could not be read)")
+
+    def test_nested_archive_does_not_claim_enclosing_repository_revision(self):
+        archive = self.repo / "unpacked archive"
+        archive.mkdir()
+        for directory in ("scripts", "codex", "plugins"):
+            shutil.copytree(self.repo / directory, archive / directory)
+        self.repo = archive
+        result = self.install()
+        self.assert_bundle()
+        self.assertNotIn(self.revision, result.stdout)
+        self.assertIn("source revision unavailable", result.stderr)
+        self.assertIn("unavailable",
+                      (self.skills / "skyhook-skills-commands/.source-revision").read_text())
 
     def test_piped_install_fetches_bundle_and_cleans_temporary_checkout(self):
         shim_dir = self.root / "shim"
