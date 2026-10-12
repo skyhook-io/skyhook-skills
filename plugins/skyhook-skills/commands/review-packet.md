@@ -31,12 +31,38 @@ prevent.
 
 ### 1. Decide what the reader must *do*
 
-Open with **the calls for you** — the open questions, as an indexed list that jumps
-to the frame arguing each one. Three to six is right; more means you have not
-triaged. If nothing needs deciding, stop: write a report, not a packet.
+Give a brief plain-language orientation first when the subject needs one, then
+open with **the calls for you** — the open questions, as an indexed list that jumps
+to the frame arguing each one. Use the actual number of decisions; approval of
+the change can be the only call. Do not invent dilemmas to fill a quota. If
+nothing needs deciding, write a report instead.
 
 Everything else on the page earns its place by supporting one of those calls, or by
 being the proof that the work is sound.
+
+### Cold-reader check: explain the complete final state
+
+Assume the reviewer has no prior conversation, ticket, or domain context. Before
+publishing, read the opening, calls list, and main narrative from that position.
+Each call must make sense without session shorthand. Check that the packet explains:
+
+- The problem, the necessary terms, and concrete behavior before and after.
+- The complete user/operator journey, including relevant failure states and
+  the conditions that enable an action.
+- Supported scope and limits: what works generically, what needs explicit
+  integration, and what remains unsupported.
+- The design and its boundaries, why this approach fits, and where future
+  additions belong when extensibility matters.
+- What the evidence proves, what is test-only or historical, what remains
+  unverified, and the decision those gaps leave for the reader.
+
+Scale depth to the subject; these are comprehension checks, not mandatory page
+headings. A reviewer should understand the feature before inspecting its diff.
+When updating a packet, re-derive the narrative from the complete final state,
+as `/pr` does: rewrite rather than append review-fix bullets. Keep review history,
+raw logs, and exhaustive captures in supporting material; the main narrative
+should stand alone. Retain decision-relevant disagreements and gaps beside the
+claims they qualify.
 
 ### 2. Gather real evidence, not illustrations
 
@@ -67,6 +93,13 @@ would have seen instead.
 - Findings you **deferred**, and why — a packet that only shows wins is marketing.
 - Where you and a cross-model reviewer **disagreed**, and who you think is right.
 - Verdict / scoreboard at the **end**. The top belongs to the reader's decisions.
+- State the reviewed revision and when verification was checked. Publishing a
+  current evidence snapshot does not require waiting for CI: list pending or
+  failing checks by name with links, and update their status later. Do not call
+  the PR settled, merge-ready, or ready to ship until required checks pass on
+  the final head and the required review and end-to-end verification are clean.
+  Publication success is evidence that the document was delivered, not that the
+  change passed its completion gate.
 
 ## Components to reach for
 
@@ -190,8 +223,9 @@ available after handoff. Do not claim an agent renders HTML inline.
 
 ## Anti-patterns
 
-- A changelog with pictures. If the subject of your sentences is the work rather
-  than the reader's decision, start over.
+- A changelog with pictures. Explain the problem, journey, and design as needed
+  to support the reader's decision; do not substitute a list of implementation
+  or review steps for that explanation.
 - Screenshots without claims, or claims without screenshots.
 - Burying the one frame that matters at position seven.
 - Only wins. Defer list and "could not verify" are load-bearing.

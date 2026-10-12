@@ -48,4 +48,15 @@ Immediately proceed to fix all issues marked as "Fix" in the triage summary. Do 
 
 **A fix has two sides.** When a fix changes a contract — cancellation, retries, caching, error shapes, timeouts, what a request carries — check its effect on the other side of the API or process boundary before calling it done. A client-side fix such as forwarding an abort signal is a server-side behavior change too.
 
-After fixing, verify the changes compile and tests pass using whatever build/test commands are appropriate for the project.
+At a contextual follow-up, retain the last reviewed revision and completed
+checks, announce the fix delta, and identify which evidence it invalidates. Batch
+known fixes before expensive QA; use focused checks during iteration, then run
+the project's required checks for the final batch. Reuse evidence that still
+applies and explain repeated broad suites or live runs. Do not assume an earlier
+pass when its revision or coverage is unknown.
+
+After fixing, verify the changes compile and tests pass using the project's
+appropriate build/test commands. A clean fix check means the findings were
+addressed; it does not establish that the whole PR is settled. Use
+`/review-loop`'s completion criteria or `/autodev`'s Definition of done for that
+verdict.

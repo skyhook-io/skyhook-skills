@@ -130,9 +130,12 @@ is skipped; say so.
    it `⏸` and name the deferral for the user to approve or reject. No stubs or
    unmentioned "phase 2".
 2. **The final code was reviewed.** `/review-loop` (self + cross-model when
-   nontrivial) covered the final state. Commits after the last review — bot
-   fixes, audit fixes — got at least a self-review of that delta; substantive
-   ones get the full loop.
+   nontrivial) covered the complete feature on the final head, including its
+   design and end-to-end behavior. Contextual fix checks help iteration; they
+   cannot replace the clean full-scope convergence review. Commits after that
+   review — bot fixes, audit fixes — need checks appropriate to their delta
+   during iteration, followed by a clean full-scope review of the final head
+   before declaring the PR done.
 3. **User-visible work passes `/product-review`** on its final state, with its
    findings triaged (Fix/Skip with evidence). Scenario-sensitive work also has
    its scenario ledger complete.
