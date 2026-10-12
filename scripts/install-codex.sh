@@ -41,7 +41,7 @@ cp "$REPO_DIR/plugins/skyhook-skills/commands/"*.md "$SHARED_DIR/"
 if SOURCE_ROOT="$(git -C "$REPO_DIR" rev-parse --show-toplevel 2>/dev/null)" &&
    [ "$SOURCE_ROOT" -ef "$REPO_DIR" ] &&
    REVISION="$(git -C "$REPO_DIR" rev-parse --verify HEAD 2>/dev/null)"; then
-  if [ -n "$(git -C "$REPO_DIR" status --porcelain --ignored -- codex/skills plugins/skyhook-skills/commands scripts/install-codex.sh)" ]; then
+  if [ -n "$(git -C "$REPO_DIR" status --porcelain --ignored --untracked-files=all -- codex/skills plugins/skyhook-skills/commands scripts/install-codex.sh)" ]; then
     REVISION="$REVISION (modified checkout)"
   fi
 else

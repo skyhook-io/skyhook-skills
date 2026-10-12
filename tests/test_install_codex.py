@@ -83,6 +83,7 @@ class InstallCodexTest(unittest.TestCase):
                       (self.skills / "skyhook-skills-commands/.source-revision").read_text())
 
     def test_copied_ignored_command_marks_source_as_modified(self):
+        self.git("config", "status.showUntrackedFiles", "no")
         command = self.repo / "plugins/skyhook-skills/commands/local-only.md"
         command.write_text("Local command not in the recorded commit\n")
         (self.repo / ".git/info/exclude").write_text("local-only.md\n")
