@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -21,6 +22,7 @@ class InstallCodexTest(unittest.TestCase):
         self.git("init", "-q")
         self.git("add", ".")
         self.git("-c", "user.name=Installer test", "-c", "user.email=test@example.invalid",
+                 "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null",
                  "commit", "-qm", "Fixture")
         self.revision = self.git("rev-parse", "HEAD").stdout.strip()
         self.user_home = self.root / "user home"
@@ -42,6 +44,12 @@ class InstallCodexTest(unittest.TestCase):
         for source in (self.repo / "codex/skills").glob("*/SKILL.md"):
             installed = self.skills / source.parent.name / "SKILL.md"
             self.assertEqual(source.read_bytes(), installed.read_bytes())
+            references = re.findall(r"`(\.\./skyhook-skills-commands/[^`]+\.md)`",
+                                    installed.read_text())
+            for reference in references:
+                resolved = (installed.parent / reference).resolve()
+                canonical = self.repo / "plugins/skyhook-skills/commands" / resolved.name
+                self.assertEqual(resolved.read_bytes(), canonical.read_bytes())
         for source in (self.repo / "plugins/skyhook-skills/commands").glob("*.md"):
             installed = self.skills / "skyhook-skills-commands" / source.name
             self.assertEqual(source.read_bytes(), installed.read_bytes())
@@ -56,6 +64,7 @@ class InstallCodexTest(unittest.TestCase):
         self.assertEqual(marker.read_text().strip(), self.revision)
         self.assertIn(self.revision, first.stdout)
         self.assertIn("retro -> ../skyhook-skills-commands/retro.md", first.stdout)
+        self.assertIn("claude-review -> self-contained skill", first.stdout)
         self.assertIn(str(self.skills / "skyhook-skills-commands"), first.stdout)
         self.assertNotIn("WARNING", first.stderr)
         second = self.install()
@@ -93,7 +102,7 @@ class InstallCodexTest(unittest.TestCase):
         self.assertNotIn("WARNING", result.stderr)
         self.assertTrue(linked.is_symlink())
 
-    def test_custom_install_reports_default_path_and_competing_copy(self):
+    def test_custom_install_resolves_commands_and_preserves_default_copy(self):
         self.install()
         default_adapter = self.skills / "retro/SKILL.md"
         previous = default_adapter.read_bytes()
@@ -102,8 +111,23 @@ class InstallCodexTest(unittest.TestCase):
         result = self.install()
         self.assert_bundle()
         self.assertIn(str(default_adapter), result.stderr)
-        self.assertIn("outside this custom install", result.stderr)
+        for adapter in self.skills.glob("*/SKILL.md"):
+            self.assertNotIn("~/.codex/skills/skyhook-skills-commands/", adapter.read_text())
         self.assertEqual(default_adapter.read_bytes(), previous)
+
+    def test_archive_install_reports_unavailable_revision_without_failing(self):
+        archive = self.root / "source archive"
+        archive.mkdir()
+        for directory in ("scripts", "codex", "plugins"):
+            shutil.copytree(self.repo / directory, archive / directory)
+        self.repo = archive
+        result = self.install()
+        self.assert_bundle()
+        self.assertIn("source revision unavailable", result.stderr)
+        self.assertIn("unavailable (git metadata could not be read)", result.stdout)
+        self.assertEqual(
+            (self.skills / "skyhook-skills-commands/.source-revision").read_text().strip(),
+            "unavailable (git metadata could not be read)")
 
     def test_piped_install_fetches_bundle_and_cleans_temporary_checkout(self):
         shim_dir = self.root / "shim"
@@ -117,6 +141,8 @@ class InstallCodexTest(unittest.TestCase):
                         '    args[-2] = os.environ["FIXTURE_SOURCE"]\n'
                         '    with open(os.environ["CLONE_LOCATION"], "w") as log:\n'
                         '        log.write(args[-1])\n'
+                        '    if os.environ.get("SIMULATE_FETCH_FAILURE") == "1":\n'
+                        '        sys.exit(23)\n'
                         'os.execv(os.environ["ACTUAL_GIT"], ["git", *args])\n')
         shim.chmod(0o755)
         location = self.root / "clone location"
@@ -132,6 +158,14 @@ class InstallCodexTest(unittest.TestCase):
         self.assertIn(self.revision, result.stdout)
         clone = Path(location.read_text())
         self.assertFalse(clone.parent.exists())
+        self.env["SIMULATE_FETCH_FAILURE"] = "1"
+        failure = subprocess.run(["bash"],
+                                 input=(self.repo / "scripts/install-codex.sh").read_text(),
+                                 cwd=self.root, env=self.env, text=True, capture_output=True)
+        self.assertEqual(failure.returncode, 23)
+        self.assertNotIn("Installed skills", failure.stdout)
+        self.assertFalse(Path(location.read_text()).parent.exists())
+        self.assert_bundle()
 
 
 if __name__ == "__main__":

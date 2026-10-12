@@ -57,6 +57,6 @@ pass when its revision or coverage is unknown.
 
 After fixing, verify the changes compile and tests pass using the project's
 appropriate build/test commands. A clean fix check means the findings were
-addressed; it does not establish that the whole PR is settled. That verdict via
-`/review-loop` or `/autodev` requires the complete final-head feature review and
-clean end-to-end verification, plus required CI and PR feedback closure.
+addressed; it does not establish that the whole PR is settled. Use
+`/review-loop`'s completion criteria or `/autodev`'s Definition of done for that
+verdict.

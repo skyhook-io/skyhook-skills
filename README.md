@@ -134,8 +134,9 @@ each adapter's command reference, saves the revision in
 same-name copies under `~/.agents/skills` or the default `~/.codex/skills` when
 installing elsewhere. It does not delete those copies or determine which adapter
 an agent loads. Check the selected skill's path when a command appears stale.
-Custom `CODEX_HOME` installs also warn about adapters that still reference the
-default `~/.codex/skills` command path.
+Adapters resolve shared command paths relative to their installed directory,
+including custom `CODEX_HOME` locations. Sources without readable Git metadata
+install with an explicit unavailable-revision warning.
 
 Codex normally detects skill changes
 automatically; if the update does not appear, restart Codex. Verify with

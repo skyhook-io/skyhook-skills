@@ -11,7 +11,11 @@ Proactively review the current code and fix it, Codex-side — the proactive
 counterpart to reacting to CI/Bugbot on a PR. Same workflow as Claude's
 `/review-loop`.
 
-**Canonical procedure:** read `~/.codex/skills/skyhook-skills-commands/review-loop.md` and follow it
+Resolve command paths below relative to this skill's installed directory.
+In this repository, canonical commands live in
+`../../../plugins/skyhook-skills/commands/`.
+
+**Canonical procedure:** read `../skyhook-skills-commands/review-loop.md` and follow it
 (scope → review → triage → fix → update PR → loop; caps; safety). **Codex
 translations:**
 
@@ -44,7 +48,7 @@ translations:**
   + tests; visual-test default-skip, only warranted self-contained UI changes).
 - **Update PR** ("/pr") → via `git` + `gh`: stage relevant files only, commit/
   amend, push `--force-with-lease`. **Write the body per
-  `~/.codex/skills/skyhook-skills-commands/pr.md`** — depth proportional to the change, motivation +
+  `../skyhook-skills-commands/pr.md`** — depth proportional to the change, motivation +
   design, **no review-fix trivia; re-derive the narrative, don't append fix bullets
   each round.** No PR yet ⇒ leave commits local and say so.
 

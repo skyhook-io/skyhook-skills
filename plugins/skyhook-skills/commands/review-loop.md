@@ -84,6 +84,11 @@ Each round:
    - `since <ref>` / `--base <ref>` → delta vs that base
    - `this commit` / `--commit <sha>` → just that commit
 
+   - `check the fix` / `follow-up since the last review` → delta from the last
+     recorded reviewed SHA, when that baseline is known. Announce it; if the
+     baseline is unavailable, state the gap and resolve the scope explicitly.
+     `quick` alone reduces ceremony, not scope.
+
    If which slice the user wants is genuinely ambiguous **and** it materially
    changes the review, state your assumption in the banner or ask — never silently
    narrow to a convenient small delta.
@@ -147,6 +152,9 @@ Each round:
    only looked at the fixes is not convergence.
 
 ## Stop / caps
+- **Follow-up checked:** the requested fix delta is clean and its relevant
+  checks pass → stop with the reviewed range and evidence. This is a focused
+  outcome, not whole-PR convergence; do not force a full review to finish it.
 - **Converged:** a clean **full-scope** round on the final head (only Skips)
   **and required review artifacts and end-to-end verification complete** →
   stop, summarize. This establishes local convergence; a PR-level **settled**
@@ -196,12 +204,13 @@ later — one line per step, headline metric inline, grouped by round:
 📋 review-loop · <branch>
  🔗 PR [#910](https://github.com/your-org/your-repo/pull/910) · OPEN
             checks 4 ✓ · 2 pending (Backend, Cursor Bugbot) · mergeable
+ reviewed           <final-head SHA> · <base...head or focused range>
  round 1
    🔎 self-review     6 findings
    🔵 codex review    8m · 13 findings
    ⚖️ triage          5 fix · 7 skip · 1 discuss
    🔧 fix             5 applied · history.go, meaningfulchanges.go (+2)
-   ✅ qa              tsc ✓ · test ✓ · visual-test skipped (no UI delta)
+   ✅ qa              tsc ✓ · test ✓ @<SHA> · visual-test skipped (no UI delta)
    risk              low · copy-only UI labels · mitigated by renderer tests
    scenarios         4/4 covered · table posted in Linear
    📤 PR              pushed b083fbd9 + body
@@ -213,7 +222,10 @@ later — one line per step, headline metric inline, grouped by round:
 
 Always include: per-step counts, the **triage breakdown** (the signal you didn't
 auto-accept), files/PR touched, the **result line**
-(`converged|capped|blocked · rounds · fixed/skipped/open`), and open items. In
+(`follow-up checked|converged locally|capped|blocked · rounds · fixed/skipped/open`),
+and open items. Record the reviewed revision/range and each check's revision and
+coverage in the ledger or linked evidence; distinguish prior proof retained for
+unchanged paths from checks run on the final head. In
 `--auto`, add an `assumptions:` block. Show durations only where they matter
 (cross-review, CI waits).
 

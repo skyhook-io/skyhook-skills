@@ -38,32 +38,36 @@ mkdir -p "$SKILLS_DIR" "$SHARED_DIR"
 cp -R "$REPO_DIR/codex/skills/." "$SKILLS_DIR/"
 cp "$REPO_DIR/plugins/skyhook-skills/commands/"*.md "$SHARED_DIR/"
 
-REVISION="$(git -C "$REPO_DIR" rev-parse --verify HEAD)"
-if [ -n "$(git -C "$REPO_DIR" status --porcelain -- codex/skills plugins/skyhook-skills/commands scripts/install-codex.sh)" ]; then
-  REVISION="$REVISION (modified checkout)"
+if REVISION="$(git -C "$REPO_DIR" rev-parse --verify HEAD 2>/dev/null)"; then
+  if [ -n "$(git -C "$REPO_DIR" status --porcelain -- codex/skills plugins/skyhook-skills/commands scripts/install-codex.sh)" ]; then
+    REVISION="$REVISION (modified checkout)"
+  fi
+else
+  REVISION="unavailable (git metadata could not be read)"
+  echo "WARNING: source revision unavailable for $REPO_DIR; installed files were copied successfully." >&2
 fi
 printf '%s\n' "$REVISION" > "$SHARED_DIR/.source-revision"
 
 echo "Installed skills (Codex + Cursor) -> $SKILLS_DIR"
 echo "Installed source revision        -> $REVISION"
 echo "Canonical commands               -> $SHARED_DIR"
-echo "Adapter command references:"
+echo "Adapter command references (relative to each installed skill):"
+HAS_DUPLICATES=false
 for ADAPTER in "$REPO_DIR"/codex/skills/*/SKILL.md; do
   SKILL="$(basename "$(dirname "$ADAPTER")")"
   COMMAND_REF="$(sed -n 's/.*`\([^`]*skyhook-skills-commands\/[^`]*\.md\)`.*/\1/p' "$ADAPTER" | sed -n '1p')"
-  printf '  %s -> %s\n' "$SKILL" "$COMMAND_REF"
-
-  if [[ "$COMMAND_REF" == '~/.codex/skills/'* ]] && [ "$SKILLS_DIR" != "$HOME/.codex/skills" ]; then
-    echo "  WARNING: $SKILL uses the default ~/.codex/skills path, outside this custom install." >&2
-  fi
+  printf '  %s -> %s\n' "$SKILL" "${COMMAND_REF:-self-contained skill}"
 
   for OTHER_ROOT in "$HOME/.agents/skills" "$HOME/.codex/skills"; do
     OTHER_ADAPTER="$OTHER_ROOT/$SKILL/SKILL.md"
     if [ -f "$OTHER_ADAPTER" ] && ! [ "$OTHER_ADAPTER" -ef "$SKILLS_DIR/$SKILL/SKILL.md" ]; then
+      HAS_DUPLICATES=true
       OTHER_REF="$(sed -n 's/.*`\([^`]*\.md\)`.*/\1/p' "$OTHER_ADAPTER" | sed -n '1p')"
       printf 'WARNING: another %s adapter exists: %s\n  First document reference: %s\n' "$SKILL" "$OTHER_ADAPTER" "${OTHER_REF:-not detected; inspect the adapter}" >&2
     fi
   done
 done
-echo "Duplicate warnings do not establish loader precedence; inspect the selected skill before removing any copy."
+if [ "$HAS_DUPLICATES" = true ]; then
+  echo "Duplicate warnings do not establish loader precedence; inspect the selected skill before removing any copy."
+fi
 echo "Restart Codex or start a new Cursor Agent session to pick up changes."

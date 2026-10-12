@@ -12,8 +12,12 @@ the research altitude to the active task: source-level OSS behavior for technica
 decisions, official product evidence for UX and feature questions, and first-party
 market material for positioning.
 
+Resolve command paths below relative to this skill's installed directory.
+In this repository, canonical commands live in
+`../../../plugins/skyhook-skills/commands/`.
+
 **Canonical procedure:** read
-`~/.codex/skills/skyhook-skills-commands/competitive-research.md` and follow it.
+`../skyhook-skills-commands/competitive-research.md` and follow it.
 
 Codex notes:
 

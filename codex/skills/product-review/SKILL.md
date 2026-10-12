@@ -9,7 +9,11 @@ metadata:
 
 Product/design/UX critique — same workflow as Claude's `/product-review`.
 
-**Canonical procedure:** read `~/.codex/skills/skyhook-skills-commands/product-review.md` and follow it
+Resolve command paths below relative to this skill's installed directory.
+In this repository, canonical commands live in
+`../../../plugins/skyhook-skills/commands/`.
+
+**Canonical procedure:** read `../skyhook-skills-commands/product-review.md` and follow it
 (premise → journeys (8–10, ranked 0–10) → UX shape → comprehension → states →
 AI-slop/design-system → 0–10 + "what a 10 looks like" + severity triage). **Codex
 notes:**

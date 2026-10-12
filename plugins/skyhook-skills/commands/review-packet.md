@@ -31,7 +31,8 @@ prevent.
 
 ### 1. Decide what the reader must *do*
 
-Open with **the calls for you** — the open questions, as an indexed list that jumps
+Give a brief plain-language orientation first when the subject needs one, then
+open with **the calls for you** — the open questions, as an indexed list that jumps
 to the frame arguing each one. Use the actual number of decisions; approval of
 the change can be the only call. Do not invent dilemmas to fill a quota. If
 nothing needs deciding, write a report instead.
@@ -42,7 +43,8 @@ being the proof that the work is sound.
 ### Cold-reader check: explain the complete final state
 
 Assume the reviewer has no prior conversation, ticket, or domain context. Before
-publishing, read the main narrative from that position and check that it explains:
+publishing, read the opening, calls list, and main narrative from that position.
+Each call must make sense without session shorthand. Check that the packet explains:
 
 - The problem, the necessary terms, and concrete behavior before and after.
 - The complete user/operator journey, including relevant failure states and
@@ -221,8 +223,9 @@ available after handoff. Do not claim an agent renders HTML inline.
 
 ## Anti-patterns
 
-- A changelog with pictures. If the subject of your sentences is the work rather
-  than the reader's decision, start over.
+- A changelog with pictures. Explain the problem, journey, and design as needed
+  to support the reader's decision; do not substitute a list of implementation
+  or review steps for that explanation.
 - Screenshots without claims, or claims without screenshots.
 - Burying the one frame that matters at position seven.
 - Only wins. Defer list and "could not verify" are load-bearing.

@@ -10,7 +10,11 @@ metadata:
 Settle a plan before any code, Codex-side. Same workflow as Claude's
 `/plan-loop`.
 
-**Canonical procedure:** read `~/.codex/skills/skyhook-skills-commands/plan-loop.md` and follow it
+Resolve command paths below relative to this skill's installed directory.
+In this repository, canonical commands live in
+`../../../plugins/skyhook-skills/commands/`.
+
+**Canonical procedure:** read `../skyhook-skills-commands/plan-loop.md` and follow it
 (detailed plan with `file:line` evidence + Certain/Confident/Needs-input tiers,
 cross-review, triage, iterate, gate). **Codex translations:**
 
