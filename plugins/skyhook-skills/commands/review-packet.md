@@ -1,76 +1,104 @@
 ---
-description: Package work for effective guided review — an artifact that pairs each claim with the evidence for it and puts the decisions you need made up front
+description: Package work for guided review — explains the change from first principles, then puts the evidence beside each claim and the open calls at the end
 argument-hint: "[pr|set|design|research] [focus]  (default: auto-detect from the work in this session)"
 ---
 
-# Review Packet — make the review easy to *do*, not just easy to read
+# Review Packet — make the change understood, then easy to judge
 
-A review packet is not a summary of what you built. It is a **decision instrument**:
-it puts the calls the reviewer has to make at the top, and beside every claim it
-puts the evidence that lets them disagree with you.
+A review packet is a design document with its proof attached. The reader arrives
+with no context: they haven't seen the session, the ticket or the code. Before
+they can judge anything, the packet has to make them understand the change: what
+was wrong, what the change does, how it works, why this design, what it costs,
+and what else was considered. Only then does the evidence mean anything, and only
+then can the reader answer an open question with judgment instead of a guess.
+
+This holds for every packet, not only large ones. A small change gets the same
+explanation at a smaller scale, a paragraph per part instead of a section, never
+a shortcut straight to evidence and questions.
 
 Reach for this when review would otherwise mean scrolling a diff, replaying an
-investigation, or taking your word for it: a large PR or a **set** of related PRs,
-a rendered UI change, a design or architecture proposal, competitive research.
-Skip it for small, self-evident changes — a packet for a typo fix is ceremony.
+investigation, or taking your word for it: a PR or a **set** of related PRs, a
+rendered UI change, a design or architecture proposal, competitive research. A
+typo fix needs no packet.
 
 **Prerequisite: have something to show.** Run `/visual-test`, `/product-review`,
 `/review-loop` or `/competitive-research` *first* if their output is the substance.
 This command packages evidence; it does not manufacture it.
 
-## The rule that makes packets work
+## The rules that make packets work
 
-> **Every claim sits next to the artifact that proves it, and every dilemma gets
+> **1. Explain before you prove or ask.** The reader understands the change before
+> they see evidence or an open question.
+>
+> **2. Every claim sits next to the artifact that proves it, and every dilemma gets
 > its own visual slot.**
 
-A reviewer who cannot see what you saw is being asked to trust you. A dilemma
-buried in a paragraph gets skimmed. Those two failures are what packets exist to
-prevent.
+Evidence for a change the reader doesn't understand gets skimmed. A question asked
+without the context to answer it gets rubber-stamped. A claim the reader can't
+check asks them to trust you. Packets exist to prevent those three failures.
 
 ## Build it
 
-### 1. Decide what the reader must *do*
+### 1. Explain the change first
 
-Give a brief plain-language orientation first when the subject needs one, then
-open with **the calls for you** — the open questions, as an indexed list that jumps
-to the frame arguing each one. Use the actual number of decisions; approval of
-the change can be the only call. Do not invent dilemmas to fill a quota. If
-nothing needs deciding, write a report instead.
+Order the page so it reads top to bottom for someone new to it. First, what they
+need to understand the change:
 
-Everything else on the page earns its place by supporting one of those calls, or by
-being the proof that the work is sound.
+1. **Orientation.** One paragraph on what changed and why it matters, and a status
+   line (revision, checks, mergeability). When the page is long, add reading
+   paths: the sections a short review needs, and the full order.
+2. **The problem.** What was wrong or missing, shown concretely in the reader's
+   terms: the real behavior before the change, with real output when you have it.
+3. **The idea.** The change in a few sentences, and the rule or invariant it
+   establishes.
+4. **Terms.** Every word the change introduces, and any domain or session term
+   the reader needs. Nothing appears before it is defined.
+5. **How it works.** One concrete case walked from input to output. An annotated
+   example or a diagram usually beats a description here.
+6. **Where it lives.** The parts of the change, how they depend on each other, and
+   the files that hold each, with sizes that separate code from tests.
 
-### Cold-reader check: explain the complete final state
+Then what they need to judge it:
 
-Assume the reviewer has no prior conversation, ticket, or domain context. Before
-publishing, read the opening, calls list, and main narrative from that position.
-Each call must make sense without session shorthand. Check that the packet explains:
+7. **Why this design.** The principles it follows, each tied to the failure it
+   prevents.
+8. **Alternatives.** The real options that were weighed, why each lost, and what
+   settled it (the user's decision, a cross-model review, a measurement). Label
+   options you only weighed while writing the packet. Never invent alternatives
+   to fill the section.
+9. **Costs and drawbacks.** What the change costs (compatibility, complexity,
+   performance, migration, new failure modes), who feels it, and the mitigation.
+   A packet without drawbacks is marketing.
+10. **Where it runs.** Behavior in each operating context that matters: modes,
+    roles and permissions, scale, newer and older clients or servers. Say how
+    each was checked: live, by tests, or by tracing the code.
+11. **How to review it.** A reading order through the diff and what to ask of each
+    part. For a large change, say whether it splits into pieces that can be
+    reviewed or merged separately, and check that the split actually builds.
 
-- The problem, the necessary terms, and concrete behavior before and after.
-- The complete user/operator journey, including relevant failure states and
-  the conditions that enable an action.
-- Supported scope and limits: what works generically, what needs explicit
-  integration, and what remains unsupported.
-- The design and its boundaries, why this approach fits, and where future
-  additions belong when extensibility matters.
-- What the evidence proves, what is test-only or historical, what remains
-  unverified, and the decision those gaps leave for the reader.
+Scale each part to the subject. In a small change several fold into one
+paragraph; the order stays, and none is skipped because the change is small.
 
-Scale depth to the subject; these are comprehension checks, not mandatory page
-headings. A reviewer should understand the feature before inspecting its diff.
-When updating a packet, re-derive the narrative from the complete final state,
-as `/pr` does: rewrite rather than append review-fix bullets. Keep review history,
-raw logs, and exhaustive captures in supporting material; the main narrative
-should stand alone. Retain decision-relevant disagreements and gaps beside the
-claims they qualify.
+**Show it when seeing is faster than reading.** For each part, ask whether a
+visual would let the reader grasp it quicker than prose: a flow of data or calls
+across components, states and the transitions between them, what each item in a
+set looks like before and after (a grid of namespaces, rows of permissions), a
+dependency or layer map, a timeline of a race. Those are often far easier to
+review drawn than described. Draw it in HTML/CSS or Mermaid, with real names and
+values from the change, and say in a caption what the reader should notice. Skip
+it when a sentence or a table is just as clear; a diagram that restates the
+prose, or decorates it, only costs the reader time. Most packets need one to
+three, not one per section.
 
-### 2. Gather real evidence, not illustrations
+### 2. Then the evidence: real, not illustrations
 
 Prefer artifacts the work actually produced — live screenshots, real runs against
 real systems, actual tool output, genuine diff excerpts. **Real material surfaces
 dilemmas you would not have invented**, and reviewers can tell the difference.
 
 Crop to the subject. A full-window screenshot hides the thing you are pointing at.
+A short before/after excerpt can also illustrate the problem in section 2 of the
+explanation; the full proof comes here.
 
 ### 3. Split proof from decisions
 
@@ -87,12 +115,23 @@ old behaviour would have been on that same screen. Same for a race that no longe
 occurs, a query no longer issued, a state no longer reachable. Say what the reader
 would have seen instead.
 
-### 5. Be honest in the packet itself
+### 5. Then the calls
+
+After the explanation and the evidence, give each open call its own decision box:
+the question, the context it depends on (pointing back to the sections that
+explain it), the options, and your recommendation. The orientation may link to
+the calls so a returning reader can jump to them, but each call is argued where
+the reader already has the context. Use the actual number of decisions; approval
+of the change can be the only call. Do not invent dilemmas to fill a quota. If
+nothing needs deciding, not even approval, write a short report instead of a
+packet.
+
+### 6. Be honest in the packet itself
 
 - **What you could not verify**, plainly.
 - Findings you **deferred**, and why — a packet that only shows wins is marketing.
 - Where you and a cross-model reviewer **disagreed**, and who you think is right.
-- Verdict / scoreboard at the **end**. The top belongs to the reader's decisions.
+- Verdict / scoreboard at the **end**.
 - State the reviewed revision and when verification was checked. Publishing a
   current evidence snapshot does not require waiting for CI: list pending or
   failing checks by name with links, and update their status later. Do not call
@@ -101,13 +140,44 @@ would have seen instead.
   Publication success is evidence that the document was delivered, not that the
   change passed its completion gate.
 
+### Cold-reader check
+
+Before publishing, read the whole page as someone with no prior conversation,
+ticket, or domain context. At every point, they must be able to follow it with
+only what came before:
+
+- No term, code, ticket number or call number appears before it is explained.
+- The problem, the idea and how it works are clear before any evidence.
+- The complete user or operator journey is covered, including failure states and
+  the conditions that enable an action.
+- Supported scope and limits are stated: what works generically, what needs
+  explicit integration, what remains unsupported.
+- The design's boundaries, alternatives and costs are explained, and where future
+  additions belong when extensibility matters.
+- The evidence says what it proves, what is test-only or historical, and what
+  remains unverified, and the calls make sense on their own.
+
+When updating a packet, re-derive the whole narrative from the complete final
+state, as `/pr` does: rewrite rather than append review-fix bullets. Keep review
+history, raw logs, and exhaustive captures in supporting material; the main
+narrative should stand alone. Retain decision-relevant disagreements and gaps
+beside the claims they qualify.
+
 ## Components to reach for
 
 Pick what the material needs; do not use them all.
 
 | Component | Use when |
 |---|---|
-| **Frame**: evidence beside prose | The default unit. Screenshot/excerpt on one side, claim + dilemma on the other |
+| **Walk-through**: one case, input to output | Always, at some scale: it is how the reader learns how the change works |
+| **Diagram**: flow, states, before/after grid, layer map | Structure or change is easier seen than read. Not by default: skip it when prose or a table is as clear |
+| **Glossary** | The change introduces terms, or the domain has terms the reader needs |
+| **Layer or dependency map** | The change has parts; show what lives where and what depends on what |
+| **Alternatives table** | Always when options were weighed: option, why not, what settled it |
+| **Costs table** | Always: cost, who feels it, mitigation |
+| **Operating-context table** | Behavior differs by mode, role, scale or version |
+| **Reading order / split plan** | The diff is large or has separable parts |
+| **Frame**: evidence beside prose | The default evidence unit. Screenshot/excerpt on one side, claim on the other |
 | **Decision box** | Any open call — give it a distinct block, never inline prose |
 | **Before / after pair** | Behaviour changed and the change is visible |
 | **Counterfactual note** | The improvement is an absence (see step 4) |
@@ -138,7 +208,8 @@ only HTML; generate a PDF only if explicitly requested.
 ### Shared document treatment
 
 - Make a polished *document*, not a landing page. Use readable typography,
-  restrained color, stable decision anchors, and evidence beside each claim.
+  restrained color, a contents list with stable section and decision anchors,
+  and evidence beside each claim.
 - Ground the design in the subject: borrow the product's accent and semantic
   colors so the prose and screenshots use the same visual language.
 - Stack evidence and prose on narrow screens; use columns on wide screens.
@@ -217,12 +288,17 @@ hosted authentication prevents inspection, report that exact gap; successful
 publication alone does not prove the page rendered correctly.
 
 Hand over the hosted **link** (or a clickable absolute local file path for local
-output), plus a short orientation: the first frame to inspect and the calls
-needed. A local path or localhost address is not a hosted URL. Keep local files
+output), plus a short orientation: where to start reading, the reading path for
+a short review, and the calls needed. A local path or localhost address is not a hosted URL. Keep local files
 available after handoff. Do not claim an agent renders HTML inline.
 
 ## Anti-patterns
 
+- Opening with evidence or open questions before the reader knows what the change
+  is, how it works and why it was built this way.
+- Writing for someone who followed the session: undefined shorthand, ticket or
+  call numbers before they are introduced, "as discussed".
+- Skipping the explanation because the change is small. Shrink it instead.
 - A changelog with pictures. Explain the problem, journey, and design as needed
   to support the reader's decision; do not substitute a list of implementation
   or review steps for that explanation.
@@ -234,15 +310,16 @@ available after handoff. Do not claim an agent renders HTML inline.
 
 ## Progress output
 
-Announce phases with the shared glyphs: 🔭 scope · 🧾 evidence · 🖼 frames ·
-⚖️ decisions · 📦 publish. Close with:
+Announce phases with the shared glyphs: 🔭 scope · 📖 context · 🧾 evidence ·
+🖼 frames · ⚖️ decisions · 📦 publish. Close with:
 
 ```
 📦 review-packet · <subject>
  🔗 <published URL or clickable local HTML link>
  🔒 access        <verified audience, or local file only>
+ 📖 context       problem · walk-through · 4 alternatives · costs · reading order
  🧾 evidence      9 live runs · 2 clusters · 11 captures
  🖼 frames        8 (3 proof · 5 decision)
  ⚖️ decisions     5 open for you
- first look: frame 01 — <why that one>
+ start here: section 1, the problem — then <the short reading path>
 ```

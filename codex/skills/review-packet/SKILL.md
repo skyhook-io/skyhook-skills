@@ -1,14 +1,15 @@
 ---
 name: review-packet
-description: Use when the user wants work packaged for review (e.g. "review packet", "/review-packet", "prepare this for review", "make it easy to review this PR set / design / research"). Builds a decision-first page that pairs every claim with the evidence for it.
+description: Use when the user wants work packaged for review (e.g. "review packet", "/review-packet", "prepare this for review", "make it easy to review this PR set / design / research"). Builds a page that explains the change from first principles, then pairs every claim with the evidence for it and ends with the open calls.
 metadata:
-  short-description: Package work for guided review — decisions up front, evidence beside every claim
+  short-description: Package work for guided review — full context first, evidence beside every claim, calls last
 ---
 
 # Review Packet (Codex)
 
-Package work so review is easy to *do*: decisions first, evidence beside claims,
-and a document the reviewer can open.
+Package work so review is easy to *do*: explain the change completely first, then
+put the evidence beside each claim and the open calls at the end, in a document the
+reviewer can open.
 
 Read `../skyhook-skills-commands/review-packet.md` relative to this skill's
 installed directory. In this repository, the source is
@@ -29,8 +30,9 @@ Follow that canonical procedure, including its **Codex: Sites publishing** route
   problem, journey, scope, design, and verification gaps; rewrite on updates.
   Publishing a snapshot can precede CI completion when pending checks are named
   and linked. A settled/merge-ready verdict still requires the completion gates.
-- Put the reader's decisions at the top and the verdict at the bottom. If there
-  is no open decision, write a short report instead of manufacturing a packet.
+- Explain the change first, then the evidence, then the open calls; the verdict
+  goes at the bottom. If there is no open decision, write a short report instead
+  of manufacturing a packet.
 
 These adapters are also installed for Cursor. When running there, follow the
 canonical procedure's **Other agents** route instead of assuming Sites exists.
