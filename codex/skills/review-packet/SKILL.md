@@ -30,8 +30,9 @@ Follow that canonical procedure, including its **Codex: Sites publishing** route
   problem, journey, scope, design, and verification gaps; rewrite on updates.
   Publishing a snapshot can precede CI completion when pending checks are named
   and linked. A settled/merge-ready verdict still requires the completion gates.
-- Put the reader's decisions at the top and the verdict at the bottom. If there
-  is no open decision, write a short report instead of manufacturing a packet.
+- Explain the change first, then the evidence, then the open calls; the verdict
+  goes at the bottom. If there is no open decision, write a short report instead
+  of manufacturing a packet.
 
 These adapters are also installed for Cursor. When running there, follow the
 canonical procedure's **Other agents** route instead of assuming Sites exists.

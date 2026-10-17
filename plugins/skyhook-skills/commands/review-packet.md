@@ -123,7 +123,8 @@ explain it), the options, and your recommendation. The orientation may link to
 the calls so a returning reader can jump to them, but each call is argued where
 the reader already has the context. Use the actual number of decisions; approval
 of the change can be the only call. Do not invent dilemmas to fill a quota. If
-nothing needs deciding, say so.
+nothing needs deciding, not even approval, write a short report instead of a
+packet.
 
 ### 6. Be honest in the packet itself
 
