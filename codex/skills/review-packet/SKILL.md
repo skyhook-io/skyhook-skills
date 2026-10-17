@@ -1,14 +1,15 @@
 ---
 name: review-packet
-description: Use when the user wants work packaged for review (e.g. "review packet", "/review-packet", "prepare this for review", "make it easy to review this PR set / design / research"). Builds a decision-first page that pairs every claim with the evidence for it.
+description: Use when the user wants work packaged for review (e.g. "review packet", "/review-packet", "prepare this for review", "make it easy to review this PR set / design / research"). Builds a page that explains the change from first principles, then pairs every claim with the evidence for it and ends with the open calls.
 metadata:
-  short-description: Package work for guided review — decisions up front, evidence beside every claim
+  short-description: Package work for guided review — full context first, evidence beside every claim, calls last
 ---
 
 # Review Packet (Codex)
 
-Package work so review is easy to *do*: decisions first, evidence beside claims,
-and a document the reviewer can open.
+Package work so review is easy to *do*: explain the change completely first, then
+put the evidence beside each claim and the open calls at the end, in a document the
+reviewer can open.
 
 Read `../skyhook-skills-commands/review-packet.md` relative to this skill's
 installed directory. In this repository, the source is
