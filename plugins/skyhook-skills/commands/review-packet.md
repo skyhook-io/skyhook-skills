@@ -54,7 +54,7 @@ need to understand the change:
 4. **Terms.** Every word the change introduces, and any domain or session term
    the reader needs. Nothing appears before it is defined.
 5. **How it works.** One concrete case walked from input to output. An annotated
-   example or a diagram beats a description.
+   example or a diagram usually beats a description here.
 6. **Where it lives.** The parts of the change, how they depend on each other, and
    the files that hold each, with sizes that separate code from tests.
 
@@ -78,6 +78,17 @@ Then what they need to judge it:
 
 Scale each part to the subject. In a small change several fold into one
 paragraph; the order stays, and none is skipped because the change is small.
+
+**Show it when seeing is faster than reading.** For each part, ask whether a
+visual would let the reader grasp it quicker than prose: a flow of data or calls
+across components, states and the transitions between them, what each item in a
+set looks like before and after (a grid of namespaces, rows of permissions), a
+dependency or layer map, a timeline of a race. Those are often far easier to
+review drawn than described. Draw it in HTML/CSS or Mermaid, with real names and
+values from the change, and say in a caption what the reader should notice. Skip
+it when a sentence or a table is just as clear; a diagram that restates the
+prose, or decorates it, only costs the reader time. Most packets need one to
+three, not one per section.
 
 ### 2. Then the evidence: real, not illustrations
 
@@ -158,6 +169,7 @@ Pick what the material needs; do not use them all.
 | Component | Use when |
 |---|---|
 | **Walk-through**: one case, input to output | Always, at some scale: it is how the reader learns how the change works |
+| **Diagram**: flow, states, before/after grid, layer map | Structure or change is easier seen than read. Not by default: skip it when prose or a table is as clear |
 | **Glossary** | The change introduces terms, or the domain has terms the reader needs |
 | **Layer or dependency map** | The change has parts; show what lives where and what depends on what |
 | **Alternatives table** | Always when options were weighed: option, why not, what settled it |
