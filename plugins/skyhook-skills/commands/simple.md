@@ -66,7 +66,7 @@ For each finding, cite `file:line`, name the smell, show the detector evidence, 
 **Detector:** A symbol is exported (capitalized in Go, public in TS/Python) but no code outside its package references it.
 **Action:** Unexport. If the symbol is genuinely unreachable, delete.
 **Don't flag** if: the symbol is part of a published library API surface that external consumers (outside this repo) plausibly need.
-Before calling a symbol unused or proposing to delete it, also search open PRs: `gh pr list --state open --json headRefName`, then `git grep <symbol> origin/<branch>` for each. A consumer in an open PR is a consumer.
+Before calling a symbol unused or proposing to delete it, also search every open PR's head, through GitHub's pull refs, which exist for PRs from forks too: `git fetch -q origin '+refs/pull/*/head:refs/remotes/origin/pr/*'`, then `for n in $(gh pr list --state open --limit 200 --json number -q '.[].number'); do git grep -q <symbol> "origin/pr/$n" -- && echo "#$n"; done`. A consumer in an open PR is a consumer.
 
 ### 5. Tautological test
 **Detector:** The expected value in the assertion is computed by the same code path as the actual value. Or the test mirrors the implementation: read the test without the impl, you can't tell what behavior is being verified.

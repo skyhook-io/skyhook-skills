@@ -35,7 +35,7 @@ actually behave (their source, defaults, UX, or positioning), run
 Then read the relevant code first; anchor every claim in evidence. Follow your
 plan conventions:
 - **Cite `file:line`** for every factual claim about how things work today.
-- **"Unused" includes open PRs.** Before calling a symbol unused or proposing to delete it, also search open PRs: `gh pr list --state open --json headRefName`, then `git grep <symbol> origin/<branch>` for each. A consumer in an open PR is a consumer.
+- **"Unused" includes open PRs.** Before calling a symbol unused or proposing to delete it, also search every open PR's head, through GitHub's pull refs, which exist for PRs from forks too: `git fetch -q origin '+refs/pull/*/head:refs/remotes/origin/pr/*'`, then `for n in $(gh pr list --state open --limit 200 --json number -q '.[].number'); do git grep -q <symbol> "origin/pr/$n" -- && echo "#$n"; done`. A consumer in an open PR is a consumer.
 - **Split by confidence:** **Certain** / **Confident** / **Needs-input** — don't
   blur them.
 - **Give real opinions** — recommend an approach and say why; name the tradeoffs
