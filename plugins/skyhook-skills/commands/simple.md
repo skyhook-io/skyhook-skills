@@ -66,6 +66,7 @@ For each finding, cite `file:line`, name the smell, show the detector evidence, 
 **Detector:** A symbol is exported (capitalized in Go, public in TS/Python) but no code outside its package references it.
 **Action:** Unexport. If the symbol is genuinely unreachable, delete.
 **Don't flag** if: the symbol is part of a published library API surface that external consumers (outside this repo) plausibly need.
+Before calling a symbol unused or proposing to delete it, also search every open PR's head, through GitHub's pull refs, which exist for PRs from forks too: `git fetch -q origin '+refs/pull/*/head:refs/remotes/origin/pr/*'`, then `for n in $(gh pr list --state open --limit 200 --json number -q '.[].number'); do git grep -q <symbol> "origin/pr/$n" -- && echo "#$n"; done`. A consumer in an open PR is a consumer.
 
 ### 5. Tautological test
 **Detector:** The expected value in the assertion is computed by the same code path as the actual value. Or the test mirrors the implementation: read the test without the impl, you can't tell what behavior is being verified.
@@ -83,7 +84,7 @@ For each finding, cite `file:line`, name the smell, show the detector evidence, 
 ### 8. Kept old path without a named contract
 **Detector:** A fix or refactor that keeps the old path alongside the new one — an alias, shim, fallback, dual read, deprecated wrapper, or code like `resp?.field ?? resp` / `if oldShape { ... } else { newShape }`.
 **Action:** Delete the old path. Keeping it requires a **named contract** that still needs it: a public API, CLI, config, or data format; a tagged upgrade path; a security boundary; or observed production state still in the old shape. Tests that exercise the old path are not a contract. If you can't name one, delete it; if unsure whether one exists, ask before keeping it.
-**Don't flag** if: the contract is named in the code or PR (for example, a documented migration with multiple producers still emitting the old shape).
+**Don't flag** if: the contract is named in the code or PR (for example, a documented migration with multiple producers still emitting the old shape). A caller in an open PR counts: search open branches before deleting.
 
 ### 9. Phantom dependency / disconnected pipeline
 **Detector:** New imports/code paths that aren't reached from any entry point. Setup that no runtime caller invokes.

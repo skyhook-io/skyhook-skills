@@ -35,6 +35,7 @@ actually behave (their source, defaults, UX, or positioning), run
 Then read the relevant code first; anchor every claim in evidence. Follow your
 plan conventions:
 - **Cite `file:line`** for every factual claim about how things work today.
+- **"Unused" includes open PRs.** Before calling a symbol unused or proposing to delete it, also search every open PR's head, through GitHub's pull refs, which exist for PRs from forks too: `git fetch -q origin '+refs/pull/*/head:refs/remotes/origin/pr/*'`, then `for n in $(gh pr list --state open --limit 200 --json number -q '.[].number'); do git grep -q <symbol> "origin/pr/$n" -- && echo "#$n"; done`. A consumer in an open PR is a consumer.
 - **Split by confidence:** **Certain** / **Confident** / **Needs-input** — don't
   blur them.
 - **Give real opinions** — recommend an approach and say why; name the tradeoffs
@@ -56,7 +57,7 @@ avoids argv-quoting issues with backticks / `$` in the plan:
 
 ```bash
 # Plan text already written to plan.md
-codex exec -m gpt-6.1-sol "Critique this implementation plan as a skeptical senior engineer. FIRST challenge the premise: is this the right thing to build and the right approach, or is there a fundamentally simpler/different design? Then find flawed assumptions, missing steps, hidden complexity, and risks. Don't just check internal consistency — question whether the whole direction is correct. Be specific; challenge it, don't rewrite it. The plan is in the <stdin> block." < plan.md
+codex exec -m gpt-6.1-sol "Critique this implementation plan as a skeptical senior engineer. FIRST challenge the premise: is this the right thing to build and the right approach, or is there a fundamentally simpler/different design? Then find flawed assumptions, missing steps, hidden complexity, and risks. Don't just check internal consistency — question whether the whole direction is correct. Before agreeing anything is unused, search open PR branches too. Be specific; challenge it, don't rewrite it. The plan is in the <stdin> block." < plan.md
 ```
 
 (Prompt-only, no plan file? Still redirect: `codex exec -m gpt-6.1-sol "…" < /dev/null`.)

@@ -172,7 +172,12 @@ is skipped; say so.
    review packet. The branch merges cleanly into its base and contains no
    unrelated files.
 10. **Loose ends are visible.** Deferred work, follow-ups, and open decisions
-    appear in the hand-back, not only in commit messages or `NOTES.md`.
+    appear in the hand-back, not only in commit messages or `NOTES.md`. Each
+    "not verified / known limit / deferred" entry states its outcome when hit:
+    wrong, stale, or "couldn't check". Wrong means fix it or make it answer
+    "unknown"; testable cheaply now means test it; only stale or "couldn't
+    check" may stay as a limit. Disclosing a wrong answer doesn't make it
+    acceptable.
 
 **Honest-answer test.** Before declaring done, answer the questions the user is
 likely to ask next, with evidence: *Does this pass `/product-review`? Are there

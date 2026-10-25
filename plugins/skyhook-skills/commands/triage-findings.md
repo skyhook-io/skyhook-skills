@@ -30,6 +30,7 @@ For each issue, work through this checklist:
 - If valid, what's the right fix?
 - Is the suggested fix appropriate, or is there a better approach?
 - Does fixing this introduce other issues or unnecessary complexity?
+- **Weigh narrowing alongside guarding.** For a correctness finding in a rare case, one option is to stop claiming an answer there — report it as unsupported or unknown, or drop the special handling — instead of adding code to get it right. Prefer it only when the case is rare, nothing user-visible depends on the precise answer, and it removes code. Never use it when the case is common or the answer is what users came for. Present both options with their code and behavior cost.
 
 ## Step 3: Produce Triage Summary
 
