@@ -119,7 +119,10 @@ would have seen instead.
 
 After the explanation and the evidence, give each open call its own decision box:
 the question, the context it depends on (pointing back to the sections that
-explain it), the options, and your recommendation. The orientation may link to
+explain it), the options, and your recommendation. When the options are shapes (a
+schema, an API, a message's wording), show each one as the payload it would
+produce for the same case, beside the others, with why it was designed that
+way: a reader can't choose between shapes from descriptions of them. The orientation may link to
 the calls so a returning reader can jump to them, but each call is argued where
 the reader already has the context. Use the actual number of decisions; approval
 of the change can be the only call. Do not invent dilemmas to fill a quota. If
@@ -179,6 +182,7 @@ Pick what the material needs; do not use them all.
 | **Reading order / split plan** | The diff is large or has separable parts |
 | **Frame**: evidence beside prose | The default evidence unit. Screenshot/excerpt on one side, claim on the other |
 | **Decision box** | Any open call — give it a distinct block, never inline prose |
+| **Option payloads side by side** | A call about a data shape, an API or wording: each option's actual payload or output for the same case, the design reason behind it, and what a reader would conclude from it |
 | **Before / after pair** | Behaviour changed and the change is visible |
 | **Counterfactual note** | The improvement is an absence (see step 4) |
 | **Journey table** | Product/UX work — rank how well each journey is served |
