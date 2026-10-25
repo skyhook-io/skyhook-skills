@@ -228,6 +228,8 @@ only HTML; generate a PDF only if explicitly requested.
 - For local HTML and Sites, inline CSS and any small optional scripts; use system
   fonts. Escape evidence excerpts as text, never executable markup. Keep source
   links and provenance beside evidence; external references are not dependencies.
+- Render diagrams in system fonts on every host. Mermaid sizes labels before a
+  web font loads, so a page font such as Inter clips diagram text.
 - Give the document a real name and a one-line description.
 
 ### Codex: Sites publishing
