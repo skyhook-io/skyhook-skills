@@ -138,7 +138,9 @@ is skipped; say so.
    before declaring the PR done.
 3. **User-visible work passes `/product-review`** on its final state, with its
    findings triaged (Fix/Skip with evidence). Scenario-sensitive work also has
-   its scenario ledger complete.
+   its scenario ledger complete. Another review standing in for it (a
+   devil's-advocate product slice, a code review) does not count: run
+   `/product-review` on the final screens, or mark this item ✗.
 4. **It works when used, not just when tested.** Exercise the change through
    the surface a user or operator touches (UI, CLI, API, generated output) and
    probe for fake success: vary the input, refresh or re-run to confirm it
