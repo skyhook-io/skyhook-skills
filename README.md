@@ -176,7 +176,8 @@ The loops call **`/qa`** to verify a change, but `/qa` is **repo-provided**: eac
 description: Verify this change — type-check, tests, and visual-test when a UI change warrants it
 ---
 # QA
-- Code changed → run your type-check + tests (e.g. `make tsc` / `make test`, `npm run tsc`, `go test ./...`).
+- While iterating → a fast tier: only what the change touches (changed packages, `vitest related`, type-check). E.g. a `make test-changed` target.
+- Final batch → the full suite once (`make test`, `go test ./...`); CI on the pushed head counts, so don't repeat it locally when CI will run it.
 - UI changed → lean toward `/visual-test` for feature-scale rendered changes; skip for small/non-visual. Report status (ran → link the screenshot dir; skipped → why).
 ```
 

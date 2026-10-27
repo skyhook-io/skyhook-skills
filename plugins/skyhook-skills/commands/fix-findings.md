@@ -50,8 +50,9 @@ Immediately proceed to fix all issues marked as "Fix" in the triage summary. Do 
 
 At a contextual follow-up, retain the last reviewed revision and completed
 checks, announce the fix delta, and identify which evidence it invalidates. Batch
-known fixes before expensive QA; use focused checks during iteration, then run
-the project's required checks for the final batch. Reuse evidence that still
+known fixes before expensive QA; use the repo's fast tier (changed packages,
+related tests) during iteration, then run the project's required checks once for
+the final batch; CI on the pushed head counts as that run. Reuse evidence that still
 applies and explain repeated broad suites or live runs. Do not assume an earlier
 pass when its revision or coverage is unknown.
 
