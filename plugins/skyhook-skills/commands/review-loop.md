@@ -173,7 +173,11 @@ the checks that fit the *delta* — most rounds that's just type-check/tests (or
 nothing for a trivial fix). Heavier checks like a repo's `/visual-test` are
 **reserved for self-contained UI changes worth a capture and skipped by default**
 otherwise (logic, utils, server, Go-only, refactors, types, copy → no
-visual-test). Batch known fixes before expensive QA. Use focused checks while
+visual-test).
+
+**Fast dev loop first.** Verification has two tiers. While iterating, run the repo's fast tier (only what the change touches: changed packages, related tests, type-check) once per batch of fixes. Run the completion tier once, after the final batch. CI on the pushed head *is* that full run: push and let it run rather than repeating the full suite locally; run it locally only for a branch CI won't test (e.g. a stacked PR). Don't run suites alongside other heavy work (builds, other test runs, agents): it slows everything and creates false failures. Rerun a failure in a file the change doesn't touch on its own before debugging it.
+
+Batch known fixes before expensive QA. Use focused checks while
 iterating; run the required completion checks after the final batch. Before
 repeating a broad suite or live run, name what changed or failed that makes the
 previous result insufficient. A fresh full-scope review remains required for

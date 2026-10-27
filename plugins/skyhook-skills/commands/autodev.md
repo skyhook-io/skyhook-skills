@@ -87,7 +87,9 @@ Generalize — read the directive and adjust which phases run and how.
    `product-review: n/a (<why>)`.
 5. **PR** — verify with the repo's `/qa` (type-check/tests, and visual-test only
    if a UI change warrants it; falls back to plain build/test detection if no
-   `/qa`). Skip if `/review-loop` just ran `/qa` green this round. If green, open
+   `/qa`). Skip if `/review-loop` just ran `/qa` green this round. Use the repo's
+   fast tier while iterating; when CI runs the full suite on push, don't repeat it
+   locally (see `/review-loop`'s fast-dev-loop rule). If green, open
    the PR with `/pr`. Stop on failing checks. **Never merge.**
 6. **Converge** — run `/fix-pr-loop`: wait for Bugbot/CodeRabbit/AI reviewers,
    triage each comment skeptically, fix the real ones, push, repeat until settled

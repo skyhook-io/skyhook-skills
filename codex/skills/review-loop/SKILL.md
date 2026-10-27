@@ -40,6 +40,7 @@ translations:**
   before expensive QA. A focused follow-up is not whole-PR convergence: the
   final-head full-scope review and clean end-to-end verification remain required,
   with required CI and PR feedback closure before calling the PR settled.
+- **Fast dev loop first:** iterate with the repo's fast tier (changed packages, related tests); run the full suite once at the end, and let CI on the pushed head be that run unless CI won't test the branch. Never run suites alongside other heavy work; rerun an untouched failing file alone before debugging.
 - **`/qa`** → read the repo's `.claude/commands/qa.md` and follow it (type-check
   + tests; visual-test default-skip, only warranted self-contained UI changes).
 - **Update PR** ("/pr") → via `git` + `gh`: stage relevant files only, commit/
