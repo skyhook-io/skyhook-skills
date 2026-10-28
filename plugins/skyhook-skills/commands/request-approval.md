@@ -82,6 +82,10 @@ For example:
 
 ## After posting
 
+Reviewers who run `/approval-watcher` can approve by replying `approve` in the
+message's thread; their watcher approves on GitHub under their own login.
+
+
 - Report the level, the line you posted, and a link to the message when the
   tool returns one.
 - Never merge, and never use an admin bypass (`gh pr merge --admin`, disabling

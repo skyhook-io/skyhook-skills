@@ -6,6 +6,7 @@ on:
       - 'scripts/install-codex.sh'
       - 'codex/skills/**'
       - 'plugins/skyhook-skills/commands/**'
+      - 'plugins/skyhook-skills/scripts/**'
       - 'tests/**'
       - '.github/workflows/test-installer.yml'
 
