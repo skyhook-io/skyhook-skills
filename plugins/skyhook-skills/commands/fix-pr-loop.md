@@ -268,6 +268,11 @@ Converged means, **all checked on the final head SHA after the last push**:
 If the last push was a fix, you are not converged yet: wait for reviewers to
 settle on it and read the inventory again.
 
+When converged and running on its own, run `/request-approval` so a human
+reviewer picks the PR up; it posts only when the base branch requires an
+approval. Inside `/autodev`, skip it: autodev requests approval after its done
+audit.
+
 When converged, report:
 
 ```text
@@ -279,6 +284,7 @@ PR loop converged.
 - Reviewers: <summary, each settled on the final head>
 - Threads: <n resolved this run · 0 open, or the open ones listed for the user>
 - Validation run: <commands>
+- Approval request: <level posted in channel · not required · not posted: reason · skipped inside autodev>
 ```
 
 ## Stop Conditions

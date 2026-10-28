@@ -32,7 +32,9 @@ stopped early.
 
   **Hard ceiling — always stop and ask, even in `--auto`:**
   1. Prod / deploy / DB schema or data migrations
-  2. External publish or money (npm publish, emails, public-facing, billing, spend)
+  2. External publish or money (npm publish, emails, public-facing, billing, spend).
+     An approval request in the team's own approvals channel (`/request-approval`)
+     is internal and does not count.
   3. Security, auth, secrets, crypto, RBAC posture
   4. Breaking a public/library API (your published package exports, e.g. `@your-scope/*`) or deleting/
      overwriting files not created in this run
@@ -51,6 +53,8 @@ first? Skip what doesn't fit.
 - `no PR` / `local only` → stop before opening a PR; `don't converge` → skip the
   reactive bot loop.
 - `thorough` / `deep` vs `quick` → scale ceremony; `focus on <area>` → scope it.
+- `approval now` / `approval 1h` / `approval 1d` → the urgency for
+  `/request-approval`; `no approval request` → don't post one.
 
 Generalize — read the directive and adjust which phases run and how.
 
@@ -107,7 +111,13 @@ Generalize — read the directive and adjust which phases run and how.
    re-audit. Batch the audit's fixes into one push. Cap: 2 audit rounds; after
    that, hand back as `not done` with the gaps named. Waiting for CI on the final
    head is the audit's last step, after everything else is done.
-9. **Hand back.** Summarize: what was built, decisions made, **assumptions taken
+9. **Request approval.** When the audit result is `done` and the PR needs a
+   human approval to merge, run `/request-approval` to post it in the team's
+   approvals channel with an urgency level. A PR that is `waiting on you`,
+   `not done`, or `blocked` is not ready for a reviewer: don't post, and say so
+   in the hand-back. The command checks whether an approval is required, so
+   repos without branch protection skip this on their own.
+10. **Hand back.** Summarize: what was built, decisions made, **assumptions taken
    (`--auto`, from `NOTES.md`)**, reviewer verdicts (Fix/Skip with evidence),
    scenario ledgers for scenario-sensitive work, practical risk/blast radius plus
    mitigation/test proof for nontrivial changes, the done-audit result, anything
@@ -261,7 +271,8 @@ not by default:
 Make the run scannable: announce each phase with a header line carrying its
 headline number inline — same greppable glyph set every run: 🔭 scope · 🧭 plan ·
 🤝 plan cross-review · 🔎 self-review · 🔵 Codex review · 🟣 Claude review ·
-⚖️ triage · 🔧 fix · ✅ qa · 📤 PR · 🤖 converge/bots · 🏁 done audit · 📋 summary
+⚖️ triage · 🔧 fix · ✅ qa · 📤 PR · 🤖 converge/bots · 🏁 done audit ·
+🙋 approval · 📋 summary
 (e.g. `### ⚖️ TRIAGE · 5 fix · 7 skip · 1 discuss`).
 
 Close the **Hand back** step with one run-summary ledger spanning the whole chain, so the user
@@ -278,6 +289,7 @@ can audit the autopilot at a glance:
  📤 PR            #<n> opened
  🤖 converge      bugbot 4 → ⚖️ 3 fix · 1 skip → 🔧 3 applied · pushed · CI ✓
  🏁 done audit    8 ✓ · 1 n/a · 1 ⏸ · 0 ✗ · threads 0 open · product-review ✓ · head a1b2c3d
+ 🙋 approval      not posted (waiting on you)
  result: waiting on you · plan 2 cycles · review 2 rounds · 11 fixed · 7 skipped · 1 open
  assumptions (--auto):
    • <decision you made on your own + why>
@@ -289,7 +301,9 @@ Always include the **triage breakdowns** (your skepticism signal), the **done
 audit** line, the **result line** (`done` · `waiting on you` · `not done` ·
 `blocked`), **assumptions** (in `--auto`), and **open items**. Any `✗` in the
 audit must appear under open items with what is missing, and every `⏸` with
-the decision it needs. Durations only where
+the decision it needs. The **`🙋 approval` line** says one of: posted (level and
+channel), not required, not posted with the reason, or the line handed to the
+user to post. Durations only where
 they matter (cross-review, CI waits). **The `✅ qa` line must state visual-test
 explicitly** — ran ⇒ link the screenshot directory as an **absolute path** (or
 `file://`, not relative/`~`, so it linkifies); skipped ⇒ `visual-test: skipped

@@ -111,6 +111,13 @@ Don't just push the new commit and stop. Re-evaluate the PR title + body against
 3. If the description no longer matches reality, **re-derive the narrative from the full diff as if writing it fresh — rewrite, don't append.** Accreting a fix bullet each review round turns the body into a review-fix changelog instead of a description of the feature. Propose the rewritten title + body and update with `gh pr edit <num> --title ... --body ...`.
 4. Only skip the description refresh if the new commit is genuinely a small follow-up that the existing description already covers (e.g. fixing a typo flagged in review on a feature already described).
 
+### 5. Request approval
+When you run `/pr` on its own and the new or updated PR is ready for a human,
+run `/request-approval` so a reviewer picks it up. It posts only when the base
+branch requires an approval, and it takes an urgency level (`now`, `1h`, `1d`)
+from the user's request. Inside a loop (`/autodev`, `/fix-pr-loop`), skip this
+step: the loop requests approval once the automated reviewers have settled.
+
 ## Guidelines
 - **Concise ≠ shallow**: cut fluff, incidental detail, and review-fix trivia — but give a nontrivial PR the real motivation + design depth a reviewer needs. Don't reduce a big feature to a handful of bullets.
 - **Be clear**: Someone unfamiliar with the code should understand the change
@@ -179,4 +186,5 @@ attached rather than falling back to a local path.
 5. git commit (or amend if appropriate)
 6. git push -u origin feature/jwt-auth
 7. gh pr create --title "..." --body "..."
+8. /request-approval → post in the approvals channel when an approval is required
 ```
