@@ -23,6 +23,7 @@ translations** wherever it names a Claude command:
 | `/qa` | read the repo's `.claude/commands/qa.md` and follow it (Codex reads it as a file). Use its fast tier while iterating; the full suite runs once at the end, and CI on the pushed head counts |
 | `/pr` (verify + open/update PR) | inline via `git` + `gh`: run `/qa`, then create/update the PR (stage relevant files only, `--force-with-lease`). **Write the body per `~/.codex/skills/skyhook-skills-commands/pr.md`** — depth proportional to the change, lead with motivation + design, **no review-fix trivia, re-derive don't append**. (Codex especially tends to dump 4 terse bullets — don't.) |
 | `/fix-pr-loop` (converge) | follow `~/.codex/skills/skyhook-skills-commands/fix-pr-loop.md` inline: wait for the AI reviewers (check CI as you go and act on failures, but don't wait for slow checks while known work remains; wait for full CI once, at the end), read its **full feedback inventory** (unresolved review threads, review bodies, PR conversation comments incl. edited-in-place bot comments, check-run output), triage each finding skeptically, fix the real ones, push, **close every item** (resolve fixed bot threads, reply + resolve skipped ones), repeat until reviewers have settled on the final head or the loop caps. **The AI reviewers + failing build/test CI are the primary signal** — wait for those, triage them. **Don't block on CodeQL >~2 min** — it's a secondary scanner; if it's the only laggard, proceed and note `CodeQL pending` |
+| `/request-approval` (after a `done` audit) | follow `~/.codex/skills/skyhook-skills-commands/request-approval.md` inline: post only when `gh pr view --json reviewDecision` is `REVIEW_REQUIRED`, one line in the approvals channel with `NOW`/`1H`/`1D`, sent through whatever Slack connector you have. No Slack connector → print the exact line for the user to post |
 | `/triage-findings`, `/fix-findings`, `/simple` | no such commands — perform the discipline inline (read the real code, never auto-accept, cite evidence on skips, don't ping-pong, fix confirmed issues) |
 
 **Non-negotiable invariants** (don't let translation lose them):
@@ -68,6 +69,10 @@ translations** wherever it names a Claude command:
   workers" rules — complete work orders, an exit for every hard rule, verify the
   diff not the report, one order per fresh session, one writer at a time. Never
   pass a gate by gaming it yourself.
+- **Request approval once the audit is `done`.** When the PR needs a human
+  approval to merge, post it in the team's approvals channel per the canonical
+  `request-approval.md` (urgency `NOW`/`1H`/`1D`, default `1D`). Never merge or
+  use an admin bypass to skip the approval.
 - **Consider a review packet** before handing back, when the work would be hard to
   judge from the PR alone — large or multi-PR, a rendered surface, captured output
   worth showing, or open product calls. Judgement call, not a step; say if skipped.
