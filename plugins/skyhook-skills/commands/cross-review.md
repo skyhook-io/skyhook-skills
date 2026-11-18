@@ -13,15 +13,15 @@ setting, not by editing commands.
 ## Step 1 — Resolve the reviewer + model
 Pick in this order (first wins):
 1. **Directive in `$ARGUMENTS`** — `codex` / `cursor` (and `use <model>` / a bare
-   model id like `gpt-6.1-sol`).
+   model id like `gpt-6.2-sol`).
 2. **Env** — `SKYHOOK_REVIEWER` (`codex|cursor`), `SKYHOOK_REVIEW_MODEL`.
 3. **Config file** — `~/.claude/skyhook-skills.json`, fields `reviewer` + `model`
    (read it: `cat ~/.claude/skyhook-skills.json 2>/dev/null`).
-4. **Default** — reviewer `codex`; model per reviewer: codex → **`gpt-6.1-sol`**
+4. **Default** — reviewer `codex`; model per reviewer: codex → **`gpt-6.2-sol`**
    (the latest Sol tier — Codex has no moving `sol` alias, so bump this id when a
    newer Sol ships), cursor → `gpt-5.6-high`.
 
-Announce what you resolved, e.g. `### 🔁 CROSS-REVIEW · codex (gpt-6.1-sol)`.
+Announce what you resolved, e.g. `### 🔁 CROSS-REVIEW · codex (gpt-6.2-sol)`.
 
 ## Step 2 — Resolve scope
 Default: branch vs `main` (`git diff main...HEAD` + uncommitted). `--base <ref>` /
