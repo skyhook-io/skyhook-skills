@@ -14,7 +14,9 @@ setting, not by editing commands.
 Pick in this order (first wins):
 1. **Directive in `$ARGUMENTS`** — `codex` / `cursor` (and `use <model>` / a bare
    model id like `gpt-6.1-sol`).
-2. **Env** — `SKYHOOK_REVIEWER` (`codex|cursor`), `SKYHOOK_REVIEW_MODEL`.
+2. **Env** — `SKYHOOK_REVIEWER` (`codex|cursor`), `SKYHOOK_REVIEW_MODEL`, and
+   `SKYHOOK_REVIEW_CODEX_HOME` (codex only: a separate codex settings folder used
+   just for reviews; see Step 3).
 3. **Config file** — `~/.claude/skyhook-skills.json`, fields `reviewer` + `model`
    (read it: `cat ~/.claude/skyhook-skills.json 2>/dev/null`).
 4. **Default** — reviewer `codex`; model per reviewer: codex → **`gpt-6.1-sol`**
@@ -46,7 +48,23 @@ node "$SCRIPT" review --base <ref> --model "<model>"    # or: adversarial-review
 - Always pass `--model` with the resolved model, so the review runs on the
   latest Sol even when `~/.codex/config.toml` defaults to something lighter.
   Reasoning effort still comes from the codex config (the companion has no
-  `--effort` on reviews); `high`+ is recommended for review depth.
+  `--effort` on reviews); `high`+ is recommended for review depth. With no
+  effort set, codex can run reviews at effort `none`, which makes them shallow.
+- **Review-only codex settings (optional).** To give reviews high effort without
+  changing codex for everything else, keep a second settings folder and point
+  reviews at it: if `SKYHOOK_REVIEW_CODEX_HOME` is set, prefix every codex /
+  companion call with `CODEX_HOME="$SKYHOOK_REVIEW_CODEX_HOME"`:
+  ```bash
+  CODEX_HOME="$SKYHOOK_REVIEW_CODEX_HOME" node "$SCRIPT" review --base <ref> --model "<model>"
+  ```
+  One-time setup: `mkdir -p ~/.codex-review && printf 'model_reasoning_effort = "high"\n' > ~/.codex-review/config.toml`,
+  then `CODEX_HOME=~/.codex-review codex login` (its own sign-in; don't copy or
+  link `auth.json` from `~/.codex`, because codex rotates login tokens and a shared
+  copy can sign the other folder out). If codex says it isn't logged in under that
+  folder, surface it verbatim and stop.
+- Check the companion is installed before running: if `$SCRIPT` is empty, say the
+  codex plugin is missing (`/plugin marketplace add openai/codex-plugin-cc`, then
+  `/plugin install codex@openai-codex`) and stop. Don't fall back silently.
 
 **cursor** — via the Cursor CLI, pinned to the resolved model:
 ```bash
