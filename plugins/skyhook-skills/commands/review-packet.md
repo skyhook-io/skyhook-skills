@@ -201,7 +201,7 @@ request before publishing:
 | Claude | Publish with the **Artifact** tool; load `artifact-design` first |
 | Codex | Publish with **Sites**, following its available skills and current tool instructions |
 | Explicit local-only request, or publishing unavailable | Self-contained HTML file with a clickable absolute local path |
-| Other agents (including Cursor) | Use an available publishing integration when requested; otherwise local HTML |
+| Other agents (including Cursor and Antigravity CLI) | Use an available publishing integration when requested; otherwise local HTML |
 
 Do not invoke Claude's Artifact tool or require `artifact-design` from Codex.
 If the selected publishing tool is unavailable or fails, finish and hand over the

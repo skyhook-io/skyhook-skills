@@ -15,7 +15,7 @@ This command **composes** existing procedures — it does not re-implement them:
 - `/review` — self correctness review
 - `/simple` — over-engineering / dead-weight audit (honor its "don't ping-pong
   with the reviewer" rule)
-- `/cross-review` — cross-model review by the configured secondary reviewer (codex or cursor; nontrivial only)
+- `/cross-review` — cross-model review by the configured secondary reviewer (codex or cursor; agy only if explicitly requested; nontrivial only)
 - `/triage-findings` — validate every finding against the real code
 - `/fix-findings` — apply confirmed fixes
 - `/pr` — stage only relevant files, commit/amend, push `--force-with-lease`,
@@ -38,7 +38,8 @@ step just because it's listed.
 
 **Honor free-text steering in the invocation as an override** — the caller's
 intent beats the heuristic. Examples (generalize beyond them):
-- `consult codex` / `consult cursor` / `second opinion` → run the cross-model pass
+- `consult codex` / `consult cursor` / `second opinion` (or `consult agy` /
+  `consult gemini`, only when explicitly requested) → run the cross-model pass
   (and pick that reviewer for this run) even if the change looks trivial.
   `self-review only` / `skip cross-review` → skip it.
 - `no PR` / `local only` → review + fix but don't create/update a PR.
@@ -123,8 +124,9 @@ Each round:
    - **Then line-level:** run `/review` (`--deep` ⇒ `/pr-review-toolkit:review-pr
      all`) and `/simple` for correctness, bugs, and dead weight.
    - **Cross-model pass** (nontrivial only): run `/cross-review` — the configured
-     secondary reviewer (codex or cursor; set in `~/.claude/skyhook-skills.json` or
-     `consult <x>`). Have it *challenge the approach/design*, not just hunt defects
+     secondary reviewer (codex or cursor by default; agy only if explicitly
+     requested; set in `~/.claude/skyhook-skills.json` or `consult <x>`). Have
+     it *challenge the approach/design*, not just hunt defects
      (codex: use its adversarial mode). Trivial diffs skip it — don't ceremony-ize a typo.
    - **Scenario ledger for scenario-sensitive work:** if the change affects
      user-facing copy, diagnostics, remediation guidance, detector precision,

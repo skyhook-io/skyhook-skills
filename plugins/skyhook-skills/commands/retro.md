@@ -1,6 +1,6 @@
 # Session Retrospective
 
-Reflect on the current session and identify concrete improvements to agent configuration (Claude Code or Codex), documentation, and workflows that would prevent friction and improve future sessions.
+Reflect on the current session and identify concrete improvements to agent configuration (Claude Code, Codex, or Antigravity CLI), documentation, and workflows that would prevent friction and improve future sessions.
 
 ## Step 1: Gather Context
 
@@ -13,12 +13,14 @@ Read these files to understand the current setup (read in parallel, skip any tha
 - `CLAUDE.md` (in repo root) - project-level instructions
 - Any parent `CLAUDE.md` files (e.g., workspace-level)
 - When running in Codex: `AGENTS.md` (repo and parents), `$CODEX_HOME/AGENTS.md`, `$CODEX_HOME/config.toml` (`$CODEX_HOME` defaults to `~/.codex`)
+- When running in Antigravity CLI (`agy`): `AGENTS.md` / `GEMINI.md` (repo and parents), `~/.gemini/AGENTS.md`, `~/.gemini/GEMINI.md`, `~/.gemini/antigravity-cli/settings.json`
 
 **Custom commands:**
 - List files in `~/.claude/commands/` - user-level slash commands
 - List files in `.claude/commands/` (in repo root) - project-level slash commands
 - When running in Codex: list `$CODEX_HOME/skills/`
-- Note which commands/skills come from a plugin (e.g. `/plugin` list, `~/.claude/plugins/`) rather than a local file — they are edited in a different place (see category D)
+- When running in Antigravity CLI (`agy`): list `~/.gemini/config/plugins/`, `~/.gemini/config/skills/`, and `~/.agents/skills/`
+- Note which commands/skills come from a plugin (e.g. `/plugin` list, `~/.claude/plugins/`, `~/.gemini/config/plugins/`) rather than a local file — they are edited in a different place (see category D)
 
 **Project docs:**
 - `README.md` - does it have accurate build/run instructions?
@@ -75,7 +77,7 @@ Rules that apply across all your projects.
 **Where a command change goes depends on where the command comes from:**
 - Local file in `~/.claude/commands/` or `.claude/commands/`: edit it there.
 - Plugin-provided (namespaced like `/plugin-name:command`, or listed by `/plugin`): propose the change in the **plugin's source repository**, not the installed copy. The installed copy under `~/.claude/plugins/` (or `$CODEX_HOME/skills/`) is overwritten on the next update. Never "fix" a plugin command by adding a same-named file to `~/.claude/commands/` — it silently shadows the plugin and drifts from it.
-- For skyhook-skills that repository is `github.com/skyhook-io/skyhook-skills`: commands in `plugins/skyhook-skills/commands/<name>.md` (shared by Claude, Codex and Cursor), Codex/Cursor adapters in `codex/skills/<name>/SKILL.md`. Propose the edit as a PR there.
+- For skyhook-skills that repository is `github.com/skyhook-io/skyhook-skills`: commands in `plugins/skyhook-skills/commands/<name>.md` (shared by Claude, Codex, Cursor, and Antigravity), Codex/Cursor adapters in `codex/skills/<name>/SKILL.md`, and Antigravity plugin adapters in `antigravity/skills/<name>/SKILL.md`. Propose the edit as a PR there.
 
 ### E. Documentation Improvements
 - README.md updates (build instructions, architecture, setup)
@@ -126,5 +128,5 @@ After presenting findings, ask the user which changes they'd like to apply. Then
 - Don't over-engineer. Only propose changes backed by actual session evidence, not theoretical improvements.
 - Keep CLAUDE.md rules concise. One line per rule when possible. Claude reads these every session.
 - Consider whether a fix belongs at user-level (all repos) or repo-level (this project only).
-- In Codex, map the categories to their equivalents: `AGENTS.md` for CLAUDE.md, `$CODEX_HOME/config.toml` for settings, `$CODEX_HOME/skills/` for commands.
+- In Codex, map the categories to their equivalents: `AGENTS.md` for CLAUDE.md, `$CODEX_HOME/config.toml` for settings, `$CODEX_HOME/skills/` for commands. In Antigravity CLI (`agy`), map them to `AGENTS.md` / `~/.gemini/AGENTS.md`, `~/.gemini/antigravity-cli/settings.json`, and `~/.gemini/config/plugins/` or `~/.agents/skills/`.
 - If you can't find evidence of friction, say so. Not every session needs improvements. A short "everything went smoothly" retro is perfectly fine.

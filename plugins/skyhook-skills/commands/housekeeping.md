@@ -43,6 +43,7 @@ Inventory disk usage, stale developer tools, caches, old services/processes, Hom
 5. Agent transcripts and tool caches (no retention by default; grow with use):
    - `~/.codex/sessions` — rollout JSONL per session; compaction snapshots, raw tool output and sub-agents can make single files 100 MB–1.5 GB. No age/size setting exists. List by mtime (`find ~/.codex/sessions -name 'rollout-*.jsonl*' -mtime +30`); deleting loses `codex resume` for those sessions.
    - `~/.claude/projects/*/*.jsonl` — same trade-off.
+   - `~/.gemini/antigravity-cli/{conversations,brain,log,cache}` — Antigravity CLI session data, artifacts, logs, and caches; deleting `conversations`/`brain` loses session resume and saved artifacts.
    - `~/Library/Caches/go-build`, `~/.npm/_cacache`, `~/.npm/_npx`, the pnpm store. Once approved, reclaim with `go clean -cache`, `npm cache clean --force`, `npm cache npx rm --force`, `pnpm store prune`.
    - `~/Library/Caches/ms-playwright-mcp/mcp-chrome-*` — one Chrome profile per project, almost all cache. Recommend clearing only `Default/Cache` and `Default/Code Cache` in profiles idle for weeks and not open (`lsof +D`); that keeps logins.
 

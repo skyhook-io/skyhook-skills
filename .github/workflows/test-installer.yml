@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/install-codex.sh'
       - 'codex/skills/**'
+      - 'antigravity/skills/**'
+      - '.antigravity-plugin/**'
       - 'plugins/skyhook-skills/commands/**'
       - 'tests/**'
       - '.github/workflows/test-installer.yml'
