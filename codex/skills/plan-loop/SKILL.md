@@ -30,6 +30,10 @@ cross-review, triage, iterate, gate). **Codex translations:**
   final prose has appeared while `tool_use`, `status`, or `thinking_tokens`
   events are still arriving. Triage the final `result` text, not the JSON event
   noise.
+  - *Optional (`agy`, only if explicitly requested):* if the user explicitly asks
+    for `consult agy` / `consult gemini`, critique `/tmp/plan.md` via
+    `agy -p "Read /tmp/plan.md and critique it as a skeptical senior engineer..." --model gemini-4-neon-high --sandbox --settings '{"toolPermission":"proceed-in-sandbox","enableTerminalSandbox":true}' --disable-slash-commands --output-format text --print-timeout 10m`
+    instead of Claude (triage identically).
 - **Triage Claude's critique inline** — never auto-accept it; verify each point
   against the actual code, integrate the valid ones, reject weak ones with a
   stated reason. Cap at 2 cross-review cycles.

@@ -12,6 +12,7 @@ on:
     branches: [main]
     paths:
       - 'plugins/skyhook-skills/commands/**'
+      - 'antigravity/skills/**'
 
 permissions:
   contents: write
@@ -26,13 +27,14 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Auto-bump patch version + sync the three version fields
+      - name: Auto-bump patch version + sync all plugin manifest versions
         env:
           BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
           pj="plugins/skyhook-skills/.claude-plugin/plugin.json"
           mk="./.claude-plugin/marketplace.json"
+          ag=".antigravity-plugin/plugin.json"
 
           cur=$(jq -r .version "$pj")
           # If a human already bumped in this push, don't double-bump.
@@ -48,6 +50,7 @@ jobs:
 
           tmp=$(mktemp); jq --arg v "$target" '.version = $v' "$pj" > "$tmp" && mv "$tmp" "$pj"
           tmp=$(mktemp); jq --arg v "$target" '.metadata.version = $v | .plugins[0].version = $v' "$mk" > "$tmp" && mv "$tmp" "$mk"
+          tmp=$(mktemp); jq --arg v "$target" '.version = $v' "$ag" > "$tmp" && mv "$tmp" "$ag"
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

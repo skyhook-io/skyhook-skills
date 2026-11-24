@@ -21,8 +21,11 @@ translations:**
   interfaces, tests that assert the implementation). Don't ping-pong with prior
   reviewers.
 - **Cross-model review** ("/cross-review") → the **claude-review** skill — from
-  Codex the secondary reviewer stays Claude (it reviews your work). Nontrivial
-  changes only — don't ceremony-ize a typo.
+  Codex the secondary reviewer stays Claude (it reviews your work). Only if the
+  user explicitly asks (`consult agy` / `consult gemini`), run `agy` headlessly
+  with `--model gemini-4-neon-high --sandbox --settings '{"toolPermission":"proceed-in-sandbox","enableTerminalSandbox":true}' --disable-slash-commands --output-format text --print-timeout 10m`
+  (same read-only review prompt + skeptical triage). Nontrivial changes only —
+  don't ceremony-ize a typo.
 - **Scenario-sensitive work** (copy, diagnostics/remediation, detector precision,
   error classification, security/permissions, UI states) → build a scenario
   ledger before calling the review complete: scenario, expected final behavior or

@@ -18,7 +18,7 @@ translations** wherever it names a Claude command:
 |---|---|
 | `/plan-loop` | the **plan-loop** skill |
 | `/review-loop` | the **review-loop** skill |
-| `/cross-review` (cross-model) | the **claude-review** skill — from Codex the secondary reviewer stays Claude (it reviews your work) |
+| `/cross-review` (cross-model) | the **claude-review** skill — from Codex the secondary reviewer stays Claude (it reviews your work). Only if the user explicitly asks (`consult agy` / `consult gemini`), run `agy` headlessly with `--model gemini-4-neon-high --sandbox --settings '{"toolPermission":"proceed-in-sandbox","enableTerminalSandbox":true}' --disable-slash-commands --output-format text --print-timeout 10m` instead |
 | `/competitive-research` (optional, when warranted) | the **competitive-research** skill |
 | `/qa` | read the repo's `.claude/commands/qa.md` and follow it (Codex reads it as a file). Use its fast tier while iterating; the full suite runs once at the end, and CI on the pushed head counts |
 | `/pr` (verify + open/update PR) | inline via `git` + `gh`: run `/qa`, then create/update the PR (stage relevant files only, `--force-with-lease`). **Write the body per `~/.codex/skills/skyhook-skills-commands/pr.md`** — depth proportional to the change, lead with motivation + design, **no review-fix trivia, re-derive don't append**. (Codex especially tends to dump 4 terse bullets — don't.) |

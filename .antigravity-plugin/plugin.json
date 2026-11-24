@@ -1,0 +1,29 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "skyhook-skills",
+  "displayName": "Skyhook Skills",
+  "version": "0.1.30",
+  "description": "Autonomous dev-loop, cross-model review, product/UX critique, review packets, and evidence-driven competitive research as composable skills.",
+  "skills": "./antigravity/skills",
+  "suggestedPrompts": [
+    "Run /skyhook-skills:plan-loop on this task before writing code",
+    "Run /skyhook-skills:review-loop on my current branch",
+    "Run /skyhook-skills:product-review on this user-facing change"
+  ],
+  "author": {
+    "name": "Skyhook",
+    "url": "https://skyhook.io"
+  },
+  "homepage": "https://github.com/skyhook-io/skyhook-skills",
+  "repository": "https://github.com/skyhook-io/skyhook-skills",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "code-review",
+    "autonomous",
+    "product-review",
+    "cross-model",
+    "competitive-research",
+    "review-packet"
+  ]
+}

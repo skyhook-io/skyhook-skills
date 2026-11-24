@@ -69,6 +69,15 @@ so bump this id when a newer Sol ships. Plan critique is deep reasoning, so
 
 (Trivial plans skip this. This is Claude→Codex, which has no export gate.)
 
+**Optional — Antigravity CLI (`agy`, only if explicitly requested):** if the
+caller explicitly asks for `consult agy` / `consult gemini` (or configures
+`SKYHOOK_REVIEWER=agy`), run `agy` headlessly against `plan.md` instead of
+Codex, defaulting to `gemini-4-neon-high`:
+```bash
+agy -p "Read plan.md and critique this implementation plan as a skeptical senior engineer. FIRST challenge the premise: is this the right thing to build and the right approach, or is there a fundamentally simpler/different design? Then find flawed assumptions, missing steps, hidden complexity, and risks. Don't just check internal consistency — question whether the whole direction is correct. Before agreeing anything is unused, search open PR branches too. Be specific; challenge it, don't rewrite it." \
+  --model gemini-4-neon-high --sandbox --settings '{"toolPermission":"proceed-in-sandbox","enableTerminalSandbox":true}' --disable-slash-commands --output-format text --print-timeout 10m
+```
+
 ## Step 3 — Triage the critique skeptically
 
 **Do not auto-accept Codex's feedback** — apply `/triage-findings`: verify each

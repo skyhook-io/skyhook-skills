@@ -1,6 +1,6 @@
 # skyhook-skills
 
-Composable AI **dev-workflow and research** commands for [Claude Code](https://claude.com/claude-code), [Codex](https://github.com/openai/codex), and [Cursor Agent](https://cursor.com/docs/skills). An autonomous plan → implement → review → PR → converge loop, cross-model review, product/design/UX critique, and decision-focused competitive research.
+Composable AI **dev-workflow and research** commands for [Claude Code](https://claude.com/claude-code), [Codex](https://github.com/openai/codex), [Cursor Agent](https://cursor.com/docs/skills), and [Antigravity CLI (`agy`)](https://antigravity.google). An autonomous plan → implement → review → PR → converge loop, cross-model review, product/design/UX critique, and decision-focused competitive research.
 
 Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/skyhook-io/radar); generic enough to use anywhere.
 
@@ -23,7 +23,7 @@ Built by [Skyhook](https://skyhook.io) for building [Radar](https://github.com/s
 Both default to review and recommendations; posting and contributor-branch changes need explicit authorization. They follow the project's documented scope rather than assuming a particular product policy.
 
 **Cross-model review**
-- **`/cross-review`** — runs a review by the configured secondary model — **Codex or Cursor** — prints it verbatim, then triages it skeptically (never auto-accepts). Pick the reviewer via `~/.claude/skyhook-skills.json` (`{"reviewer":"codex|cursor","model":"…"}`), the `SKYHOOK_REVIEWER` env var, or a `consult cursor` / `consult codex` directive. `/codex-review` forces Codex.
+- **`/cross-review`** — runs a review by the configured secondary model — **Codex or Cursor** (plus **Antigravity CLI (`agy`)** opt-in when explicitly requested) — prints it verbatim, then triages it skeptically (never auto-accepts). Pick the reviewer via `~/.claude/skyhook-skills.json` (`{"reviewer":"codex|cursor|agy","model":"…"}`), the `SKYHOOK_REVIEWER` env var, or a `consult cursor` / `consult codex` / `consult agy` directive. `/codex-review` forces Codex.
 
 **PR**
 - **`/pr`**, **`/fix-pr`**, **`/fix-pr-loop`** (reacts to CI + bot reviewers until converged: reads every feedback surface — review threads, review bodies, PR comments bots edit in place, check-run output — waits for reviewers to settle on the final commit, and resolves or answers every thread).
@@ -92,6 +92,7 @@ canonical commands internally.
 | Claude Code | `skyhook-skills` marketplace plugin | `/skyhook-skills:competitive-research` |
 | Codex | User-level Agent Skills | `$competitive-research` |
 | Cursor Agent | The same Agent Skills as Codex | `/competitive-research` |
+| Antigravity CLI (`agy`) *(optional)* | Native Antigravity plugin (`.antigravity-plugin/plugin.json`) | `/skyhook-skills:competitive-research` |
 
 ### Claude Code
 
@@ -168,6 +169,29 @@ Start a new Cursor Agent session (or restart Cursor) after an update. Verify und
 Updating the Cursor binary with `cursor-agent update` is separate and does not
 update these skills. See the [Cursor Agent Skills documentation](https://cursor.com/docs/skills).
 
+### Antigravity CLI (`agy`) *(optional)*
+
+Install directly as a native Antigravity plugin from GitHub (exposes the full
+workflow skill set, reading the same canonical command files):
+
+```bash
+agy plugin install https://github.com/skyhook-io/skyhook-skills
+```
+
+Or from a local checkout:
+
+```bash
+agy plugin install /path/to/skyhook-skills
+```
+
+Inside a running `agy` session, run `/skills reload` to pick up new or updated
+skills, and `/skills` or `agy plugin list --json` to verify what loaded.
+
+When driving `/plan-loop`, `/review-loop`, `/autodev`, or `/cross-review` from
+`agy`, cross-model review consults **Codex** or **Claude** (steer inline with
+`consult codex` / `consult claude`). From Claude or Codex, `agy` is opt-in and
+only invoked when explicitly requested (e.g. `consult agy`).
+
 ## The `/qa` seam — bring your own verification
 
 The loops call **`/qa`** to verify a change, but `/qa` is **repo-provided**: each repo defines what verification means there (type-check, tests, and optionally a `/visual-test`). Drop a `.claude/commands/qa.md` in your repo, e.g.:
@@ -189,7 +213,8 @@ No `/qa`? The loops fall back to plain build/test detection.
 - **`/cross-review` reviewers** (pick via `~/.claude/skyhook-skills.json`, `SKYHOOK_REVIEWER`, or a `consult <x>` directive):
   - **codex** — needs the official [`codex` plugin](https://github.com/openai/codex-plugin-cc) (`/plugin marketplace add openai/codex-plugin-cc`); defaults to `gpt-6.2-sol`, the latest Sol tier.
   - **cursor** — needs the [Cursor CLI](https://cursor.com) (`cursor-agent`) logged in, or `CURSOR_API_KEY` set; defaults to the `gpt-5.6-high` model. For a genuine second opinion when driving from Claude, keep it on a non-Claude model.
-- **Default models:** Claude → Codex calls pin `gpt-6.2-sol`; Codex → Claude calls pin `--model opus`, an alias that always resolves to the latest Opus. Codex has no moving alias for Sol, so when a newer Sol ships, bump the id in `commands/cross-review.md`, `commands/codex-review.md`, `commands/plan-loop.md`, and here (`grep -rn gpt-6.2-sol`).
+  - **agy** *(opt-in — only when explicitly requested)* — needs the [Antigravity CLI](https://antigravity.google) (`agy`) authenticated interactively; defaults to `gemini-4-neon-high`.
+- **Default models:** Claude → Codex calls pin `gpt-6.2-sol`; Codex → Claude calls pin `--model opus`, an alias that always resolves to the latest Opus; opt-in `agy` calls pin `gemini-4-neon-high`. Codex has no moving alias for Sol, so when a newer Sol ships, bump the id in `commands/cross-review.md`, `commands/codex-review.md`, `commands/plan-loop.md`, `antigravity/skills/*/SKILL.md`, and here (`grep -rn gpt-6.2-sol`).
 - **Codex → Claude** (the `claude-review` Codex skill) needs the `claude` CLI. On macOS, run it un-sandboxed so it can read Keychain auth, and (if Codex's guardian blocks the export) add a narrow `[auto_review]` allowance in `~/.codex/config.toml`. Long reviews should use streamed JSON and the final `result` field; plain `claude -p` can look idle while it is still reading/thinking.
 - **`/review --deep`** uses the [`pr-review-toolkit`](https://github.com/anthropics/claude-plugins-official) plugin if installed (optional).
 
